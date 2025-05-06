@@ -4,10 +4,14 @@ import SudokuGame from './games/SudokuGame';
 import TetrisGame from './games/TetrisGame';
 import QuizGame from './games/QuizGame';
 import MemoryGame from './games/MemoryGame';
+import MathGame from './games/MathGame';
+import EmojiMatch from './games/EmojiMatch';
+import WordScramble from './games/WordScramble';
+import SpeedClick from './games/SpeedClick';
 import { GameType, useGameContext } from '../context/GameContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory'];
+const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'speedclick'];
 
 const GameContainer: React.FC = () => {
   const { currentGame, setCurrentGame, score } = useGameContext();
@@ -77,6 +81,14 @@ const GameContainer: React.FC = () => {
         return <QuizGame />;
       case 'memory':
         return <MemoryGame />;
+      case 'math':
+        return <MathGame />;
+      case 'emoji':
+        return <EmojiMatch />;
+      case 'wordscramble':
+        return <WordScramble />;
+      case 'speedclick':
+        return <SpeedClick />;
       default:
         return <div>Game not found</div>;
     }

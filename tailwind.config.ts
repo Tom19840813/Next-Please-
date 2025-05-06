@@ -108,6 +108,10 @@ export default {
 				'pulse-light': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.7' }
+				},
+				'rotate-y': {
+					'0%': { transform: 'rotateY(0deg)' },
+					'100%': { transform: 'rotateY(180deg)' }
 				}
 			},
 			animation: {
@@ -116,9 +120,11 @@ export default {
 				'slide-in-right': 'slide-in-right 0.3s ease-out',
 				'slide-out-left': 'slide-out-left 0.3s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'pulse-light': 'pulse-light 1.5s infinite'
+				'pulse-light': 'pulse-light 1.5s infinite',
+				'rotate-y-180': 'rotate-y 0.5s forwards'
 			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
