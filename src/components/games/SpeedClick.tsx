@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameContext } from '../../context/GameContext';
-import { Timer, Star } from 'lucide-react';
+import { Timer, Target, MoveHorizontal } from 'lucide-react';
 
-interface Target {
+interface TargetObject {
   id: number;
   x: number;
   y: number;
@@ -12,12 +12,15 @@ interface Target {
   color: string;
   timeLeft: number; // Time before target disappears
   clicked: boolean;
+  directionX: number; // Direction of movement (-1 left, 1 right)
+  directionY: number; // Direction of movement (-1 up, 1 down)
+  speed: number; // Speed of movement in pixels per frame
 }
 
 const SpeedClick: React.FC = () => {
   const { incrementScore } = useGameContext();
   const [gameActive, setGameActive] = useState<boolean>(false);
-  const [targets, setTargets] = useState<Target[]>([]);
+  const [targets, setTargets] = useState<TargetObject[]>([]);
   const [score, setScore] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(30);
   const [level, setLevel] = useState<number>(1);
@@ -34,9 +37,7 @@ const SpeedClick: React.FC = () => {
   });
   
   const gameAreaRef = useRef<HTMLDivElement>(null);
-
-  // Game loop using requestAnimationFrame for smooth animations
-  const gameLoopRef = useRef<number | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
   const targetSpawnTimerRef = useRef<number>(0);
   
@@ -58,11 +59,12 @@ const SpeedClick: React.FC = () => {
     lastTimeRef.current = performance.now();
     targetSpawnTimerRef.current = 0;
     
-    if (gameLoopRef.current) {
-      cancelAnimationFrame(gameLoopRef.current);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
     
-    gameLoopRef.current = requestAnimationFrame(gameLoop);
+    // Start the game loop
+    animationFrameRef.current = requestAnimationFrame(gameLoop);
   };
   
   // Main game loop
@@ -75,7 +77,7 @@ const SpeedClick: React.FC = () => {
     
     // Continue the loop if game is still active
     if (gameActive) {
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
+      animationFrameRef.current = requestAnimationFrame(gameLoop);
     }
   };
   
@@ -102,8 +104,8 @@ const SpeedClick: React.FC = () => {
     }
     
     // Update existing targets
-    setTargets(prevTargets =>
-      prevTargets.map(target => {
+    setTargets(prevTargets => {
+      return prevTargets.map(target => {
         // Skip if already clicked
         if (target.clicked) return target;
         
@@ -116,16 +118,46 @@ const SpeedClick: React.FC = () => {
           return { ...target, timeLeft: 0, clicked: true };
         }
         
+        // Move the target
+        const gameArea = gameAreaRef.current?.getBoundingClientRect();
+        if (gameArea) {
+          let newX = target.x + target.directionX * target.speed * (deltaTime / 16); // normalize by 16ms frame
+          let newY = target.y + target.directionY * target.speed * (deltaTime / 16);
+          let newDirectionX = target.directionX;
+          let newDirectionY = target.directionY;
+          
+          // Bounce off boundaries
+          if (newX - target.size/2 < 0 || newX + target.size/2 > gameArea.width) {
+            newDirectionX = -newDirectionX; // Reverse direction
+            newX = Math.max(target.size/2, Math.min(gameArea.width - target.size/2, newX)); // Keep in bounds
+          }
+          
+          if (newY - target.size/2 < 0 || newY + target.size/2 > gameArea.height) {
+            newDirectionY = -newDirectionY; // Reverse direction
+            newY = Math.max(target.size/2, Math.min(gameArea.height - target.size/2, newY)); // Keep in bounds
+          }
+          
+          return { 
+            ...target, 
+            x: newX, 
+            y: newY, 
+            timeLeft: newTimeLeft,
+            directionX: newDirectionX,
+            directionY: newDirectionY
+          };
+        }
+        
         return { ...target, timeLeft: newTimeLeft };
-      })
-    );
+      });
+    });
   };
   
   // End the game
   const endGame = () => {
     setGameActive(false);
-    if (gameLoopRef.current) {
-      cancelAnimationFrame(gameLoopRef.current);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
     
     // Calculate final accuracy
@@ -170,6 +202,11 @@ const SpeedClick: React.FC = () => {
     const x = Math.random() * (gameArea.width - padding * 2) + padding;
     const y = Math.random() * (gameArea.height - padding * 2) + padding;
     
+    // Random direction and speed
+    const directionX = Math.random() > 0.5 ? 1 : -1;
+    const directionY = Math.random() > 0.5 ? 1 : -1;
+    const speed = 1 + Math.random() * 3 + (level * 0.5); // Speed increases with level
+    
     const newTarget = {
       id: Date.now(),
       x,
@@ -178,7 +215,10 @@ const SpeedClick: React.FC = () => {
       points,
       color,
       timeLeft,
-      clicked: false
+      clicked: false,
+      directionX,
+      directionY, 
+      speed
     };
     
     setTargets(prev => [...prev, newTarget]);
@@ -235,14 +275,14 @@ const SpeedClick: React.FC = () => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (gameLoopRef.current) {
-        cancelAnimationFrame(gameLoopRef.current);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, []);
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-indigo-50 flex flex-col">
+    <div className="game-card bg-gradient-to-br from-white to-indigo-50 flex flex-col h-full">
       <div className="text-center p-4">
         <h2 className="text-2xl font-bold text-game-blue">Speed Click</h2>
         <p className="text-sm text-gray-500">Click targets as fast as you can!</p>
@@ -270,7 +310,7 @@ const SpeedClick: React.FC = () => {
           <span className="text-xs text-gray-500">Combo:</span>
           <div className="flex">
             {[...Array(Math.min(combo, 5))].map((_, i) => (
-              <Star key={i} size={14} className="text-yellow-500 fill-yellow-500" />
+              <Target key={i} size={14} className="text-yellow-500 fill-yellow-500" />
             ))}
             {combo > 5 && <span className="text-xs font-bold">+{combo - 5}</span>}
           </div>
@@ -297,19 +337,36 @@ const SpeedClick: React.FC = () => {
             !target.clicked && target.timeLeft > 0 && (
               <div
                 key={target.id}
-                className={`absolute rounded-full ${target.color} shadow-lg transform hover:scale-105 transition-transform cursor-pointer`}
+                className={`absolute rounded-full transition-transform cursor-pointer`}
                 style={{
                   left: `${target.x - target.size/2}px`,
                   top: `${target.y - target.size/2}px`,
                   width: `${target.size}px`,
                   height: `${target.size}px`,
                   opacity: target.timeLeft > 0.5 ? 1 : target.timeLeft * 2,
-                  transform: `scale(${Math.min(1, target.timeLeft * 1.5)})`,
                 }}
                 onClick={() => handleTargetClick(target.id)}
               >
-                <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-xs">
-                  {target.points}
+                {/* Target visual */}
+                <div className={`absolute inset-0 rounded-full ${target.color} shadow-lg`} style={{
+                  transform: `scale(${Math.min(1, target.timeLeft * 1.5)})`
+                }}>
+                  {/* Target rings */}
+                  <div className="absolute inset-0 rounded-full border-2 border-white bg-transparent" 
+                       style={{width: '100%', height: '100%'}}></div>
+                  <div className="absolute rounded-full border-2 border-white bg-transparent" 
+                       style={{width: '75%', height: '75%', left: '12.5%', top: '12.5%'}}></div>
+                  <div className="absolute rounded-full border-2 border-white bg-transparent" 
+                       style={{width: '50%', height: '50%', left: '25%', top: '25%'}}></div>
+                  <div className="absolute rounded-full border-2 border-white bg-transparent" 
+                       style={{width: '25%', height: '25%', left: '37.5%', top: '37.5%'}}></div>
+                  
+                  {/* Points display */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-white font-bold text-xs">
+                      {target.points}
+                    </span>
+                  </div>
                 </div>
               </div>
             )
