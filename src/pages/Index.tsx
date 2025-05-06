@@ -1,13 +1,24 @@
-// Update this page (the content is just a fallback if you fail to update the page)
 
-const Index = () => {
+import React from 'react';
+import GameContainer from '../components/GameContainer';
+import AppHeader from '../components/AppHeader';
+import { GameProvider } from '../context/GameContext';
+
+const Index: React.FC = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <GameProvider>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+        <AppHeader />
+        
+        <div className="pt-14 h-screen">
+          <GameContainer />
+        </div>
+        
+        <div className="absolute bottom-2 left-0 right-0 z-50 text-center text-xs text-gray-500">
+          Swipe or use arrow buttons to change games
+        </div>
       </div>
-    </div>
+    </GameProvider>
   );
 };
 
