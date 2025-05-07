@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { CheckCircle, X, Timer } from 'lucide-react';
@@ -234,7 +235,7 @@ const WordScramble: React.FC = () => {
     const newInputLetters = [...inputLetters];
     newInputLetters.splice(index, 1);
     setInputLetters(newInputLetters);
-    setUserGuess(newInputLetters.join('));
+    setUserGuess(newInputLetters.join(''));  // Fixed: Added closing quote and parenthesis
     
     // Add back to letter pool
     setLetterPool([...letterPool, letter]);
