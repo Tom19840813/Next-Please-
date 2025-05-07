@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState } from 'react';
 
-export type GameType = 'sudoku' | 'tetris' | 'quiz' | 'memory' | 'math' | 'emoji' | 'wordscramble' | 'speedclick';
+export type GameType = 'sudoku' | 'tetris' | 'quiz' | 'memory' | 'math' | 'emoji' | 'wordscramble' | 'balloons';
 
 interface GameContextType {
   currentGame: GameType;

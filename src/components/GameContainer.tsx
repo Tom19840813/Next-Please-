@@ -6,10 +6,12 @@ import MemoryGame from './games/MemoryGame';
 import MathGame from './games/MathGame';
 import EmojiMatch from './games/EmojiMatch';
 import WordScramble from './games/WordScramble';
-import SpeedClick from './games/SpeedClick';
+import BalloonPop from './games/BalloonPop';
 import { GameType, useGameContext } from '../context/GameContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'speedclick'];
+
+const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons'];
+
 const GameContainer: React.FC = () => {
   const {
     currentGame,
@@ -76,8 +78,8 @@ const GameContainer: React.FC = () => {
         return <EmojiMatch />;
       case 'wordscramble':
         return <WordScramble />;
-      case 'speedclick':
-        return <SpeedClick />;
+      case 'balloons':
+        return <BalloonPop />;
       default:
         return <div>Game not found</div>;
     }
