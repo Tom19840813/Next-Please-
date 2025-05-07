@@ -1,9 +1,7 @@
-
 import React from 'react';
 import GameContainer from '../components/GameContainer';
 import AppHeader from '../components/AppHeader';
 import { GameProvider } from '../context/GameContext';
-
 const Index: React.FC = () => {
   return <GameProvider>
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -19,5 +17,4 @@ const Index: React.FC = () => {
       </div>
     </GameProvider>;
 };
-
 export default Index;
