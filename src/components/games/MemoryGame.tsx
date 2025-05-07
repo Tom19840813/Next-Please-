@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
+import { generateEmojiSets } from '../../utils/randomContent';
 
 interface Card {
   id: number;
@@ -9,8 +10,6 @@ interface Card {
   isMatched: boolean;
 }
 
-const emojis = ['🚀', '🌟', '🎮', '🎯', '🏆', '🎨', '🎭', '🎪'];
-
 const MemoryGame: React.FC = () => {
   const { incrementScore } = useGameContext();
   const [cards, setCards] = useState<Card[]>([]);
@@ -18,6 +17,7 @@ const MemoryGame: React.FC = () => {
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
   const [moves, setMoves] = useState<number>(0);
   const [gameComplete, setGameComplete] = useState<boolean>(false);
+  const [currentEmojiSet, setCurrentEmojiSet] = useState<string[]>([]);
 
   // Initialize game on first render
   useEffect(() => {
@@ -63,17 +63,21 @@ const MemoryGame: React.FC = () => {
 
   // Check if game is complete
   useEffect(() => {
-    if (matchedPairs === emojis.length) {
+    if (matchedPairs === currentEmojiSet.length) {
       setGameComplete(true);
       // Bonus points based on efficiency (fewer moves = more points)
-      const efficiency = Math.max(100 - (moves - emojis.length) * 5, 10);
+      const efficiency = Math.max(100 - (moves - currentEmojiSet.length) * 5, 10);
       incrementScore(efficiency);
     }
-  }, [matchedPairs]);
+  }, [matchedPairs, currentEmojiSet.length]);
 
   const initializeGame = () => {
+    // Get a random set of emojis
+    const randomEmojis = generateEmojiSets();
+    setCurrentEmojiSet(randomEmojis);
+    
     // Create pairs of cards with emojis
-    const cardPairs = [...emojis, ...emojis].map((emoji, index) => ({
+    const cardPairs = [...randomEmojis, ...randomEmojis].map((emoji, index) => ({
       id: index,
       emoji,
       isFlipped: false,
@@ -137,7 +141,7 @@ const MemoryGame: React.FC = () => {
         <div className="flex justify-between mb-4">
           <div className="px-4 py-1 bg-white rounded-full shadow">
             <span className="text-sm font-semibold">
-              Pairs: {matchedPairs}/{emojis.length}
+              Pairs: {matchedPairs}/{currentEmojiSet.length}
             </span>
           </div>
           <div className="px-4 py-1 bg-white rounded-full shadow">

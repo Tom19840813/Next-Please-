@@ -1,65 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
+import { fetchRandomTrivia } from '../../utils/randomContent';
+import { Loader2 } from 'lucide-react';
 
 interface Question {
   question: string;
   options: string[];
   correctAnswer: number;
 }
-
-const questions: Question[] = [
-  {
-    question: "What is the capital of France?",
-    options: ["London", "Berlin", "Paris", "Madrid"],
-    correctAnswer: 2
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    options: ["Venus", "Mars", "Jupiter", "Saturn"],
-    correctAnswer: 1
-  },
-  {
-    question: "What is the largest mammal?",
-    options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-    correctAnswer: 1
-  },
-  {
-    question: "How many elements are in the periodic table?",
-    options: ["92", "108", "118", "120"],
-    correctAnswer: 2
-  },
-  {
-    question: "Which of these is NOT a programming language?",
-    options: ["Java", "Python", "Cobra", "Selenium"],
-    correctAnswer: 3
-  },
-  {
-    question: "What year did the first iPhone release?",
-    options: ["2005", "2006", "2007", "2008"],
-    correctAnswer: 2
-  },
-  {
-    question: "Which of these is NOT a primary color?",
-    options: ["Red", "Blue", "Green", "Yellow"],
-    correctAnswer: 3
-  },
-  {
-    question: "How many continents are there on Earth?",
-    options: ["5", "6", "7", "8"],
-    correctAnswer: 2
-  },
-  {
-    question: "What's the fastest land animal?",
-    options: ["Lion", "Cheetah", "Gazelle", "Leopard"],
-    correctAnswer: 1
-  },
-  {
-    question: "Which ocean is the largest?",
-    options: ["Atlantic", "Indian", "Arctic", "Pacific"],
-    correctAnswer: 3
-  }
-];
 
 const QuizGame: React.FC = () => {
   const { incrementScore } = useGameContext();
@@ -70,15 +19,17 @@ const QuizGame: React.FC = () => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>([]);
   const [timeLeft, setTimeLeft] = useState(15);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initialize quiz with shuffled questions
+  // Initialize quiz with fresh random questions
   useEffect(() => {
     startQuiz();
   }, []);
 
   // Timer for each question
   useEffect(() => {
-    if (isAnswered || quizComplete) return;
+    if (isAnswered || quizComplete || loading) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -92,19 +43,70 @@ const QuizGame: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isAnswered, quizComplete, currentQuestionIndex]);
+  }, [isAnswered, quizComplete, currentQuestionIndex, loading]);
 
-  const startQuiz = () => {
-    // Shuffle the questions array
-    const shuffled = [...questions].sort(() => 0.5 - Math.random());
-    // Take the first 5 questions
-    setAvailableQuestions(shuffled.slice(0, 5));
-    setCurrentQuestionIndex(0);
-    setSelectedAnswer(null);
-    setIsAnswered(false);
-    setQuizComplete(false);
-    setCorrectAnswers(0);
-    setTimeLeft(15);
+  const startQuiz = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Fetch random questions from the API
+      const questions = await fetchRandomTrivia(5);
+      
+      if (questions.length === 0) {
+        setError("Couldn't load questions. Using backup questions.");
+        // Use backup questions in case API fails
+        useBackupQuestions();
+      } else {
+        setAvailableQuestions(questions);
+      }
+    } catch (err) {
+      setError("Couldn't load questions. Using backup questions.");
+      useBackupQuestions();
+    } finally {
+      setCurrentQuestionIndex(0);
+      setSelectedAnswer(null);
+      setIsAnswered(false);
+      setQuizComplete(false);
+      setCorrectAnswers(0);
+      setTimeLeft(15);
+      setLoading(false);
+    }
+  };
+
+  const useBackupQuestions = () => {
+    // Backup questions in case API fails
+    const backupQuestions: Question[] = [
+      {
+        question: "What is the capital of France?",
+        options: ["London", "Berlin", "Paris", "Madrid"],
+        correctAnswer: 2
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Venus", "Mars", "Jupiter", "Saturn"],
+        correctAnswer: 1
+      },
+      {
+        question: "What is the largest mammal?",
+        options: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+        correctAnswer: 1
+      },
+      {
+        question: "How many elements are in the periodic table?",
+        options: ["92", "108", "118", "120"],
+        correctAnswer: 2
+      },
+      {
+        question: "Which of these is NOT a programming language?",
+        options: ["Java", "Python", "Cobra", "Selenium"],
+        correctAnswer: 3
+      }
+    ];
+    
+    // Shuffle the backup questions
+    const shuffled = [...backupQuestions].sort(() => 0.5 - Math.random());
+    setAvailableQuestions(shuffled);
   };
 
   const handleTimeout = () => {
@@ -149,6 +151,15 @@ const QuizGame: React.FC = () => {
 
   // Render current question or results screen
   const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="flex flex-col items-center justify-center h-48">
+          <Loader2 className="animate-spin h-8 w-8 text-game-pink mb-2" />
+          <p>Loading questions...</p>
+        </div>
+      );
+    }
+
     if (quizComplete) {
       return (
         <div className="text-center">
@@ -167,7 +178,17 @@ const QuizGame: React.FC = () => {
     }
 
     if (availableQuestions.length === 0) {
-      return <div>Loading questions...</div>;
+      return (
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error || "Failed to load questions."}</p>
+          <button
+            className="bg-game-pink text-white px-6 py-2 rounded-lg hover:bg-pink-600"
+            onClick={startQuiz}
+          >
+            Try Again
+          </button>
+        </div>
+      );
     }
 
     const currentQuestion = availableQuestions[currentQuestionIndex];

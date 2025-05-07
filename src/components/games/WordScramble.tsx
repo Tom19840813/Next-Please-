@@ -1,16 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { CheckCircle, X, Timer } from 'lucide-react';
+import { generateRandomWord } from '../../utils/randomContent';
 
-// Word lists by category
-const wordLists = {
-  animals: ['zebra', 'elephant', 'giraffe', 'dolphin', 'penguin', 'tiger', 'koala', 'kangaroo', 'hedgehog', 'leopard'],
-  food: ['burger', 'pizza', 'sushi', 'pasta', 'chocolate', 'pancake', 'cookie', 'sandwich', 'taco', 'donut'],
-  tech: ['laptop', 'keyboard', 'smartphone', 'tablet', 'monitor', 'router', 'wireless', 'bluetooth', 'headphone', 'speaker']
-};
-
-type Category = 'animals' | 'food' | 'tech';
+type Category = string;
 
 interface GameState {
   scrambledWord: string;
@@ -30,7 +23,7 @@ const WordScramble: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
     scrambledWord: '',
     originalWord: '',
-    category: 'animals',
+    category: '',
     timeLeft: 60,
     score: 0,
     hintsUsed: 0,
@@ -91,20 +84,15 @@ const WordScramble: React.FC = () => {
 
   // Start a new round with a new word
   const startNewRound = () => {
-    // Randomly select a category
-    const categories = Object.keys(wordLists) as Category[];
-    const category = categories[Math.floor(Math.random() * categories.length)];
-    
-    // Get random word from that category
-    const words = wordLists[category];
-    const originalWord = words[Math.floor(Math.random() * words.length)];
-    const scrambled = scrambleWord(originalWord);
+    // Get a random word and its category
+    const { word, category } = generateRandomWord();
+    const scrambled = scrambleWord(word);
     
     // Update game state
     setGameState(prev => ({
       ...prev,
       scrambledWord: scrambled,
-      originalWord,
+      originalWord: word,
       category,
       timeLeft: Math.max(60 - (round - 1) * 5, 30), // Reduce time as rounds progress
       successMessage: null,
@@ -127,7 +115,7 @@ const WordScramble: React.FC = () => {
     setGameState({
       scrambledWord: '',
       originalWord: '',
-      category: 'animals',
+      category: '',
       timeLeft: 60,
       score: 0,
       hintsUsed: 0,
@@ -246,7 +234,7 @@ const WordScramble: React.FC = () => {
     const newInputLetters = [...inputLetters];
     newInputLetters.splice(index, 1);
     setInputLetters(newInputLetters);
-    setUserGuess(newInputLetters.join(''));
+    setUserGuess(newInputLetters.join('));
     
     // Add back to letter pool
     setLetterPool([...letterPool, letter]);
@@ -254,14 +242,17 @@ const WordScramble: React.FC = () => {
 
   // Render the category badge
   const renderCategoryBadge = () => {
-    const categoryColors = {
+    const categoryColors: {[key: string]: string} = {
       animals: 'bg-green-100 text-green-800',
       food: 'bg-orange-100 text-orange-800',
-      tech: 'bg-blue-100 text-blue-800'
+      tech: 'bg-blue-100 text-blue-800',
+      countries: 'bg-purple-100 text-purple-800' // Added for new category
     };
     
+    const colorClass = categoryColors[gameState.category] || 'bg-gray-100 text-gray-800';
+    
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColors[gameState.category]}`}>
+      <span className={`px-3 py-1 rounded-full text-xs font-medium ${colorClass}`}>
         {gameState.category.charAt(0).toUpperCase() + gameState.category.slice(1)}
       </span>
     );
