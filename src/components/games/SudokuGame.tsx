@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 
@@ -18,7 +17,7 @@ const DIFFICULTY = {
 };
 
 const SudokuGame = () => {
-  const { incrementScore } = useGameContext();
+  const { incrementScore, saveScore } = useGameContext();
   const [selectedCell, setSelectedCell] = useState<[number, number] | null>(null);
   const [board, setBoard] = useState<number[][]>(Array(9).fill(0).map(() => Array(9).fill(0)));
   const [solution, setSolution] = useState<number[][]>(Array(9).fill(0).map(() => Array(9).fill(0)));
@@ -123,6 +122,7 @@ const SudokuGame = () => {
   const handleGameComplete = () => {
     setIsComplete(true);
     incrementScore(DIFFICULTY[difficulty].points);
+    saveScore(); // Save the score to the database when game is completed
   };
 
   return (

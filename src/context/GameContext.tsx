@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState } from 'react';
+import { saveGameScore } from '../services/gameScores';
 
 export type GameType = 'sudoku' | 'tetris' | 'quiz' | 'memory' | 'math' | 'emoji' | 'wordscramble' | 'balloons';
 
@@ -9,6 +10,7 @@ interface GameContextType {
   setCurrentGame: (game: GameType) => void;
   incrementScore: (points: number) => void;
   resetScore: () => void;
+  saveScore: () => Promise<void>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -24,6 +26,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const resetScore = () => {
     setScore(0);
   };
+  
+  const saveScore = async () => {
+    if (score <= 0) return;
+    
+    try {
+      await saveGameScore(currentGame, score);
+    } catch (error) {
+      console.error("Failed to save score:", error);
+    }
+  };
 
   return (
     <GameContext.Provider
@@ -32,7 +44,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         score,
         setCurrentGame,
         incrementScore,
-        resetScore
+        resetScore,
+        saveScore
       }}
     >
       {children}

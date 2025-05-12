@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { Check, X } from 'lucide-react';
@@ -14,7 +13,7 @@ interface MathProblem {
 const operations = ['+', '-', '×', '÷'];
 
 const MathGame: React.FC = () => {
-  const { incrementScore } = useGameContext();
+  const { incrementScore, saveScore } = useGameContext();
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [problem, setProblem] = useState<MathProblem | null>(null);
@@ -123,7 +122,14 @@ const MathGame: React.FC = () => {
       
       // Level up every 5 correct answers
       if ((streak + 1) % 5 === 0) {
-        setLevel(prevLevel => prevLevel + 1);
+        setLevel(prevLevel => {
+          const newLevel = prevLevel + 1;
+          if (newLevel % 3 === 0) {
+            // Save score when reaching milestone levels
+            saveScore();
+          }
+          return newLevel;
+        });
       }
     } else {
       setFeedback('wrong');

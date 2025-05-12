@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 
@@ -13,7 +12,7 @@ interface Card {
 const emojis = ['😀', '🤣', '😍', '😎', '🤔', '😴', '🥳', '😱', '🤯', '🥺'];
 
 const EmojiMatch: React.FC = () => {
-  const { incrementScore } = useGameContext();
+  const { incrementScore, saveScore } = useGameContext();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
@@ -95,6 +94,7 @@ const EmojiMatch: React.FC = () => {
       const timeBonus = timeLeft * 5;
       const efficiencyBonus = Math.max(200 - (moves - emojis.length) * 10, 0);
       incrementScore(timeBonus + efficiencyBonus);
+      saveScore(); // Save the score to the database when game is completed
     }
   }, [matchedPairs]);
 

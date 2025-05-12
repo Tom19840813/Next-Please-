@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { fetchRandomTrivia } from '../../utils/randomContent';
@@ -11,7 +10,7 @@ interface Question {
 }
 
 const QuizGame: React.FC = () => {
-  const { incrementScore } = useGameContext();
+  const { incrementScore, saveScore } = useGameContext();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -146,6 +145,7 @@ const QuizGame: React.FC = () => {
       // Quiz complete
       setQuizComplete(true);
       incrementScore(correctAnswers * 20); // Bonus points for completing the quiz
+      saveScore(); // Save the score to the database when quiz is completed
     }
   };
 

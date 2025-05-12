@@ -11,7 +11,7 @@ interface Card {
 }
 
 const MemoryGame: React.FC = () => {
-  const { incrementScore } = useGameContext();
+  const { incrementScore, saveScore } = useGameContext();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
@@ -68,6 +68,7 @@ const MemoryGame: React.FC = () => {
       // Bonus points based on efficiency (fewer moves = more points)
       const efficiency = Math.max(100 - (moves - currentEmojiSet.length) * 5, 10);
       incrementScore(efficiency);
+      saveScore(); // Save the score to the database when game is completed
     }
   }, [matchedPairs, currentEmojiSet.length]);
 
