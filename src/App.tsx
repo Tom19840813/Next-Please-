@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Leaderboard from "./pages/Leaderboard";
+import HallOfFame from "./pages/HallOfFame";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -35,6 +36,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Leaderboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/hall-of-fame" 
+              element={
+                <ProtectedRoute>
+                  <HallOfFame />
                 </ProtectedRoute>
               } 
             />

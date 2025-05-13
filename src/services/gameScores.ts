@@ -39,7 +39,7 @@ export const saveGameScore = async (gameType: GameType, score: number) => {
 export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
   let query = supabase
     .from("game_scores")
-    .select(`*, profiles(username, avatar_url)`)
+    .select("*, profiles!game_scores_user_id_fkey(username, avatar_url)")
     .order('score', { ascending: false })
     .limit(limit);
 
@@ -50,7 +50,7 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
   const { data, error } = await query;
 
   if (error) {
-    console.error("Error fetching leaderboard:", error);
+    console.error('Error fetching leaderboard:', error);
     return [];
   }
 
@@ -58,6 +58,7 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
   return data.map(item => ({
     ...item,
     username: item.profiles?.username || 'Anonymous',
+    avatar_url: item.profiles?.avatar_url
   }));
 };
 

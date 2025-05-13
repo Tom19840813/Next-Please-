@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import UserMenu from './UserMenu';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Trophy } from 'lucide-react';
+import { Award, Trophy } from 'lucide-react';
 
 const AuthenticatedHeader: React.FC = () => {
   const { user } = useAuth();
@@ -15,6 +15,12 @@ const AuthenticatedHeader: React.FC = () => {
         <Button variant="ghost" size="sm" className="flex gap-1 items-center">
           <Trophy className="h-4 w-4" />
           <span>Leaderboard</span>
+        </Button>
+      </Link>
+      <Link to="/hall-of-fame">
+        <Button variant="ghost" size="sm" className="flex gap-1 items-center">
+          <Award className="h-4 w-4" />
+          <span>Hall of Fame</span>
         </Button>
       </Link>
       {user && <UserMenu />}
