@@ -39,13 +39,7 @@ export const saveGameScore = async (gameType: GameType, score: number) => {
 export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
   let query = supabase
     .from("game_scores")
-    .select(`
-      *,
-      profiles:user_id (
-        username,
-        avatar_url
-      )
-    `)
+    .select(`*, profiles(username, avatar_url)`)
     .order('score', { ascending: false })
     .limit(limit);
 
@@ -60,6 +54,7 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
     return [];
   }
 
+  // Transform the data to flatten the profiles info
   return data.map(item => ({
     ...item,
     username: item.profiles?.username || 'Anonymous',
