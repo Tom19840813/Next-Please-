@@ -9,6 +9,7 @@ export interface GameScore {
   score: number;
   created_at: string;
   username?: string | null;
+  avatar_url?: string | null;
 }
 
 export const saveGameScore = async (gameType: GameType, score: number) => {
@@ -39,7 +40,10 @@ export const saveGameScore = async (gameType: GameType, score: number) => {
 export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
   let query = supabase
     .from("game_scores")
-    .select("*, profiles!game_scores_user_id_fkey(username, avatar_url)")
+    .select(`
+      *,
+      profiles:user_id(username, avatar_url)
+    `)
     .order('score', { ascending: false })
     .limit(limit);
 

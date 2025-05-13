@@ -44,12 +44,12 @@ const HallOfFame: React.FC = () => {
         const playerMap = new Map<string, TopPlayer>();
         
         scores.forEach(score => {
-          if (!score.user_id || !score.username) return;
+          if (!score.user_id) return;
           
           if (!playerMap.has(score.user_id)) {
             playerMap.set(score.user_id, {
               userId: score.user_id,
-              username: score.username || 'Anonymous',
+              username: 'Anonymous', // Default username
               totalScore: 0,
               gamesPlayed: 0,
               bestGame: undefined
