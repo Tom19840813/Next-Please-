@@ -29,6 +29,10 @@ const TetrisGame: React.FC = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [score, setScore] = useState(0);
 
+  // Touch handling for mobile swipe controls
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
+  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number } | null>(null);
+
   // Initialize a random piece
   const randomPiece = useCallback(() => {
     const pieces = Object.keys(TETROMINOS);
@@ -171,6 +175,81 @@ const TetrisGame: React.FC = () => {
     }
   };
 
+  // Keyboard controls
+  useEffect(() => {
+    if (!gameStarted || gameOver) return;
+
+    const handleKeyPress = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case 'ArrowLeft':
+          event.preventDefault();
+          moveLeft();
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          moveRight();
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          moveDown();
+          break;
+        case 'ArrowUp':
+        case ' ': // Spacebar
+          event.preventDefault();
+          rotatePiece();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [gameStarted, gameOver, position, currentPiece]);
+
+  // Touch controls for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart({
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
+    });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd({
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
+    });
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const deltaX = touchStart.x - touchEnd.x;
+    const deltaY = touchStart.y - touchEnd.y;
+    const minSwipeDistance = 50;
+
+    // Determine if it's a horizontal or vertical swipe
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (Math.abs(deltaX) > minSwipeDistance) {
+        if (deltaX > 0) {
+          moveLeft(); // Swipe left
+        } else {
+          moveRight(); // Swipe right
+        }
+      }
+    } else {
+      // Vertical swipe
+      if (Math.abs(deltaY) > minSwipeDistance) {
+        if (deltaY < 0) {
+          rotatePiece(); // Swipe up to rotate
+        } else {
+          moveDown(); // Swipe down to drop faster
+        }
+      }
+    }
+  };
+
   // Render the game board
   const renderBoard = () => {
     // Create a copy of the board to add the current piece
@@ -193,7 +272,13 @@ const TetrisGame: React.FC = () => {
     }
     
     return (
-      <div className="mx-auto border-2 border-gray-300 bg-white" style={{ width: BOARD_WIDTH * BLOCK_SIZE, height: BOARD_HEIGHT * BLOCK_SIZE }}>
+      <div 
+        className="mx-auto border-2 border-gray-300 bg-white" 
+        style={{ width: BOARD_WIDTH * BLOCK_SIZE, height: BOARD_HEIGHT * BLOCK_SIZE }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {displayBoard.map((row, y) => (
           <div key={y} className="flex">
             {row.map((cell, x) => (
@@ -249,6 +334,11 @@ const TetrisGame: React.FC = () => {
       <div className="text-center mb-4">
         <h2 className="text-2xl font-bold text-game-blue">Tetris</h2>
         <p className="text-sm text-gray-500">Score: {score}</p>
+        {gameStarted && (
+          <p className="text-xs text-gray-400 mt-1">
+            Desktop: Arrow keys to move, Up/Space to rotate | Mobile: Swipe to control
+          </p>
+        )}
       </div>
       
       <div className="flex justify-center">
