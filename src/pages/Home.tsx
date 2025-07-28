@@ -14,7 +14,7 @@ import {
   Calculator,
   Smile,
   Type,
-  Balloon,
+  Circle,
   Award
 } from 'lucide-react';
 
@@ -75,7 +75,7 @@ const Home: React.FC = () => {
       id: 'balloons',
       title: 'Balloon Pop',
       description: 'Pop balloons as fast as you can',
-      icon: Balloon,
+      icon: Circle,
       color: 'bg-red-500'
     }
   ];

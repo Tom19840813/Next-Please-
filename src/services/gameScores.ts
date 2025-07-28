@@ -41,8 +41,11 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
   let query = supabase
     .from("game_scores")
     .select(`
-      *,
-      profiles:user_id(username, avatar_url)
+      id,
+      user_id,
+      game_type,
+      score,
+      created_at
     `)
     .order('score', { ascending: false })
     .limit(limit);
@@ -58,11 +61,11 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
     return [];
   }
 
-  // Transform the data to flatten the profiles info
+  // Transform the data to add default username
   return data.map(item => ({
     ...item,
-    username: item.profiles?.username || 'Anonymous',
-    avatar_url: item.profiles?.avatar_url
+    username: 'Anonymous',
+    avatar_url: null
   }));
 };
 
