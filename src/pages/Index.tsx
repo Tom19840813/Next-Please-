@@ -1,9 +1,14 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import GameContainer from '../components/GameContainer';
 import AppHeader from '../components/AppHeader';
 import { GameProvider } from '../context/GameContext';
+import { GameType } from '../context/GameContext';
 const Index: React.FC = () => {
-  return <GameProvider>
+  const { gameId } = useParams<{ gameId?: string }>();
+  const initialGame = (gameId as GameType) || 'sudoku';
+  
+  return <GameProvider initialGame={initialGame}>
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
         <AppHeader />
         

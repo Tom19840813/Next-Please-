@@ -15,8 +15,8 @@ interface GameContextType {
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentGame, setCurrentGame] = useState<GameType>('sudoku');
+export const GameProvider: React.FC<{ children: React.ReactNode; initialGame?: GameType }> = ({ children, initialGame = 'sudoku' }) => {
+  const [currentGame, setCurrentGame] = useState<GameType>(initialGame);
   const [score, setScore] = useState(0);
 
   const incrementScore = (points: number) => {

@@ -25,12 +25,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
-            <Route 
-              path="/play" 
-              element={
-                <Index />
-              } 
-            />
+            <Route path="/play" element={<Index />} />
+            <Route path="/play/:gameId" element={<Index />} />
             <Route 
               path="/leaderboard" 
               element={

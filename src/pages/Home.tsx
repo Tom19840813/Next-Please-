@@ -126,7 +126,7 @@ const Home: React.FC = () => {
             const IconComponent = game.icon;
             return (
               <Card key={game.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <Link to="/play">
+                <Link to={`/play/${game.id}`}>
                   <CardHeader className="text-center">
                     <div className={`${game.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-2`}>
                       <IconComponent className="h-8 w-8 text-white" />
