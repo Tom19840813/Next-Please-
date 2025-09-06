@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { Check, X } from 'lucide-react';
+import DifficultySelector from '../DifficultySelector';
+import { DIFFICULTY_CONFIGS } from '@/types/difficulty';
 
 interface MathProblem {
   num1: number;
@@ -13,7 +15,7 @@ interface MathProblem {
 const operations = ['+', '-', '×', '÷'];
 
 const MathGame: React.FC = () => {
-  const { incrementScore, saveScore } = useGameContext();
+  const { incrementScore, saveScore, difficulty, setDifficulty } = useGameContext();
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [problem, setProblem] = useState<MathProblem | null>(null);
@@ -21,16 +23,26 @@ const MathGame: React.FC = () => {
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [gameActive, setGameActive] = useState(true);
   const [streak, setStreak] = useState(0);
+  const [showDifficultySelector, setShowDifficultySelector] = useState(true);
 
-  // Generate a random problem based on the current level
+  // Generate a random problem based on the current level and difficulty
   const generateProblem = () => {
     let num1: number, num2: number, answer: number, operation: string;
     
-    // Increase difficulty based on level
-    const max = Math.min(10 + level * 2, 50);
+    const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+    // Increase difficulty based on level and selected difficulty
+    const baseMax = 10 + level * 2;
+    const max = Math.min(baseMax * difficultyConfig.complexity, 100);
     
-    // Determine which operations to include based on level
-    const availableOps = level <= 2 ? ['+', '-'] : operations;
+    // Determine which operations to include based on level and difficulty
+    let availableOps;
+    if (difficultyConfig.complexity === 1) {
+      availableOps = ['+', '-'];
+    } else if (difficultyConfig.complexity === 2) {
+      availableOps = level <= 2 ? ['+', '-'] : ['+', '-', '×'];
+    } else {
+      availableOps = level <= 1 ? ['+', '-'] : operations;
+    }
     operation = availableOps[Math.floor(Math.random() * availableOps.length)];
     
     switch (operation) {
@@ -45,13 +57,15 @@ const MathGame: React.FC = () => {
         answer = num1 - num2;
         break;
       case '×':
-        num1 = Math.floor(Math.random() * Math.min(12, 5 + level)) + 1;
-        num2 = Math.floor(Math.random() * Math.min(12, 5 + level)) + 1;
+        const multiplyMax = Math.min(12, 3 + level + difficultyConfig.complexity);
+        num1 = Math.floor(Math.random() * multiplyMax) + 1;
+        num2 = Math.floor(Math.random() * multiplyMax) + 1;
         answer = num1 * num2;
         break;
       case '÷':
-        num2 = Math.floor(Math.random() * Math.min(10, 3 + level)) + 1;
-        answer = Math.floor(Math.random() * Math.min(10, 3 + level)) + 1;
+        const divideMax = Math.min(10, 2 + level + difficultyConfig.complexity);
+        num2 = Math.floor(Math.random() * divideMax) + 1;
+        answer = Math.floor(Math.random() * divideMax) + 1;
         num1 = num2 * answer; // Ensure clean division
         break;
       default:
@@ -100,10 +114,12 @@ const MathGame: React.FC = () => {
     setLevel(1);
     setScore(0);
     setStreak(0);
-    setTimeLeft(10);
+    const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+    setTimeLeft(Math.round(10 * difficultyConfig.timeMultiplier));
     setProblem(generateProblem());
     setGameActive(true);
     setFeedback(null);
+    setShowDifficultySelector(false);
   };
 
   // Check user's answer
@@ -113,8 +129,10 @@ const MathGame: React.FC = () => {
     const isCorrect = selectedAnswer === problem.answer;
     
     if (isCorrect) {
-      // Calculate points based on time left and level
-      const points = Math.ceil(timeLeft * (level * 0.5)) + 10;
+      // Calculate points based on time left, level, and difficulty
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      const basePoints = Math.ceil(timeLeft * (level * 0.5)) + 10;
+      const points = Math.round(basePoints * difficultyConfig.scoreMultiplier);
       setScore(prevScore => prevScore + points);
       incrementScore(points);
       setStreak(prevStreak => prevStreak + 1);
@@ -140,7 +158,9 @@ const MathGame: React.FC = () => {
     setTimeout(() => {
       setFeedback(null);
       setProblem(generateProblem());
-      setTimeLeft(Math.max(10 - Math.floor(level / 3), 5)); // Reduce time as levels progress
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      const baseTime = Math.max(10 - Math.floor(level / 3), 5);
+      setTimeLeft(Math.round(baseTime * difficultyConfig.timeMultiplier));
     }, 1000);
   };
 
@@ -159,7 +179,9 @@ const MathGame: React.FC = () => {
           setTimeout(() => {
             setFeedback(null);
             setProblem(generateProblem());
-            return Math.max(10 - Math.floor(level / 3), 5);
+            const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+            const baseTime = Math.max(10 - Math.floor(level / 3), 5);
+            setTimeLeft(Math.round(baseTime * difficultyConfig.timeMultiplier));
           }, 1000);
           
           return 0;
@@ -171,15 +193,28 @@ const MathGame: React.FC = () => {
     return () => clearInterval(timer);
   }, [problem, gameActive, level]);
 
-  // Start the game on first render
+  // Reset to difficulty selector when difficulty changes
   useEffect(() => {
-    startGame();
-  }, []);
+    setShowDifficultySelector(true);
+  }, [difficulty]);
+
+  if (showDifficultySelector) {
+    return (
+      <div className="game-card bg-gradient-to-br from-white to-blue-50 p-4">
+        <DifficultySelector
+          currentDifficulty={difficulty}
+          onDifficultyChange={setDifficulty}
+          onStartGame={startGame}
+          gameName="Math Challenge"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="game-card bg-gradient-to-br from-white to-blue-50 p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-blue">Impress your Math</h2>
+        <h2 className="text-2xl font-bold text-game-blue">Math Challenge - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
         <p className="text-sm text-gray-500">Solve math problems quickly!</p>
       </div>
 
@@ -244,12 +279,18 @@ const MathGame: React.FC = () => {
         )}
         
         {!gameActive && (
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-2">
             <button
               onClick={startGame}
-              className="bg-game-blue text-white px-6 py-2 rounded-full hover:bg-blue-600"
+              className="bg-game-blue text-white px-6 py-2 rounded-full hover:bg-blue-600 mr-2"
             >
               Play Again
+            </button>
+            <button
+              onClick={() => setShowDifficultySelector(true)}
+              className="bg-gray-500 text-white px-6 py-2 rounded-full hover:bg-gray-600"
+            >
+              Change Difficulty
             </button>
           </div>
         )}

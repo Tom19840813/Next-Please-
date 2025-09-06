@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { fetchRandomTrivia } from '../../utils/randomContent';
 import { Loader2 } from 'lucide-react';
+import DifficultySelector from '../DifficultySelector';
+import { DIFFICULTY_CONFIGS } from '@/types/difficulty';
 
 interface Question {
   question: string;
@@ -10,7 +12,7 @@ interface Question {
 }
 
 const QuizGame: React.FC = () => {
-  const { incrementScore, saveScore } = useGameContext();
+  const { incrementScore, saveScore, difficulty, setDifficulty } = useGameContext();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -20,6 +22,7 @@ const QuizGame: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(15);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDifficultySelector, setShowDifficultySelector] = useState(true);
 
   // Initialize quiz with fresh random questions
   useEffect(() => {
@@ -47,10 +50,13 @@ const QuizGame: React.FC = () => {
   const startQuiz = async () => {
     setLoading(true);
     setError(null);
+    setShowDifficultySelector(false);
     
     try {
-      // Fetch random questions from the API
-      const questions = await fetchRandomTrivia(5);
+      // Fetch more questions for higher difficulties
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      const questionCount = Math.round(5 * difficultyConfig.complexity);
+      const questions = await fetchRandomTrivia(questionCount);
       
       if (questions.length === 0) {
         setError("Couldn't load questions. Using backup questions.");
@@ -68,7 +74,8 @@ const QuizGame: React.FC = () => {
       setIsAnswered(false);
       setQuizComplete(false);
       setCorrectAnswers(0);
-      setTimeLeft(15);
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      setTimeLeft(Math.round(15 * difficultyConfig.timeMultiplier));
       setLoading(false);
     }
   };
@@ -126,7 +133,9 @@ const QuizGame: React.FC = () => {
     const currentQuestion = availableQuestions[currentQuestionIndex];
     if (answerIndex === currentQuestion.correctAnswer) {
       setCorrectAnswers(prev => prev + 1);
-      incrementScore(10); // Add points for correct answer
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      const points = Math.round(10 * difficultyConfig.scoreMultiplier);
+      incrementScore(points); // Add points for correct answer
     }
     
     // Wait before moving to next question
@@ -140,11 +149,14 @@ const QuizGame: React.FC = () => {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setIsAnswered(false);
-      setTimeLeft(15);
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      setTimeLeft(Math.round(15 * difficultyConfig.timeMultiplier));
     } else {
       // Quiz complete
       setQuizComplete(true);
-      incrementScore(correctAnswers * 20); // Bonus points for completing the quiz
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      const bonusPoints = Math.round(correctAnswers * 20 * difficultyConfig.scoreMultiplier);
+      incrementScore(bonusPoints); // Bonus points for completing the quiz
       saveScore(); // Save the score to the database when quiz is completed
     }
   };
@@ -167,12 +179,20 @@ const QuizGame: React.FC = () => {
           <p className="text-lg mb-4">
             You got {correctAnswers} out of {availableQuestions.length} questions correct!
           </p>
-          <button
-            className="bg-game-pink text-white px-6 py-2 rounded-lg hover:bg-pink-600"
-            onClick={startQuiz}
-          >
-            Play Again
-          </button>
+          <div className="space-y-2">
+            <button
+              className="bg-game-pink text-white px-6 py-2 rounded-lg hover:bg-pink-600 mr-2"
+              onClick={startQuiz}
+            >
+              Play Again
+            </button>
+            <button
+              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+              onClick={() => setShowDifficultySelector(true)}
+            >
+              Change Difficulty
+            </button>
+          </div>
         </div>
       );
     }
@@ -237,10 +257,23 @@ const QuizGame: React.FC = () => {
     );
   };
 
+  if (showDifficultySelector) {
+    return (
+      <div className="game-card bg-gradient-to-br from-white to-pink-50 p-4">
+        <DifficultySelector
+          currentDifficulty={difficulty}
+          onDifficultyChange={setDifficulty}
+          onStartGame={startQuiz}
+          gameName="Quick Quiz"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="game-card bg-gradient-to-br from-white to-pink-50 p-4">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-game-pink">Quick Quiz</h2>
+        <h2 className="text-2xl font-bold text-game-pink">Quick Quiz - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
         <p className="text-sm text-gray-500">Test your knowledge!</p>
       </div>
       

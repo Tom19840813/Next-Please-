@@ -1,13 +1,16 @@
 
 import React, { createContext, useContext, useState } from 'react';
 import { saveGameScore } from '../services/gameScores';
+import { DifficultyLevel } from '@/types/difficulty';
 
 export type GameType = 'sudoku' | 'tetris' | 'quiz' | 'memory' | 'math' | 'emoji' | 'wordscramble' | 'balloons';
 
 interface GameContextType {
   currentGame: GameType;
   score: number;
+  difficulty: DifficultyLevel;
   setCurrentGame: (game: GameType) => void;
+  setDifficulty: (difficulty: DifficultyLevel) => void;
   incrementScore: (points: number) => void;
   resetScore: () => void;
   saveScore: () => Promise<void>;
@@ -18,6 +21,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider: React.FC<{ children: React.ReactNode; initialGame?: GameType }> = ({ children, initialGame = 'sudoku' }) => {
   const [currentGame, setCurrentGame] = useState<GameType>(initialGame);
   const [score, setScore] = useState(0);
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>('medium');
 
   const incrementScore = (points: number) => {
     setScore((prevScore) => prevScore + points);
@@ -42,7 +46,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode; initialGame?: G
       value={{
         currentGame,
         score,
+        difficulty,
         setCurrentGame,
+        setDifficulty,
         incrementScore,
         resetScore,
         saveScore

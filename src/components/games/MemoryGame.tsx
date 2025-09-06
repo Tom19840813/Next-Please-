@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../../context/GameContext';
 import { generateEmojiSets } from '../../utils/randomContent';
+import DifficultySelector from '../DifficultySelector';
+import { DIFFICULTY_CONFIGS } from '@/types/difficulty';
 
 interface Card {
   id: number;
@@ -11,13 +13,14 @@ interface Card {
 }
 
 const MemoryGame: React.FC = () => {
-  const { incrementScore, saveScore } = useGameContext();
+  const { incrementScore, saveScore, difficulty, setDifficulty } = useGameContext();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
   const [moves, setMoves] = useState<number>(0);
   const [gameComplete, setGameComplete] = useState<boolean>(false);
   const [currentEmojiSet, setCurrentEmojiSet] = useState<string[]>([]);
+  const [showDifficultySelector, setShowDifficultySelector] = useState(true);
 
   // Initialize game on first render
   useEffect(() => {
@@ -41,7 +44,9 @@ const MemoryGame: React.FC = () => {
           )
         );
         setMatchedPairs(prev => prev + 1);
-        incrementScore(20); // Points for finding a match
+        const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+        const points = Math.round(20 * difficultyConfig.scoreMultiplier);
+        incrementScore(points); // Points for finding a match
         setFlippedCards([]);
       } else {
         // No match, flip the cards back after a delay
@@ -67,15 +72,20 @@ const MemoryGame: React.FC = () => {
       setGameComplete(true);
       // Bonus points based on efficiency (fewer moves = more points)
       const efficiency = Math.max(100 - (moves - currentEmojiSet.length) * 5, 10);
-      incrementScore(efficiency);
+      const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+      const bonusPoints = Math.round(efficiency * difficultyConfig.scoreMultiplier);
+      incrementScore(bonusPoints);
       saveScore(); // Save the score to the database when game is completed
     }
   }, [matchedPairs, currentEmojiSet.length]);
 
   const initializeGame = () => {
-    // Get a random set of emojis
-    const randomEmojis = generateEmojiSets();
+    // Get a random set of emojis based on difficulty
+    const difficultyConfig = DIFFICULTY_CONFIGS[difficulty];
+    const pairCount = Math.min(4 + difficultyConfig.complexity, 8); // 5-8 pairs based on difficulty
+    const randomEmojis = generateEmojiSets().slice(0, pairCount);
     setCurrentEmojiSet(randomEmojis);
+    setShowDifficultySelector(false);
     
     // Create pairs of cards with emojis
     const cardPairs = [...randomEmojis, ...randomEmojis].map((emoji, index) => ({
@@ -114,8 +124,9 @@ const MemoryGame: React.FC = () => {
   };
 
   const renderCards = () => {
+    const gridCols = currentEmojiSet.length <= 4 ? 'grid-cols-3' : 'grid-cols-4';
     return (
-      <div className="grid grid-cols-4 gap-2">
+      <div className={`grid ${gridCols} gap-2`}>
         {cards.map(card => (
           <div
             key={card.id}
@@ -131,10 +142,23 @@ const MemoryGame: React.FC = () => {
     );
   };
 
+  if (showDifficultySelector) {
+    return (
+      <div className="game-card bg-gradient-to-br from-white to-orange-50 p-4">
+        <DifficultySelector
+          currentDifficulty={difficulty}
+          onDifficultyChange={setDifficulty}
+          onStartGame={initializeGame}
+          gameName="Memory Match"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="game-card bg-gradient-to-br from-white to-orange-50 p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-orange">Memory Match</h2>
+        <h2 className="text-2xl font-bold text-game-orange">Memory Match - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
         <p className="text-sm text-gray-500">Find all the matching pairs</p>
       </div>
 
@@ -158,12 +182,20 @@ const MemoryGame: React.FC = () => {
           <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
             <p className="font-bold">Congratulations!</p>
             <p>You've matched all pairs in {moves} moves.</p>
-            <button
-              className="mt-2 bg-game-orange text-white px-4 py-2 rounded hover:bg-orange-600"
-              onClick={initializeGame}
-            >
-              Play Again
-            </button>
+            <div className="mt-2 space-y-2">
+              <button
+                className="bg-game-orange text-white px-4 py-2 rounded hover:bg-orange-600 mr-2"
+                onClick={initializeGame}
+              >
+                Play Again
+              </button>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                onClick={() => setShowDifficultySelector(true)}
+              >
+                Change Difficulty
+              </button>
+            </div>
           </div>
         )}
       </div>
