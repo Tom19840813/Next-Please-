@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import GameDifficultyModal from '@/components/GameDifficultyModal';
 import { 
   Gamepad2, 
   Brain, 
@@ -20,6 +21,7 @@ import {
 
 const Home: React.FC = () => {
   const { user } = useAuth();
+  const [selectedGame, setSelectedGame] = useState<{id: string; title: string; color: string} | null>(null);
 
   const games = [
     {
@@ -27,56 +29,56 @@ const Home: React.FC = () => {
       title: 'Sudoku',
       description: 'Classic number puzzle game',
       icon: Grid3X3,
-      color: 'bg-blue-500'
+      color: '#3B82F6'
     },
     {
       id: 'tetris',
       title: 'Tetris',
       description: 'Stack falling blocks perfectly',
       icon: Gamepad2,
-      color: 'bg-purple-500'
+      color: '#8B5CF6'
     },
     {
       id: 'quiz',
       title: 'Quiz',
       description: 'Test your knowledge',
       icon: Brain,
-      color: 'bg-green-500'
+      color: '#22C55E'
     },
     {
       id: 'memory',
       title: 'Memory',
       description: 'Match pairs of cards',
       icon: Users,
-      color: 'bg-pink-500'
+      color: '#EC4899'
     },
     {
       id: 'math',
       title: 'Math Game',
       description: 'Quick arithmetic challenges',
       icon: Calculator,
-      color: 'bg-orange-500'
+      color: '#F97316'
     },
     {
       id: 'emoji',
       title: 'Emoji Match',
       description: 'Find matching emoji pairs',
       icon: Smile,
-      color: 'bg-yellow-500'
+      color: '#EAB308'
     },
     {
       id: 'wordscramble',
       title: 'Word Scramble',
       description: 'Unscramble the letters',
       icon: Type,
-      color: 'bg-indigo-500'
+      color: '#6366F1'
     },
     {
       id: 'balloons',
       title: 'Balloon Pop',
       description: 'Pop balloons as fast as you can',
       icon: Circle,
-      color: 'bg-red-500'
+      color: '#EF4444'
     }
   ];
 
@@ -125,22 +127,26 @@ const Home: React.FC = () => {
           {games.map((game) => {
             const IconComponent = game.icon;
             return (
-              <Card key={game.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <Link to={`/play/${game.id}`}>
-                  <CardHeader className="text-center">
-                    <div className={`${game.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-2`}>
-                      <IconComponent className="h-8 w-8 text-white" />
-                    </div>
-                    <CardTitle className="text-lg">{game.title}</CardTitle>
-                    <CardDescription>{game.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button className="w-full">
-                      <Zap className="h-4 w-4 mr-2" />
-                      Play Now
-                    </Button>
-                  </CardContent>
-                </Link>
+              <Card key={game.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader className="text-center">
+                  <div 
+                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-2"
+                    style={{ backgroundColor: game.color }}
+                  >
+                    <IconComponent className="h-8 w-8 text-white" />
+                  </div>
+                  <CardTitle className="text-lg">{game.title}</CardTitle>
+                  <CardDescription>{game.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    className="w-full"
+                    onClick={() => setSelectedGame({ id: game.id, title: game.title, color: game.color })}
+                  >
+                    <Zap className="h-4 w-4 mr-2" />
+                    Play Now
+                  </Button>
+                </CardContent>
               </Card>
             );
           })}
@@ -160,6 +166,17 @@ const Home: React.FC = () => {
           </Link>
         </div>
       </main>
+
+      {/* Game Difficulty Modal */}
+      {selectedGame && (
+        <GameDifficultyModal
+          gameId={selectedGame.id}
+          gameName={selectedGame.title}
+          gameColor={selectedGame.color}
+          isOpen={!!selectedGame}
+          onClose={() => setSelectedGame(null)}
+        />
+      )}
     </div>
   );
 };
