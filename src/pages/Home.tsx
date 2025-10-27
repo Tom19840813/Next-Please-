@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import GameDifficultyModal from '@/components/GameDifficultyModal';
 import VisitorCounter from '@/components/VisitorCounter';
+import OnlineUsers from '@/components/OnlineUsers';
+import GameInvitations from '@/components/GameInvitations';
 import { 
   Gamepad2, 
   Brain, 
@@ -23,6 +25,7 @@ import {
 const Home: React.FC = () => {
   const { user } = useAuth();
   const [selectedGame, setSelectedGame] = useState<{id: string; title: string; color: string} | null>(null);
+  const [showOnlineUsers, setShowOnlineUsers] = useState(false);
 
   const games = [
     {
@@ -177,6 +180,27 @@ const Home: React.FC = () => {
           isOpen={!!selectedGame}
           onClose={() => setSelectedGame(null)}
         />
+      )}
+
+      {/* Game Invitations */}
+      <GameInvitations />
+
+      {/* Online Users Panel */}
+      {user && showOnlineUsers && (
+        <div className="fixed top-20 right-4 z-50">
+          <OnlineUsers onClose={() => setShowOnlineUsers(false)} />
+        </div>
+      )}
+
+      {/* Online Users Toggle Button */}
+      {user && (
+        <Button
+          onClick={() => setShowOnlineUsers(!showOnlineUsers)}
+          className="fixed bottom-20 right-4 z-40 rounded-full w-14 h-14 shadow-lg"
+          size="icon"
+        >
+          <Users className="h-6 w-6" />
+        </Button>
       )}
 
       {/* Visitor Counter */}
