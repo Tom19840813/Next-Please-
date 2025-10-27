@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import GameDifficultyModal from '@/components/GameDifficultyModal';
+import VisitorCounter from '@/components/VisitorCounter';
 import { 
   Gamepad2, 
   Brain, 
@@ -177,6 +178,9 @@ const Home: React.FC = () => {
           onClose={() => setSelectedGame(null)}
         />
       )}
+
+      {/* Visitor Counter */}
+      <VisitorCounter />
     </div>
   );
 };
