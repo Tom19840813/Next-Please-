@@ -221,7 +221,7 @@ const MathGame: React.FC = () => {
       <div className="max-w-md mx-auto">
         <div className="flex justify-between mb-4">
           <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">Level: {level}</span>
+            <span className="text-sm font-semibold text-secondary">Level: {level}</span>
           </div>
           <div className="px-4 py-1 bg-white rounded-full shadow">
             <span className="text-sm font-semibold">Score: {score}</span>
