@@ -21,9 +21,9 @@ const Index: React.FC = () => {
           <GameContainer />
         </div>
         
-        <div className="absolute bottom-20 left-0 right-0 z-50 text-center text-xs text-muted-foreground">
-          <div className="inline-block bg-background/80 backdrop-blur-sm px-4 py-1.5 rounded-full border">
-            Swipe to switch games • New content every play
+        <div className="absolute bottom-20 left-0 right-0 z-50 text-center text-xs">
+          <div className="inline-block bg-black/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
+            <span className="text-white font-medium">Swipe to switch games • New content every play</span>
           </div>
         </div>
 

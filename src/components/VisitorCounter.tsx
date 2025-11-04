@@ -65,31 +65,31 @@ const VisitorCounter: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 backdrop-blur-md border border-primary/20 rounded-full px-5 py-2.5 shadow-lg">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-black/90 backdrop-blur-md border border-white/20 rounded-full px-5 py-2.5 shadow-xl">
       <div className="flex items-center gap-3 text-xs">
         <div className="flex items-center gap-1.5">
-          <Eye className="h-4 w-4 text-primary animate-pulse" />
-          <span className="font-semibold text-foreground">Visitors</span>
+          <Eye className="h-4 w-4 text-cyan-400 animate-pulse" />
+          <span className="font-semibold text-white">Visitors</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex flex-col items-center">
-            <span className="font-bold text-sm text-foreground">{stats.daily.toLocaleString()}</span>
-            <span className="text-[10px] text-muted-foreground">Today</span>
+            <span className="font-bold text-sm text-white">{stats.daily.toLocaleString()}</span>
+            <span className="text-[10px] text-gray-400">Today</span>
           </div>
-          <span className="text-muted-foreground/50">|</span>
+          <span className="text-gray-600">|</span>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-sm text-foreground">{stats.weekly.toLocaleString()}</span>
-            <span className="text-[10px] text-muted-foreground">Week</span>
+            <span className="font-bold text-sm text-white">{stats.weekly.toLocaleString()}</span>
+            <span className="text-[10px] text-gray-400">Week</span>
           </div>
-          <span className="text-muted-foreground/50">|</span>
+          <span className="text-gray-600">|</span>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-sm text-foreground">{stats.monthly.toLocaleString()}</span>
-            <span className="text-[10px] text-muted-foreground">Month</span>
+            <span className="font-bold text-sm text-white">{stats.monthly.toLocaleString()}</span>
+            <span className="text-[10px] text-gray-400">Month</span>
           </div>
-          <span className="text-muted-foreground/50">|</span>
+          <span className="text-gray-600">|</span>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-sm text-primary">{stats.allTime.toLocaleString()}</span>
-            <span className="text-[10px] text-muted-foreground">Total</span>
+            <span className="font-bold text-sm text-cyan-400">{stats.allTime.toLocaleString()}</span>
+            <span className="text-[10px] text-gray-400">Total</span>
           </div>
         </div>
       </div>
