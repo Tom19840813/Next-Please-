@@ -21,8 +21,10 @@ const Index: React.FC = () => {
           <GameContainer />
         </div>
         
-        <div className="absolute bottom-2 left-0 right-0 z-50 text-center text-xs text-gray-500 py-[25px]">
-          Swipe or use arrow buttons to change games • All games feature random content each time you play
+        <div className="absolute bottom-20 left-0 right-0 z-50 text-center text-xs text-muted-foreground">
+          <div className="inline-block bg-background/80 backdrop-blur-sm px-4 py-1.5 rounded-full border">
+            Swipe to switch games • New content every play
+          </div>
         </div>
 
         {/* Game Invitations */}

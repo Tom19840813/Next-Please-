@@ -65,32 +65,32 @@ const VisitorCounter: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-background/95 backdrop-blur-sm border rounded-full px-4 py-2 shadow-lg">
-      <div className="flex items-center gap-4 text-xs">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 backdrop-blur-md border border-primary/20 rounded-full px-5 py-2.5 shadow-lg">
+      <div className="flex items-center gap-3 text-xs">
         <div className="flex items-center gap-1.5">
-          <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="font-medium text-muted-foreground">Visitors:</span>
+          <Eye className="h-4 w-4 text-primary animate-pulse" />
+          <span className="font-semibold text-foreground">Visitors</span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-foreground">
-            <span className="font-semibold">{stats.daily.toLocaleString()}</span>
-            <span className="text-muted-foreground ml-1">24h</span>
-          </span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-foreground">
-            <span className="font-semibold">{stats.weekly.toLocaleString()}</span>
-            <span className="text-muted-foreground ml-1">7d</span>
-          </span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-foreground">
-            <span className="font-semibold">{stats.monthly.toLocaleString()}</span>
-            <span className="text-muted-foreground ml-1">30d</span>
-          </span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-foreground">
-            <span className="font-semibold">{stats.allTime.toLocaleString()}</span>
-            <span className="text-muted-foreground ml-1">total</span>
-          </span>
+        <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center">
+            <span className="font-bold text-sm text-foreground">{stats.daily.toLocaleString()}</span>
+            <span className="text-[10px] text-muted-foreground">Today</span>
+          </div>
+          <span className="text-muted-foreground/50">|</span>
+          <div className="flex flex-col items-center">
+            <span className="font-bold text-sm text-foreground">{stats.weekly.toLocaleString()}</span>
+            <span className="text-[10px] text-muted-foreground">Week</span>
+          </div>
+          <span className="text-muted-foreground/50">|</span>
+          <div className="flex flex-col items-center">
+            <span className="font-bold text-sm text-foreground">{stats.monthly.toLocaleString()}</span>
+            <span className="text-[10px] text-muted-foreground">Month</span>
+          </div>
+          <span className="text-muted-foreground/50">|</span>
+          <div className="flex flex-col items-center">
+            <span className="font-bold text-sm text-primary">{stats.allTime.toLocaleString()}</span>
+            <span className="text-[10px] text-muted-foreground">Total</span>
+          </div>
         </div>
       </div>
     </div>
