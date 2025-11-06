@@ -10,7 +10,11 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Leaderboard from "./pages/Leaderboard";
 import HallOfFame from "./pages/HallOfFame";
+import UpgradeToPro from "./pages/UpgradeToPro";
+import AdSettings from "./pages/admin/AdSettings";
+import UserManagement from "./pages/admin/UserManagement";
 import { AuthProvider } from "./context/AuthContext";
+import { AdProvider } from "./context/AdContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -22,30 +26,49 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/play" element={<Index />} />
-            <Route path="/play/:gameId" element={<Index />} />
-            <Route 
-              path="/leaderboard" 
-              element={
-                <ProtectedRoute>
-                  <Leaderboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/hall-of-fame" 
-              element={
-                <ProtectedRoute>
-                  <HallOfFame />
-                </ProtectedRoute>
-              } 
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AdProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/play" element={<Index />} />
+              <Route path="/play/:gameId" element={<Index />} />
+              <Route path="/upgrade" element={<UpgradeToPro />} />
+              <Route 
+                path="/leaderboard" 
+                element={
+                  <ProtectedRoute>
+                    <Leaderboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/hall-of-fame" 
+                element={
+                  <ProtectedRoute>
+                    <HallOfFame />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/ad-settings" 
+                element={
+                  <ProtectedRoute>
+                    <AdSettings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/users" 
+                element={
+                  <ProtectedRoute>
+                    <UserManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AdProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

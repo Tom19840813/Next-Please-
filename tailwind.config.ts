@@ -242,6 +242,10 @@ export default {
 						transform: 'translateY(0) scale(1)',
 						opacity: '1'
 					}
+				},
+				'shimmer': {
+					'0%': { backgroundPosition: '-200% 0' },
+					'100%': { backgroundPosition: '200% 0' }
 				}
 			},
 			animation: {
@@ -261,7 +265,8 @@ export default {
 				'math-popup': 'math-popup 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
 				'emoji-bounce': 'emoji-bounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
 				'word-scatter': 'word-scatter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-				'balloon-float': 'balloon-float 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+				'balloon-float': 'balloon-float 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+				'shimmer': 'shimmer 2s linear infinite'
 			}
 		}
 	},
