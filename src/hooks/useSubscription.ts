@@ -16,14 +16,19 @@ export const useSubscription = () => {
     }
 
     try {
+      // Use any to bypass TypeScript checking for tables not in generated types
       const { data, error } = await supabase
-        .from('user_subscriptions')
+        .from('user_subscriptions' as any)
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (error) throw error;
-      setSubscription(data);
+      if (error) {
+        console.error('Error fetching subscription:', error);
+        setSubscription(null);
+      } else {
+        setSubscription(data as unknown as UserSubscription | null);
+      }
     } catch (error) {
       console.error('Error fetching subscription:', error);
       setSubscription(null);

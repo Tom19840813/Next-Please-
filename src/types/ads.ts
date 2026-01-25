@@ -6,8 +6,9 @@ export interface AdSettings {
   sidebar_ad_enabled: boolean;
   interstitial_ad_enabled: boolean;
   ad_frequency_games: number;
-  updated_at: string;
-  updated_by: string | null;
+  created_at?: string;
+  updated_at?: string;
+  updated_by?: string | null;
 }
 
 export interface AdContextType {
