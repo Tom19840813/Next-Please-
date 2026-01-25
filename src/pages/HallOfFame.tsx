@@ -1,23 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
-import { getUserBestScores } from '../services/gameScores';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { getHallOfFame } from '../services/gameScores';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Loader2, Medal } from 'lucide-react';
+import { Loader2, Medal, Trophy, Flame, Star, Crown } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface TopPlayer {
   userId: string;
   username: string;
+  avatar_url: string | null;
   totalScore: number;
   gamesPlayed: number;
   bestGame?: {
@@ -36,45 +28,8 @@ const HallOfFame: React.FC = () => {
     const fetchTopPlayers = async () => {
       setLoading(true);
       try {
-        // In a real implementation, this would fetch aggregated data from the server
-        // For now, we'll simulate this using the existing API
-        const scores = await getUserBestScores();
-        
-        // Group by user and calculate totals
-        const playerMap = new Map<string, TopPlayer>();
-        
-        scores.forEach(score => {
-          if (!score.user_id) return;
-          
-          if (!playerMap.has(score.user_id)) {
-            playerMap.set(score.user_id, {
-              userId: score.user_id,
-              username: 'Anonymous', // Default username
-              totalScore: 0,
-              gamesPlayed: 0,
-              bestGame: undefined
-            });
-          }
-          
-          const player = playerMap.get(score.user_id)!;
-          player.totalScore += score.score;
-          player.gamesPlayed += 1;
-          
-          // Track best game
-          if (!player.bestGame || score.score > player.bestGame.score) {
-            player.bestGame = {
-              game_type: score.game_type,
-              score: score.score
-            };
-          }
-        });
-        
-        // Convert to array and sort by total score
-        const sortedPlayers = Array.from(playerMap.values())
-          .sort((a, b) => b.totalScore - a.totalScore)
-          .slice(0, 20);
-          
-        setTopPlayers(sortedPlayers);
+        const players = await getHallOfFame(timeFrame, 20);
+        setTopPlayers(players);
       } catch (error) {
         console.error('Error fetching hall of fame data:', error);
         toast({
@@ -90,22 +45,40 @@ const HallOfFame: React.FC = () => {
     fetchTopPlayers();
   }, [timeFrame, toast]);
 
-  const getMedalEmoji = (index: number) => {
+  const getMedalIcon = (index: number) => {
     switch (index) {
-      case 0: return <Medal className="h-5 w-5 text-yellow-500" />;
-      case 1: return <Medal className="h-5 w-5 text-gray-400" />;
-      case 2: return <Medal className="h-5 w-5 text-amber-700" />;
-      default: return <span className="text-sm font-medium">{index + 1}</span>;
+      case 0: return <Crown className="h-6 w-6 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]" />;
+      case 1: return <Medal className="h-5 w-5 text-gray-300 drop-shadow-[0_0_6px_rgba(209,213,219,0.6)]" />;
+      case 2: return <Medal className="h-5 w-5 text-amber-600 drop-shadow-[0_0_6px_rgba(217,119,6,0.6)]" />;
+      default: return <span className="text-sm font-bold text-muted-foreground">{index + 1}</span>;
     }
   };
 
+  const getGameEmoji = (gameType: string) => {
+    const emojis: Record<string, string> = {
+      sudoku: '🔢', tetris: '🧱', quiz: '❓', memory: '🧠',
+      math: '➕', emoji: '😀', wordscramble: '📝', balloons: '🎈'
+    };
+    return emojis[gameType] || '🎮';
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       <AppHeader />
       
-      <main className="container mx-auto px-4 pt-20 pb-10">
+      <main className="container mx-auto px-4 pt-24 pb-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-6 text-game-purple">Hall of Fame</h1>
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Trophy className="h-10 w-10 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+                Hall of Fame
+              </h1>
+              <Trophy className="h-10 w-10 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
+            </div>
+            <p className="text-muted-foreground">The legends who conquered the arcade</p>
+          </div>
           
           <Tabs 
             defaultValue="allTime" 
@@ -114,69 +87,103 @@ const HallOfFame: React.FC = () => {
             className="w-full"
           >
             <div className="flex justify-center mb-6">
-              <TabsList className="bg-white/70">
-                <TabsTrigger value="allTime">All Time</TabsTrigger>
-                <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                <TabsTrigger value="weekly">Weekly</TabsTrigger>
+              <TabsList className="bg-black/40 border border-purple-500/30">
+                <TabsTrigger value="allTime" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                  <Star className="h-4 w-4 mr-1" /> All Time
+                </TabsTrigger>
+                <TabsTrigger value="monthly" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                  <Flame className="h-4 w-4 mr-1" /> Monthly
+                </TabsTrigger>
+                <TabsTrigger value="weekly" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                  <Trophy className="h-4 w-4 mr-1" /> Weekly
+                </TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value={timeFrame} className="mt-0">
-              <div className="bg-white rounded-lg shadow-md p-4">
-                <h2 className="text-xl font-semibold mb-3">
-                  {timeFrame === 'allTime' ? 'All-Time Champions' : 
-                   timeFrame === 'monthly' ? 'Monthly Champions' : 'Weekly Champions'}
-                </h2>
-                
+              <div className="bg-black/40 backdrop-blur-sm rounded-xl border border-purple-500/30 p-6">
                 {loading ? (
-                  <div className="flex justify-center py-10">
-                    <Loader2 className="h-10 w-10 animate-spin text-game-purple" />
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <Loader2 className="h-12 w-12 animate-spin text-purple-400 mb-4" />
+                    <p className="text-muted-foreground">Loading champions...</p>
                   </div>
                 ) : topPlayers.length === 0 ? (
-                  <p className="text-center py-10 text-gray-500">No players found.</p>
+                  <div className="text-center py-16">
+                    <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                    <p className="text-xl text-muted-foreground mb-2">No champions yet!</p>
+                    <p className="text-sm text-muted-foreground">Be the first to claim your spot in the Hall of Fame</p>
+                  </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-16">Rank</TableHead>
-                          <TableHead>Player</TableHead>
-                          <TableHead className="text-right">Total Score</TableHead>
-                          <TableHead className="text-right">Games Played</TableHead>
-                          <TableHead>Best Game</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {topPlayers.map((player, index) => (
-                          <TableRow key={player.userId}>
-                            <TableCell className="font-medium">
-                              <div className="flex items-center justify-center">
-                                {getMedalEmoji(index)}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Avatar className="h-6 w-6">
-                                  <AvatarFallback className="bg-game-purple text-white text-xs">
-                                    {(player.username?.[0] || 'A').toUpperCase()}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <span>{player.username || 'Anonymous'}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-right font-semibold">
-                              {player.totalScore.toLocaleString()}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {player.gamesPlayed}
-                            </TableCell>
-                            <TableCell>
-                              {player.bestGame ? `${player.bestGame.game_type} (${player.bestGame.score})` : '-'}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                  <div className="space-y-3">
+                    {/* Top 3 Podium */}
+                    {topPlayers.length >= 3 && (
+                      <div className="grid grid-cols-3 gap-4 mb-8">
+                        {[1, 0, 2].map((idx) => {
+                          const player = topPlayers[idx];
+                          if (!player) return null;
+                          const isFirst = idx === 0;
+                          return (
+                            <div 
+                              key={player.userId}
+                              className={`flex flex-col items-center p-4 rounded-xl ${
+                                isFirst 
+                                  ? 'bg-gradient-to-b from-yellow-500/20 to-transparent border-2 border-yellow-500/50 order-2 -mt-4' 
+                                  : idx === 1 
+                                    ? 'bg-gradient-to-b from-gray-400/20 to-transparent border border-gray-400/30 order-1'
+                                    : 'bg-gradient-to-b from-amber-600/20 to-transparent border border-amber-600/30 order-3'
+                              }`}
+                            >
+                              <div className="mb-2">{getMedalIcon(idx)}</div>
+                              <Avatar className={`${isFirst ? 'h-16 w-16' : 'h-12 w-12'} border-2 ${
+                                isFirst ? 'border-yellow-400' : idx === 1 ? 'border-gray-300' : 'border-amber-600'
+                              }`}>
+                                {player.avatar_url && <AvatarImage src={player.avatar_url} />}
+                                <AvatarFallback className="bg-purple-600 text-white font-bold">
+                                  {(player.username?.[0] || 'A').toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <p className={`font-bold mt-2 ${isFirst ? 'text-lg text-yellow-400' : 'text-white'}`}>
+                                {player.username}
+                              </p>
+                              <p className={`font-mono ${isFirst ? 'text-2xl text-yellow-300' : 'text-xl text-purple-300'}`}>
+                                {player.totalScore.toLocaleString()}
+                              </p>
+                              <p className="text-xs text-muted-foreground">{player.gamesPlayed} games</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Rest of leaderboard */}
+                    {topPlayers.slice(3).map((player, idx) => (
+                      <div 
+                        key={player.userId}
+                        className="flex items-center gap-4 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                      >
+                        <div className="w-8 flex justify-center">
+                          {getMedalIcon(idx + 3)}
+                        </div>
+                        <Avatar className="h-10 w-10 border border-purple-500/50">
+                          {player.avatar_url && <AvatarImage src={player.avatar_url} />}
+                          <AvatarFallback className="bg-purple-600 text-white text-sm">
+                            {(player.username?.[0] || 'A').toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="font-semibold text-white">{player.username}</p>
+                          <p className="text-xs text-muted-foreground">{player.gamesPlayed} games played</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-mono text-lg text-purple-300">{player.totalScore.toLocaleString()}</p>
+                          {player.bestGame && (
+                            <p className="text-xs text-muted-foreground">
+                              Best: {getGameEmoji(player.bestGame.game_type)} {player.bestGame.score}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

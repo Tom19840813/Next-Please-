@@ -61,12 +61,96 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
     return [];
   }
 
-  // Transform the data to add default username
+  // Fetch profiles for all unique user_ids
+  const userIds = [...new Set(data.map(item => item.user_id))];
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username, avatar_url")
+    .in("id", userIds);
+
+  const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
   return data.map(item => ({
     ...item,
-    username: 'Anonymous',
-    avatar_url: null
+    username: profileMap.get(item.user_id)?.username || 'Anonymous',
+    avatar_url: profileMap.get(item.user_id)?.avatar_url || null
   }));
+};
+
+export const getHallOfFame = async (timeFrame: 'allTime' | 'monthly' | 'weekly' = 'allTime', limit = 20) => {
+  // Calculate date filter based on timeframe
+  let dateFilter: string | null = null;
+  const now = new Date();
+  
+  if (timeFrame === 'weekly') {
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    dateFilter = weekAgo.toISOString();
+  } else if (timeFrame === 'monthly') {
+    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    dateFilter = monthAgo.toISOString();
+  }
+
+  let query = supabase
+    .from("game_scores")
+    .select("user_id, game_type, score, created_at")
+    .order('score', { ascending: false });
+
+  if (dateFilter) {
+    query = query.gte('created_at', dateFilter);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error fetching hall of fame:', error);
+    return [];
+  }
+
+  // Aggregate scores by user
+  const playerMap = new Map<string, {
+    userId: string;
+    totalScore: number;
+    gamesPlayed: number;
+    bestGame?: { game_type: string; score: number };
+  }>();
+
+  data.forEach(score => {
+    if (!playerMap.has(score.user_id)) {
+      playerMap.set(score.user_id, {
+        userId: score.user_id,
+        totalScore: 0,
+        gamesPlayed: 0,
+        bestGame: undefined
+      });
+    }
+
+    const player = playerMap.get(score.user_id)!;
+    player.totalScore += score.score;
+    player.gamesPlayed += 1;
+
+    if (!player.bestGame || score.score > player.bestGame.score) {
+      player.bestGame = { game_type: score.game_type, score: score.score };
+    }
+  });
+
+  // Fetch profiles
+  const userIds = [...playerMap.keys()];
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, username, avatar_url")
+    .in("id", userIds);
+
+  const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+  // Convert to array, add profile data, and sort
+  return Array.from(playerMap.values())
+    .map(player => ({
+      ...player,
+      username: profileMap.get(player.userId)?.username || 'Anonymous',
+      avatar_url: profileMap.get(player.userId)?.avatar_url || null
+    }))
+    .sort((a, b) => b.totalScore - a.totalScore)
+    .slice(0, limit);
 };
 
 export const getUserBestScores = async (gameType?: GameType) => {
