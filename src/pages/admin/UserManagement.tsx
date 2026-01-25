@@ -27,33 +27,33 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      // Get all profiles with their subscriptions
-      const { data, error } = await supabase
+      // Get all profiles
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
-          id,
-          user_subscriptions (
-            subscription_type,
-            subscription_status
-          )
-        `);
+        .select('id, username');
 
-      if (error) throw error;
+      if (profilesError) throw profilesError;
 
-      // Get user emails from auth
-      const usersWithEmails = await Promise.all(
-        (data || []).map(async (profile: any) => {
-          const { data: { user } } = await supabase.auth.admin.getUserById(profile.id);
-          return {
-            id: profile.id,
-            email: user?.email || 'Unknown',
-            subscription_type: profile.user_subscriptions?.[0]?.subscription_type || null,
-            subscription_status: profile.user_subscriptions?.[0]?.subscription_status || null,
-          };
-        })
+      // Get subscriptions separately - use any to bypass TypeScript checking
+      const { data: subscriptions } = await supabase
+        .from('user_subscriptions' as any)
+        .select('user_id, subscription_type, subscription_status');
+
+      const subscriptionMap = new Map(
+        ((subscriptions as any[]) || []).map((sub: any) => [sub.user_id, sub])
       );
 
-      setUsers(usersWithEmails);
+      const usersWithData = (profiles || []).map((profile: any) => {
+        const sub = subscriptionMap.get(profile.id);
+        return {
+          id: profile.id,
+          email: profile.username || 'Unknown User',
+          subscription_type: sub?.subscription_type || null,
+          subscription_status: sub?.subscription_status || null,
+        };
+      });
+
+      setUsers(usersWithData);
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -69,8 +69,9 @@ const UserManagement: React.FC = () => {
     try {
       const newType = currentType === 'pro' ? 'free' : 'pro';
       
+      // Use any to bypass TypeScript checking for tables not in generated types
       const { error } = await supabase
-        .from('user_subscriptions')
+        .from('user_subscriptions' as any)
         .upsert({
           user_id: userId,
           subscription_type: newType,
@@ -105,7 +106,7 @@ const UserManagement: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-4 py-12">
+    <div className="min-h-screen bg-background arcade-grid p-4 py-12">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Link to="/">
@@ -116,9 +117,9 @@ const UserManagement: React.FC = () => {
           </Link>
         </div>
 
-        <Card>
+        <Card className="bg-card/90 backdrop-blur-sm border-border">
           <CardHeader>
-            <CardTitle>User Management</CardTitle>
+            <CardTitle className="text-foreground">User Management</CardTitle>
             <CardDescription>
               Manage user subscriptions and Pro status
             </CardDescription>
@@ -140,11 +141,11 @@ const UserManagement: React.FC = () => {
               {filteredUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center justify-between p-4 border rounded-lg bg-white"
+                  className="flex items-center justify-between p-4 border border-border rounded-lg bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div>
-                      <p className="font-medium">{user.email}</p>
+                      <p className="font-medium text-foreground">{user.email}</p>
                       <div className="flex items-center gap-2 mt-1">
                         {user.subscription_type === 'pro' && user.subscription_status === 'active' ? (
                           <ProBadge size="sm" />
@@ -159,6 +160,9 @@ const UserManagement: React.FC = () => {
                     onClick={() => toggleProStatus(user.id, user.subscription_type)}
                     variant={user.subscription_type === 'pro' ? 'outline' : 'default'}
                     size="sm"
+                    className={user.subscription_type === 'pro' 
+                      ? 'border-primary text-foreground hover:bg-primary hover:text-primary-foreground' 
+                      : 'bg-primary hover:bg-primary/90 text-primary-foreground'}
                   >
                     <Crown className="mr-2 h-4 w-4" />
                     {user.subscription_type === 'pro' ? 'Remove Pro' : 'Make Pro'}

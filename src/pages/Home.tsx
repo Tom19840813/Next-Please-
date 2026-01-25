@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -8,6 +7,8 @@ import GameDifficultyModal from '@/components/GameDifficultyModal';
 import VisitorCounter from '@/components/VisitorCounter';
 import OnlineUsers from '@/components/OnlineUsers';
 import GameInvitations from '@/components/GameInvitations';
+import ProBadge from '@/components/ProBadge';
+import { useSubscription } from '@/hooks/useSubscription';
 import { 
   Gamepad2, 
   Brain, 
@@ -19,11 +20,14 @@ import {
   Smile,
   Type,
   Circle,
-  Award
+  Award,
+  Crown,
+  Sparkles
 } from 'lucide-react';
 
 const Home: React.FC = () => {
   const { user } = useAuth();
+  const { isPro } = useSubscription();
   const [selectedGame, setSelectedGame] = useState<{id: string; title: string; color: string} | null>(null);
   const [showOnlineUsers, setShowOnlineUsers] = useState(false);
 
@@ -33,84 +37,98 @@ const Home: React.FC = () => {
       title: 'Sudoku',
       description: 'Classic number puzzle game',
       icon: Grid3X3,
-      color: '#3B82F6'
+      color: 'hsl(var(--primary))'
     },
     {
       id: 'tetris',
       title: 'Tetris',
       description: 'Stack falling blocks perfectly',
       icon: Gamepad2,
-      color: '#8B5CF6'
+      color: 'hsl(var(--neon-purple))'
     },
     {
       id: 'quiz',
       title: 'Quiz',
       description: 'Test your knowledge',
       icon: Brain,
-      color: '#22C55E'
+      color: 'hsl(var(--secondary))'
     },
     {
       id: 'memory',
       title: 'Memory',
       description: 'Match pairs of cards',
       icon: Users,
-      color: '#EC4899'
+      color: 'hsl(var(--accent))'
     },
     {
       id: 'math',
       title: 'Math Game',
       description: 'Quick arithmetic challenges',
       icon: Calculator,
-      color: '#F97316'
+      color: 'hsl(var(--neon-yellow))'
     },
     {
       id: 'emoji',
       title: 'Emoji Match',
       description: 'Find matching emoji pairs',
       icon: Smile,
-      color: '#EAB308'
+      color: 'hsl(var(--neon-cyan))'
     },
     {
       id: 'wordscramble',
       title: 'Word Scramble',
       description: 'Unscramble the letters',
       icon: Type,
-      color: '#6366F1'
+      color: 'hsl(var(--neon-pink))'
     },
     {
       id: 'balloons',
       title: 'Balloon Pop',
       description: 'Pop balloons as fast as you can',
       icon: Circle,
-      color: '#EF4444'
+      color: 'hsl(var(--destructive))'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-background arcade-grid">
       {/* Header */}
-      <header className="bg-gradient-to-r from-game-purple to-game-blue text-white p-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Next Please!</h1>
+      <header className="bg-card/90 backdrop-blur-sm border-b border-border shadow-lg">
+        <div className="container mx-auto flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+              <Gamepad2 className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground neon-text">Next Please!</h1>
+          </div>
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-2">
+                {isPro && <ProBadge size="sm" />}
                 <Link to="/leaderboard">
-                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                  <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted">
                     <Trophy className="h-4 w-4 mr-1" />
-                    Leaderboard
+                    <span className="hidden sm:inline">Leaderboard</span>
                   </Button>
                 </Link>
                 <Link to="/hall-of-fame">
-                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                  <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted">
                     <Award className="h-4 w-4 mr-1" />
-                    Hall of Fame
+                    <span className="hidden sm:inline">Hall of Fame</span>
                   </Button>
                 </Link>
+                {!isPro && (
+                  <Link to="/upgrade">
+                    <Button size="sm" className="bg-gradient-to-r from-primary to-accent text-primary-foreground animate-shimmer">
+                      <Crown className="h-4 w-4 mr-1" />
+                      <span className="hidden sm:inline">Go Pro</span>
+                    </Button>
+                  </Link>
+                )}
               </div>
             ) : (
               <Link to="/auth">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                <Button variant="outline" size="sm" className="border-primary text-foreground hover:bg-primary hover:text-primary-foreground">
                   Sign In
                 </Button>
               </Link>
@@ -121,9 +139,15 @@ const Home: React.FC = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Choose Your Game</h2>
-          <p className="text-gray-600">Select a game to start playing. All games feature random content each time!</p>
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Sparkles className="h-6 w-6 text-primary animate-pulse" />
+            <h2 className="text-4xl font-bold text-foreground">Choose Your Game</h2>
+            <Sparkles className="h-6 w-6 text-secondary animate-pulse" />
+          </div>
+          <p className="text-muted-foreground text-lg">
+            Select a game to start playing. All games feature random content each time!
+          </p>
         </div>
 
         {/* Games Grid */}
@@ -131,20 +155,23 @@ const Home: React.FC = () => {
           {games.map((game) => {
             const IconComponent = game.icon;
             return (
-              <Card key={game.id} className="hover:shadow-lg transition-shadow">
+              <Card 
+                key={game.id} 
+                className="group bg-card/80 backdrop-blur-sm border-border hover:border-primary transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
+              >
                 <CardHeader className="text-center">
                   <div 
-                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-2"
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110 neon-border"
                     style={{ backgroundColor: game.color }}
                   >
-                    <IconComponent className="h-8 w-8 text-white" />
+                    <IconComponent className="h-8 w-8 text-primary-foreground" />
                   </div>
-                  <CardTitle className="text-lg">{game.title}</CardTitle>
-                  <CardDescription>{game.description}</CardDescription>
+                  <CardTitle className="text-lg text-foreground">{game.title}</CardTitle>
+                  <CardDescription className="text-muted-foreground">{game.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button 
-                    className="w-full"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/30 transition-all"
                     onClick={() => setSelectedGame({ id: game.id, title: game.title, color: game.color })}
                   >
                     <Zap className="h-4 w-4 mr-2" />
@@ -157,13 +184,13 @@ const Home: React.FC = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-semibold mb-2">Ready to Play?</h3>
-          <p className="text-gray-600 mb-4">
+        <div className="text-center bg-card/80 backdrop-blur-sm rounded-2xl border border-border shadow-lg p-8">
+          <h3 className="text-2xl font-bold text-foreground mb-3">Ready to Play?</h3>
+          <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
             Jump into any game and start having fun! {user ? 'Your scores will be saved automatically.' : 'Sign in to save your scores and compete on the leaderboard.'}
           </p>
           <Link to="/play">
-            <Button size="lg" className="bg-game-purple hover:bg-game-purple/90">
+            <Button size="lg" className="bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30">
               <Gamepad2 className="h-5 w-5 mr-2" />
               Start Playing
             </Button>
@@ -196,7 +223,7 @@ const Home: React.FC = () => {
       {user && (
         <Button
           onClick={() => setShowOnlineUsers(!showOnlineUsers)}
-          className="fixed bottom-20 right-4 z-40 rounded-full w-14 h-14 shadow-lg"
+          className="fixed bottom-20 right-4 z-40 rounded-full w-14 h-14 shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground"
           size="icon"
         >
           <Users className="h-6 w-6" />

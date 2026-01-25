@@ -21,14 +21,15 @@ const AdSettings: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
+      // Use any to bypass TypeScript checking for tables not in generated types
       const { data, error } = await supabase
-        .from('ad_settings')
+        .from('ad_settings' as any)
         .select('*')
         .limit(1)
         .maybeSingle();
 
       if (error) throw error;
-      setSettings(data);
+      setSettings(data as unknown as AdSettingsType | null);
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -45,8 +46,9 @@ const AdSettings: React.FC = () => {
 
     try {
       setSaving(true);
+      // Use any to bypass TypeScript checking for tables not in generated types
       const { error } = await supabase
-        .from('ad_settings')
+        .from('ad_settings' as any)
         .update({
           ads_enabled: settings.ads_enabled,
           adsense_client_id: settings.adsense_client_id,
@@ -84,7 +86,7 @@ const AdSettings: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 p-4 py-12">
+    <div className="min-h-screen bg-background arcade-grid p-4 py-12">
       <div className="max-w-3xl mx-auto">
         <div className="mb-6">
           <Link to="/">
@@ -95,9 +97,9 @@ const AdSettings: React.FC = () => {
           </Link>
         </div>
 
-        <Card>
+        <Card className="bg-card/90 backdrop-blur-sm border-border">
           <CardHeader>
-            <CardTitle>Advertisement Settings</CardTitle>
+            <CardTitle className="text-foreground">Advertisement Settings</CardTitle>
             <CardDescription>
               Configure how ads are displayed across the platform
             </CardDescription>
