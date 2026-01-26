@@ -4,7 +4,6 @@ import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import GameDifficultyModal from '@/components/GameDifficultyModal';
-import VisitorCounter from '@/components/VisitorCounter';
 import OnlineUsers from '@/components/OnlineUsers';
 import GameInvitations from '@/components/GameInvitations';
 import ProBadge from '@/components/ProBadge';
@@ -22,7 +21,8 @@ import {
   Circle,
   Award,
   Crown,
-  Sparkles
+  Sparkles,
+  BarChart3
 } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -223,15 +223,25 @@ const Home: React.FC = () => {
       {user && (
         <Button
           onClick={() => setShowOnlineUsers(!showOnlineUsers)}
-          className="fixed bottom-20 right-4 z-40 rounded-full w-14 h-14 shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="fixed bottom-16 right-4 z-40 rounded-full w-12 h-12 shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground"
           size="icon"
         >
           <Users className="h-6 w-6" />
         </Button>
       )}
 
-      {/* Visitor Counter */}
-      <VisitorCounter />
+      {/* Statistics Button */}
+      <Link to="/hall-of-fame" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="bg-card/90 backdrop-blur-sm border-border hover:bg-muted text-muted-foreground text-xs px-3 py-1 h-8"
+        >
+          <BarChart3 className="h-3 w-3 mr-1" />
+          View Stats
+        </Button>
+      </Link>
+      
     </div>
   );
 };
