@@ -18,10 +18,30 @@ interface TopPlayer {
   };
 }
 
+// Random fallback players when no data exists
+const generateRandomPlayers = (): TopPlayer[] => {
+  const randomNames = ['ArcadeKing', 'PixelQueen', 'RetroMaster', 'NeonNinja', 'GameWizard'];
+  const avatarColors = ['bg-purple-600', 'bg-pink-600', 'bg-cyan-600', 'bg-yellow-600', 'bg-green-600'];
+  const games = ['sudoku', 'tetris', 'quiz', 'memory', 'math'];
+  
+  return randomNames.map((name, idx) => ({
+    userId: `random-${idx}`,
+    username: name,
+    avatar_url: null,
+    totalScore: Math.floor(Math.random() * 5000) + 1000,
+    gamesPlayed: Math.floor(Math.random() * 50) + 10,
+    bestGame: {
+      game_type: games[Math.floor(Math.random() * games.length)],
+      score: Math.floor(Math.random() * 1000) + 200
+    }
+  })).sort((a, b) => b.totalScore - a.totalScore);
+};
+
 const HallOfFame: React.FC = () => {
   const [topPlayers, setTopPlayers] = useState<TopPlayer[]>([]);
   const [timeFrame, setTimeFrame] = useState<'allTime' | 'monthly' | 'weekly'>('allTime');
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -29,21 +49,26 @@ const HallOfFame: React.FC = () => {
       setLoading(true);
       try {
         const players = await getHallOfFame(timeFrame, 20);
-        setTopPlayers(players);
+        if (players.length === 0) {
+          // No real data, show demo players
+          setTopPlayers(generateRandomPlayers());
+          setIsDemo(true);
+        } else {
+          setTopPlayers(players);
+          setIsDemo(false);
+        }
       } catch (error) {
         console.error('Error fetching hall of fame data:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load hall of fame data",
-          variant: "destructive"
-        });
+        // On error, show demo players
+        setTopPlayers(generateRandomPlayers());
+        setIsDemo(true);
       } finally {
         setLoading(false);
       }
     };
     
     fetchTopPlayers();
-  }, [timeFrame, toast]);
+  }, [timeFrame]);
 
   const getMedalIcon = (index: number) => {
     switch (index) {
@@ -77,7 +102,14 @@ const HallOfFame: React.FC = () => {
               </h1>
               <Trophy className="h-10 w-10 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
             </div>
-            <p className="text-muted-foreground">The legends who conquered the arcade</p>
+            <p className="text-muted-foreground">
+              {isDemo ? 'Demo leaderboard - Play to claim your spot!' : 'The legends who conquered the arcade'}
+            </p>
+            {isDemo && (
+              <span className="inline-block mt-2 px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-xs text-purple-300">
+                Sample Data
+              </span>
+            )}
           </div>
           
           <Tabs 
