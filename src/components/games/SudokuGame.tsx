@@ -133,16 +133,16 @@ const SudokuGame = () => {
       </div>
 
       <div className="max-w-md mx-auto">
-        <div className="grid grid-cols-9 gap-0.5 bg-gray-300 p-0.5 rounded shadow-lg">
+        <div className="grid grid-cols-9 gap-0.5 bg-border p-0.5 rounded shadow-lg">
           {board.map((row, rowIndex) => (
             row.map((cell, colIndex) => (
               <div
                 key={`${rowIndex}-${colIndex}`}
                 className={`aspect-square flex items-center justify-center font-semibold text-lg 
-                  ${(rowIndex === selectedCell?.[0] && colIndex === selectedCell?.[1]) ? 'bg-blue-200' : 'bg-white'} 
-                  ${rowIndex % 3 === 2 && rowIndex < 8 ? 'border-b-2 border-gray-500' : ''}
-                  ${colIndex % 3 === 2 && colIndex < 8 ? 'border-r-2 border-gray-500' : ''}
-                  ${!initialBoard[rowIndex][colIndex] ? 'bg-gray-100 text-black' : 'cursor-pointer'}`}
+                  ${(rowIndex === selectedCell?.[0] && colIndex === selectedCell?.[1]) ? 'bg-primary/30' : 'bg-card'} 
+                  ${rowIndex % 3 === 2 && rowIndex < 8 ? 'border-b-2 border-border' : ''}
+                  ${colIndex % 3 === 2 && colIndex < 8 ? 'border-r-2 border-border' : ''}
+                  ${!initialBoard[rowIndex][colIndex] ? 'bg-muted text-foreground' : 'cursor-pointer text-foreground'}`}
                 onClick={() => handleCellClick(rowIndex, colIndex)}
               >
                 {cell !== 0 ? cell : ''}
@@ -156,7 +156,7 @@ const SudokuGame = () => {
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(num => (
               <button
                 key={num}
-                className="p-2 bg-white border border-gray-300 rounded shadow hover:bg-gray-100"
+                className="p-2 bg-card border border-border rounded shadow hover:bg-muted text-foreground transition-colors"
                 onClick={() => handleNumberInput(num === 0 ? 0 : num)}
               >
                 {num === 0 ? 'Clear' : num}
@@ -166,7 +166,7 @@ const SudokuGame = () => {
         )}
 
         {isComplete && (
-          <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
+          <div className="mt-4 p-4 bg-secondary/20 text-secondary rounded-lg text-center border border-secondary/30">
             <p className="font-bold">Great job! Sudoku complete!</p>
             <button 
               className="mt-2 bg-game-purple text-white px-4 py-2 rounded hover:bg-game-darkpurple"

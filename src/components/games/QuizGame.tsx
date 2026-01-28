@@ -217,13 +217,13 @@ const QuizGame: React.FC = () => {
       <div>
         <div className="flex justify-between items-center mb-4">
           <span className="text-sm">Question {currentQuestionIndex + 1}/{availableQuestions.length}</span>
-          <span className={`px-3 py-1 rounded-full text-white font-bold ${timeLeft < 5 ? 'bg-red-500 animate-pulse' : 'bg-blue-500'}`}>
+          <span className={`px-3 py-1 rounded-full font-bold ${timeLeft < 5 ? 'bg-destructive text-destructive-foreground animate-pulse' : 'bg-primary text-primary-foreground'}`}>
             {timeLeft}s
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-          <h3 className="text-lg font-semibold mb-4">{currentQuestion.question}</h3>
+        <div className="bg-card p-4 rounded-lg shadow-md mb-4 border border-border">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">{currentQuestion.question}</h3>
           
           <div className="space-y-2">
             {currentQuestion.options.map((option, index) => (
@@ -232,11 +232,11 @@ const QuizGame: React.FC = () => {
                 className={`w-full text-left p-3 rounded-lg border transition-colors
                   ${selectedAnswer === index 
                     ? index === currentQuestion.correctAnswer 
-                      ? 'bg-green-100 border-green-500' 
-                      : 'bg-red-100 border-red-500' 
+                      ? 'bg-secondary/20 border-secondary' 
+                      : 'bg-destructive/20 border-destructive' 
                     : isAnswered && index === currentQuestion.correctAnswer 
-                      ? 'bg-green-100 border-green-500' 
-                      : 'bg-white border-gray-300 hover:bg-gray-50'}`}
+                      ? 'bg-secondary/20 border-secondary' 
+                      : 'bg-card border-border hover:bg-muted text-foreground'}`}
                 onClick={() => handleAnswerSelect(index)}
                 disabled={isAnswered}
               >
@@ -247,7 +247,7 @@ const QuizGame: React.FC = () => {
         </div>
 
         {isAnswered && (
-          <div className={`p-3 rounded-lg text-center ${selectedAnswer === currentQuestion.correctAnswer ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+          <div className={`p-3 rounded-lg text-center ${selectedAnswer === currentQuestion.correctAnswer ? 'bg-secondary/20 text-secondary' : 'bg-destructive/20 text-destructive'}`}>
             {selectedAnswer === currentQuestion.correctAnswer 
               ? 'Correct! Well done!' 
               : `Wrong. The correct answer is: ${currentQuestion.options[currentQuestion.correctAnswer]}`}

@@ -77,12 +77,12 @@ const Leaderboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-background arcade-grid">
       <AppHeader />
       
       <main className="container mx-auto px-4 pt-20 pb-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-6 text-game-purple">Leaderboard</h1>
+          <h1 className="text-3xl font-bold text-center mb-6 text-primary neon-text">Leaderboard</h1>
           
           <Tabs 
             defaultValue="all" 
@@ -91,7 +91,7 @@ const Leaderboard: React.FC = () => {
             className="w-full"
           >
             <div className="flex justify-center mb-6">
-              <TabsList className="bg-white/70">
+              <TabsList className="bg-card/90 border border-border">
                 <TabsTrigger value="all">All Games</TabsTrigger>
                 <TabsTrigger value="sudoku">Sudoku</TabsTrigger>
                 <TabsTrigger value="tetris">Tetris</TabsTrigger>
@@ -105,9 +105,9 @@ const Leaderboard: React.FC = () => {
             </div>
 
             {user && userScores.length > 0 && (
-              <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                  <Star className="h-5 w-5 text-yellow-500" />
+              <div className="bg-card/90 backdrop-blur-sm rounded-lg shadow-md p-4 mb-6 border border-border">
+                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2 text-foreground">
+                  <Star className="h-5 w-5 text-primary" />
                   Your Best Scores
                 </h2>
                 <div className="overflow-x-auto">
@@ -126,7 +126,7 @@ const Leaderboard: React.FC = () => {
                             {gameLabels[score.game_type as GameType] || score.game_type}
                           </TableCell>
                           <TableCell className="text-right">{score.score}</TableCell>
-                          <TableCell className="text-right text-sm text-gray-500">
+                          <TableCell className="text-right text-sm text-muted-foreground">
                             {new Date(score.created_at).toLocaleDateString()}
                           </TableCell>
                         </TableRow>
@@ -138,17 +138,17 @@ const Leaderboard: React.FC = () => {
             )}
 
             <TabsContent value={activeTab} className="mt-0">
-              <div className="bg-white rounded-lg shadow-md p-4">
-                <h2 className="text-xl font-semibold mb-3">
+              <div className="bg-card/90 backdrop-blur-sm rounded-lg shadow-md p-4 border border-border">
+                <h2 className="text-xl font-semibold mb-3 text-foreground">
                   {activeTab === 'all' ? 'Top Scores Across All Games' : `Top ${gameLabels[activeTab as GameType]} Scores`}
                 </h2>
                 
                 {loading ? (
                   <div className="flex justify-center py-10">
-                    <Loader2 className="h-10 w-10 animate-spin text-game-purple" />
+                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
                   </div>
                 ) : leaderboard.length === 0 ? (
-                  <p className="text-center py-10 text-gray-500">No scores recorded yet.</p>
+                  <p className="text-center py-10 text-muted-foreground">No scores recorded yet.</p>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
@@ -165,7 +165,7 @@ const Leaderboard: React.FC = () => {
                         {leaderboard.map((score, index) => (
                           <TableRow 
                             key={score.id} 
-                            className={isUserScore(score) ? "bg-purple-50" : ""}
+                            className={isUserScore(score) ? "bg-primary/10" : ""}
                           >
                             <TableCell className="font-medium">
                               <div className="flex items-center justify-center">
@@ -175,13 +175,13 @@ const Leaderboard: React.FC = () => {
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <Avatar className="h-6 w-6">
-                                  <AvatarFallback className="bg-game-purple text-white text-xs">
+                                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                                     {(score.username?.[0] || 'A').toUpperCase()}
                                   </AvatarFallback>
                                 </Avatar>
-                                <span>{score.username || 'Anonymous'}</span>
+                                <span className="text-foreground">{score.username || 'Anonymous'}</span>
                                 {isUserScore(score) && (
-                                  <span className="text-xs bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded-full">
+                                  <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
                                     You
                                   </span>
                                 )}
@@ -192,10 +192,10 @@ const Leaderboard: React.FC = () => {
                                 {gameLabels[score.game_type as GameType] || score.game_type}
                               </TableCell>
                             )}
-                            <TableCell className="text-right font-semibold">
+                            <TableCell className="text-right font-semibold text-foreground">
                               {score.score}
                             </TableCell>
-                            <TableCell className="text-right text-sm text-gray-500">
+                            <TableCell className="text-right text-sm text-muted-foreground">
                               {new Date(score.created_at).toLocaleDateString()}
                             </TableCell>
                           </TableRow>

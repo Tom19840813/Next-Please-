@@ -273,7 +273,7 @@ const TetrisGame: React.FC = () => {
     
     return (
       <div 
-        className="mx-auto border-2 border-gray-300 bg-white" 
+        className="mx-auto border-2 border-border bg-card" 
         style={{ width: BOARD_WIDTH * BLOCK_SIZE, height: BOARD_HEIGHT * BLOCK_SIZE }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -287,9 +287,9 @@ const TetrisGame: React.FC = () => {
                 style={{
                   width: BLOCK_SIZE,
                   height: BLOCK_SIZE,
-                  backgroundColor: cell || '#f9fafb',
-                  borderRight: '1px solid #e5e7eb',
-                  borderBottom: '1px solid #e5e7eb'
+                  backgroundColor: cell || 'hsl(var(--muted))',
+                  borderRight: '1px solid hsl(var(--border))',
+                  borderBottom: '1px solid hsl(var(--border))'
                 }}
               />
             ))}
@@ -307,8 +307,8 @@ const TetrisGame: React.FC = () => {
     const color = nextPiece.color;
     
     return (
-      <div className="bg-white p-2 rounded border border-gray-300">
-        <div className="mb-1 text-xs text-center text-gray-500">Next</div>
+      <div className="bg-card p-2 rounded border border-border">
+        <div className="mb-1 text-xs text-center text-muted-foreground">Next</div>
         <div className="grid gap-0.5" style={{ gridTemplateRows: `repeat(${shape.length}, ${BLOCK_SIZE - 5}px)` }}>
           {shape.map((row, y) => (
             <div key={y} className="flex gap-0.5">

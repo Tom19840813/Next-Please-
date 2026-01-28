@@ -186,18 +186,18 @@ const BalloonPop: React.FC = () => {
   };
 
   return (
-    <div className="game-card bg-gradient-to-br from-indigo-50 to-purple-50 p-4 flex flex-col">
+    <div className="game-card bg-card p-4 flex flex-col">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-darkpurple">Balloon Pop</h2>
-        <p className="text-sm text-gray-500">Pop balloons to score points! Avoid the bombs.</p>
+        <h2 className="text-2xl font-bold text-primary">Balloon Pop</h2>
+        <p className="text-sm text-muted-foreground">Pop balloons to score points! Avoid the bombs.</p>
       </div>
 
       {!gameActive && score === 0 && (
         <div className="flex flex-col items-center justify-center flex-grow">
-          <p className="mb-4 text-center">Pop as many balloons as you can in 60 seconds!</p>
+          <p className="mb-4 text-center text-foreground">Pop as many balloons as you can in 60 seconds!</p>
           <button
             onClick={startGame}
-            className="bg-game-darkpurple text-white px-8 py-3 rounded-lg text-lg font-bold hover:bg-purple-700 transition-colors"
+            className="bg-primary text-primary-foreground px-8 py-3 rounded-lg text-lg font-bold hover:bg-primary/80 transition-colors"
           >
             Start Game
           </button>
@@ -206,12 +206,12 @@ const BalloonPop: React.FC = () => {
 
       {!gameActive && score > 0 && (
         <div className="flex flex-col items-center justify-center flex-grow">
-          <h3 className="text-xl font-bold mb-2">Game Over!</h3>
-          <p className="text-lg mb-1">Final Score: <span className="font-bold">{score}</span></p>
-          <p className="mb-4">You reached level {level}!</p>
+          <h3 className="text-xl font-bold mb-2 text-foreground">Game Over!</h3>
+          <p className="text-lg mb-1 text-foreground">Final Score: <span className="font-bold">{score}</span></p>
+          <p className="mb-4 text-muted-foreground">You reached level {level}!</p>
           <button
             onClick={startGame}
-            className="bg-game-darkpurple text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/80 transition-colors"
           >
             Play Again
           </button>
@@ -221,27 +221,27 @@ const BalloonPop: React.FC = () => {
       {gameActive && (
         <>
           <div className="flex justify-between mb-4">
-            <div className="px-4 py-1 bg-white rounded-full shadow flex items-center gap-1">
-              <Timer size={16} />
-              <span className="text-sm font-semibold">{timeLeft}s</span>
+            <div className="px-4 py-1 bg-card rounded-full shadow border border-border flex items-center gap-1">
+              <Timer size={16} className="text-foreground" />
+              <span className="text-sm font-semibold text-foreground">{timeLeft}s</span>
             </div>
-            <div className="px-4 py-1 bg-white rounded-full shadow">
-              <span className="text-sm font-semibold">Level: {level}</span>
+            <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+              <span className="text-sm font-semibold text-foreground">Level: {level}</span>
             </div>
-            <div className="px-4 py-1 bg-white rounded-full shadow">
-              <span className="text-sm font-semibold">Score: {score}</span>
+            <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+              <span className="text-sm font-semibold text-foreground">Score: {score}</span>
             </div>
           </div>
 
           {combo > 1 && (
-            <div className="absolute top-16 right-4 bg-game-purple text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse-light z-10">
+            <div className="absolute top-16 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-bold animate-pulse-light z-10">
               {combo}x Combo!
             </div>
           )}
 
           <div 
             ref={gameAreaRef}
-            className="flex-grow relative bg-gradient-to-b from-blue-50 to-indigo-50 rounded-xl overflow-hidden"
+            className="flex-grow relative bg-muted/30 rounded-xl overflow-hidden border border-border"
             style={{ minHeight: "300px" }}
           >
             {balloons.map((balloon) => (
@@ -250,7 +250,7 @@ const BalloonPop: React.FC = () => {
                 onClick={() => popBalloon(balloon.id, balloon.type, balloon.points)}
                 className={`absolute rounded-full flex items-center justify-center cursor-pointer transform hover:scale-105 transition-transform ${
                   balloon.type === 'normal' ? balloon.color :
-                  balloon.type === 'bonus' ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white'
+                  balloon.type === 'bonus' ? 'bg-secondary text-secondary-foreground' : 'bg-destructive text-destructive-foreground'
                 }`}
                 style={{
                   width: `${balloon.size}px`,

@@ -14,7 +14,7 @@ const Index: React.FC = () => {
   const initialDifficulty = (searchParams.get('difficulty') as DifficultyLevel) || 'medium';
   
   return <GameProvider initialGame={initialGame} initialDifficulty={initialDifficulty}>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+      <div className="min-h-screen bg-background arcade-grid">
         <AppHeader />
         
         <div className="pt-14 h-screen">
@@ -22,8 +22,8 @@ const Index: React.FC = () => {
         </div>
         
         <div className="absolute bottom-20 left-0 right-0 z-50 text-center text-xs">
-          <div className="inline-block bg-black/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 shadow-lg">
-            <span className="text-white font-medium">Swipe to switch games • New content every play</span>
+          <div className="inline-block bg-card/95 backdrop-blur-md px-4 py-1.5 rounded-full border border-border shadow-lg neon-border">
+            <span className="text-foreground font-medium">Swipe to switch games • New content every play</span>
           </div>
         </div>
 

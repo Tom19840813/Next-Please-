@@ -147,23 +147,23 @@ const EmojiMatch: React.FC = () => {
   return (
     <div className="game-card bg-gradient-to-br from-white to-pink-50 p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-pink">Emoji Match</h2>
-        <p className="text-sm text-gray-500">Match all the emoji pairs before time runs out!</p>
+        <h2 className="text-2xl font-bold text-accent">Emoji Match</h2>
+        <p className="text-sm text-muted-foreground">Match all the emoji pairs before time runs out!</p>
       </div>
 
       <div className="max-w-md mx-auto">
         <div className="flex justify-between mb-4">
-          <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+            <span className="text-sm font-semibold text-foreground">
               Pairs: {matchedPairs}/{emojis.length}
             </span>
           </div>
-          <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+            <span className="text-sm font-semibold text-foreground">
               Moves: {moves}
             </span>
           </div>
-          <div className={`px-4 py-1 rounded-full shadow ${timeLeft < 10 && gameActive ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-white'}`}>
+          <div className={`px-4 py-1 rounded-full shadow border ${timeLeft < 10 && gameActive ? 'bg-destructive/20 text-destructive border-destructive/30 animate-pulse' : 'bg-card border-border text-foreground'}`}>
             <span className="text-sm font-semibold">
               Time: {formatTime(timeLeft)}
             </span>
@@ -176,8 +176,8 @@ const EmojiMatch: React.FC = () => {
               key={card.id}
               className={`aspect-square flex items-center justify-center text-2xl rounded-lg cursor-pointer transition-transform duration-300 ${
                 card.isFlipped || card.isMatched 
-                  ? 'bg-white shadow-md rotate-y-180' 
-                  : 'bg-game-pink text-transparent rotate-y-0'
+                  ? 'bg-card shadow-md rotate-y-180 border border-border' 
+                  : 'bg-accent text-transparent rotate-y-0'
               } ${card.isFlipped && !card.isMatched ? 'animate-pulse-light' : ''}`}
               onClick={() => handleCardClick(card.id)}
               style={{ perspective: '1000px' }}
@@ -188,11 +188,11 @@ const EmojiMatch: React.FC = () => {
         </div>
 
         {gameComplete && (
-          <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
+          <div className="mt-4 p-4 bg-secondary/20 text-secondary rounded-lg text-center border border-secondary/30">
             <p className="font-bold">Congratulations!</p>
             <p>You've matched all pairs in {moves} moves with {formatTime(timeLeft)} remaining.</p>
             <button
-              className="mt-2 bg-game-pink text-white px-4 py-2 rounded-lg hover:bg-pink-600"
+              className="mt-2 bg-accent text-accent-foreground px-4 py-2 rounded-lg hover:bg-accent/80"
               onClick={initializeGame}
             >
               Play Again
