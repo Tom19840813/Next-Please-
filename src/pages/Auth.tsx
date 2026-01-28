@@ -65,8 +65,8 @@ const Auth: React.FC = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-background arcade-grid px-4">
+      <Card className="w-full max-w-md bg-card/90 backdrop-blur-sm border-border">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Welcome</CardTitle>
           <CardDescription className="text-center">
@@ -185,7 +185,7 @@ const Auth: React.FC = () => {
             </TabsContent>
           </Tabs>
         </CardContent>
-        <CardFooter className="flex justify-center text-sm text-gray-500">
+        <CardFooter className="flex justify-center text-sm text-muted-foreground">
           <p>
             {activeTab === "login"
               ? "Don't have an account? Click on 'Sign Up'"

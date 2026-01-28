@@ -15,19 +15,19 @@ const AppHeader: React.FC = () => {
   const { isPro } = useSubscription();
   
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 px-4 py-3 bg-gradient-to-r from-game-purple to-game-blue flex items-center justify-between">
+    <header className="absolute top-0 left-0 right-0 z-50 px-4 py-3 bg-card/95 backdrop-blur-sm border-b border-border flex items-center justify-between">
       <Link to="/">
-        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 text-lg font-bold">
+        <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted text-lg font-bold neon-text">
           <Home className="h-4 w-4 mr-2" />
           Next Please!
         </Button>
       </Link>
       
       <div className="flex gap-2 items-center">
-        <span className="text-white text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">
+        <span className="text-foreground text-sm bg-muted px-3 py-1 rounded-full border border-border">
           8 Games
         </span>
-        <span className="hidden sm:block text-white text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">
+        <span className="hidden sm:block text-muted-foreground text-xs bg-muted px-2 py-1 rounded-full border border-border">
           Swipe to change games
         </span>
         
@@ -36,21 +36,21 @@ const AppHeader: React.FC = () => {
             {isPro && <ProBadge size="sm" />}
             {!isPro && (
               <Link to="/upgrade">
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 border border-white/30">
-                  <Crown className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted border border-primary/50">
+                  <Crown className="h-4 w-4 text-primary" />
                   <span className="hidden sm:inline ml-1">Go Pro</span>
                 </Button>
               </Link>
             )}
             <Link to="/leaderboard">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Trophy className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted">
+                <Trophy className="h-4 w-4 text-secondary" />
                 <span className="hidden sm:inline ml-1">Leaderboard</span>
               </Button>
             </Link>
             <Link to="/hall-of-fame">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Award className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted">
+                <Award className="h-4 w-4 text-accent" />
                 <span className="hidden sm:inline ml-1">Hall of Fame</span>
               </Button>
             </Link>

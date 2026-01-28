@@ -139,7 +139,7 @@
 
 @layer components {
   .game-card {
-    @apply relative w-full h-full rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white;
+    @apply relative w-full h-full rounded-2xl overflow-hidden shadow-lg flex flex-col bg-card;
     transform: translateZ(0);
   }
   

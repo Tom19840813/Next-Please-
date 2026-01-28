@@ -282,37 +282,37 @@ const SpeedClick: React.FC = () => {
   }, []);
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-indigo-50 flex flex-col h-full">
+    <div className="game-card bg-card flex flex-col h-full">
       <div className="text-center p-4">
-        <h2 className="text-2xl font-bold text-game-blue">Speed Click</h2>
-        <p className="text-sm text-gray-500">Click targets as fast as you can!</p>
+        <h2 className="text-2xl font-bold text-secondary">Speed Click</h2>
+        <p className="text-sm text-muted-foreground">Click targets as fast as you can!</p>
       </div>
       
       <div className="flex justify-between px-4 mb-2">
-        <div className="px-4 py-1 bg-white rounded-full shadow flex items-center gap-2">
-          <Timer size={16} />
-          <span className={`text-sm font-semibold ${timeLeft < 5 && gameActive ? 'text-red-600' : ''}`}>
+        <div className="px-4 py-1 bg-card rounded-full shadow border border-border flex items-center gap-2">
+          <Timer size={16} className="text-foreground" />
+          <span className={`text-sm font-semibold ${timeLeft < 5 && gameActive ? 'text-destructive' : 'text-foreground'}`}>
             {formatTime(timeLeft)}
           </span>
         </div>
         
-        <div className="px-4 py-1 bg-white rounded-full shadow">
-          <span className="text-sm font-semibold">Level {level}</span>
+        <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+          <span className="text-sm font-semibold text-foreground">Level {level}</span>
         </div>
         
-        <div className="px-4 py-1 bg-white rounded-full shadow">
-          <span className="text-sm font-semibold">Score: {score}</span>
+        <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+          <span className="text-sm font-semibold text-foreground">Score: {score}</span>
         </div>
       </div>
       
       <div className="flex items-center justify-center px-4 mb-2">
-        <div className="px-4 py-1 bg-white rounded-full shadow flex items-center gap-1">
-          <span className="text-xs text-gray-500">Combo:</span>
+        <div className="px-4 py-1 bg-card rounded-full shadow border border-border flex items-center gap-1">
+          <span className="text-xs text-muted-foreground">Combo:</span>
           <div className="flex">
             {[...Array(Math.min(combo, 5))].map((_, i) => (
-              <Target key={i} size={14} className="text-yellow-500 fill-yellow-500" />
+              <Target key={i} size={14} className="text-primary fill-primary" />
             ))}
-            {combo > 5 && <span className="text-xs font-bold">+{combo - 5}</span>}
+            {combo > 5 && <span className="text-xs font-bold text-foreground">+{combo - 5}</span>}
           </div>
         </div>
       </div>
@@ -376,30 +376,30 @@ const SpeedClick: React.FC = () => {
       
       {!gameActive && score > 0 && (
         <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <h3 className="text-xl font-bold mb-4">Game Over!</h3>
+          <h3 className="text-xl font-bold mb-4 text-foreground">Game Over!</h3>
           
-          <div className="w-full max-w-xs bg-white rounded-lg shadow-md p-4 mb-4">
+          <div className="w-full max-w-xs bg-card rounded-lg shadow-md p-4 mb-4 border border-border">
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="text-gray-600">Final Score:</div>
-              <div className="font-bold text-right">{score}</div>
+              <div className="text-muted-foreground">Final Score:</div>
+              <div className="font-bold text-right text-foreground">{score}</div>
               
-              <div className="text-gray-600">Targets Hit:</div>
-              <div className="font-bold text-right">{gameStats.targetsClicked}</div>
+              <div className="text-muted-foreground">Targets Hit:</div>
+              <div className="font-bold text-right text-foreground">{gameStats.targetsClicked}</div>
               
-              <div className="text-gray-600">Accuracy:</div>
-              <div className="font-bold text-right">{gameStats.accuracy.toFixed(1)}%</div>
+              <div className="text-muted-foreground">Accuracy:</div>
+              <div className="font-bold text-right text-foreground">{gameStats.accuracy.toFixed(1)}%</div>
               
-              <div className="text-gray-600">Max Combo:</div>
-              <div className="font-bold text-right">{maxCombo}</div>
+              <div className="text-muted-foreground">Max Combo:</div>
+              <div className="font-bold text-right text-foreground">{maxCombo}</div>
               
-              <div className="text-gray-600">Level Reached:</div>
-              <div className="font-bold text-right">{level}</div>
+              <div className="text-muted-foreground">Level Reached:</div>
+              <div className="font-bold text-right text-foreground">{level}</div>
             </div>
           </div>
           
           <button
             onClick={startGame}
-            className="bg-game-blue hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-bold"
+            className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-2 rounded-lg font-bold"
           >
             Play Again
           </button>

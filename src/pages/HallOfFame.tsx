@@ -72,9 +72,9 @@ const HallOfFame: React.FC = () => {
 
   const getMedalIcon = (index: number) => {
     switch (index) {
-      case 0: return <Crown className="h-6 w-6 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]" />;
-      case 1: return <Medal className="h-5 w-5 text-gray-300 drop-shadow-[0_0_6px_rgba(209,213,219,0.6)]" />;
-      case 2: return <Medal className="h-5 w-5 text-amber-600 drop-shadow-[0_0_6px_rgba(217,119,6,0.6)]" />;
+      case 0: return <Crown className="h-6 w-6 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />;
+      case 1: return <Medal className="h-5 w-5 text-muted-foreground drop-shadow-[0_0_6px_hsl(var(--muted-foreground)/0.6)]" />;
+      case 2: return <Medal className="h-5 w-5 text-accent drop-shadow-[0_0_6px_hsl(var(--accent)/0.6)]" />;
       default: return <span className="text-sm font-bold text-muted-foreground">{index + 1}</span>;
     }
   };
@@ -88,7 +88,7 @@ const HallOfFame: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="min-h-screen bg-background arcade-grid">
       <AppHeader />
       
       <main className="container mx-auto px-4 pt-24 pb-10">
@@ -96,17 +96,17 @@ const HallOfFame: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-2">
-              <Trophy className="h-10 w-10 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+              <Trophy className="h-10 w-10 text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.8)]" />
+              <h1 className="text-4xl font-bold text-foreground neon-text">
                 Hall of Fame
               </h1>
-              <Trophy className="h-10 w-10 text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]" />
+              <Trophy className="h-10 w-10 text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.8)]" />
             </div>
             <p className="text-muted-foreground">
               {isDemo ? 'Demo leaderboard - Play to claim your spot!' : 'The legends who conquered the arcade'}
             </p>
             {isDemo && (
-              <span className="inline-block mt-2 px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-xs text-purple-300">
+              <span className="inline-block mt-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-xs text-primary">
                 Sample Data
               </span>
             )}
@@ -119,24 +119,24 @@ const HallOfFame: React.FC = () => {
             className="w-full"
           >
             <div className="flex justify-center mb-6">
-              <TabsList className="bg-black/40 border border-purple-500/30">
-                <TabsTrigger value="allTime" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+              <TabsList className="bg-card/90 border border-border">
+                <TabsTrigger value="allTime" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <Star className="h-4 w-4 mr-1" /> All Time
                 </TabsTrigger>
-                <TabsTrigger value="monthly" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                <TabsTrigger value="monthly" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <Flame className="h-4 w-4 mr-1" /> Monthly
                 </TabsTrigger>
-                <TabsTrigger value="weekly" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                <TabsTrigger value="weekly" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <Trophy className="h-4 w-4 mr-1" /> Weekly
                 </TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value={timeFrame} className="mt-0">
-              <div className="bg-black/40 backdrop-blur-sm rounded-xl border border-purple-500/30 p-6">
+              <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-6 neon-border">
                 {loading ? (
                   <div className="flex flex-col items-center justify-center py-16">
-                    <Loader2 className="h-12 w-12 animate-spin text-purple-400 mb-4" />
+                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                     <p className="text-muted-foreground">Loading champions...</p>
                   </div>
                 ) : topPlayers.length === 0 ? (
@@ -159,25 +159,25 @@ const HallOfFame: React.FC = () => {
                               key={player.userId}
                               className={`flex flex-col items-center p-4 rounded-xl ${
                                 isFirst 
-                                  ? 'bg-gradient-to-b from-yellow-500/20 to-transparent border-2 border-yellow-500/50 order-2 -mt-4' 
+                                  ? 'bg-gradient-to-b from-primary/20 to-transparent border-2 border-primary/50 order-2 -mt-4' 
                                   : idx === 1 
-                                    ? 'bg-gradient-to-b from-gray-400/20 to-transparent border border-gray-400/30 order-1'
-                                    : 'bg-gradient-to-b from-amber-600/20 to-transparent border border-amber-600/30 order-3'
+                                    ? 'bg-gradient-to-b from-muted/40 to-transparent border border-muted order-1'
+                                    : 'bg-gradient-to-b from-accent/20 to-transparent border border-accent/30 order-3'
                               }`}
                             >
                               <div className="mb-2">{getMedalIcon(idx)}</div>
                               <Avatar className={`${isFirst ? 'h-16 w-16' : 'h-12 w-12'} border-2 ${
-                                isFirst ? 'border-yellow-400' : idx === 1 ? 'border-gray-300' : 'border-amber-600'
+                                isFirst ? 'border-primary' : idx === 1 ? 'border-muted-foreground' : 'border-accent'
                               }`}>
                                 {player.avatar_url && <AvatarImage src={player.avatar_url} />}
-                                <AvatarFallback className="bg-purple-600 text-white font-bold">
+                                <AvatarFallback className="bg-primary text-primary-foreground font-bold">
                                   {(player.username?.[0] || 'A').toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
-                              <p className={`font-bold mt-2 ${isFirst ? 'text-lg text-yellow-400' : 'text-white'}`}>
+                              <p className={`font-bold mt-2 ${isFirst ? 'text-lg text-primary' : 'text-foreground'}`}>
                                 {player.username}
                               </p>
-                              <p className={`font-mono ${isFirst ? 'text-2xl text-yellow-300' : 'text-xl text-purple-300'}`}>
+                              <p className={`font-mono ${isFirst ? 'text-2xl text-primary' : 'text-xl text-secondary'}`}>
                                 {player.totalScore.toLocaleString()}
                               </p>
                               <p className="text-xs text-muted-foreground">{player.gamesPlayed} games</p>
@@ -191,23 +191,23 @@ const HallOfFame: React.FC = () => {
                     {topPlayers.slice(3).map((player, idx) => (
                       <div 
                         key={player.userId}
-                        className="flex items-center gap-4 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
+                        className="flex items-center gap-4 p-3 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors border border-border"
                       >
                         <div className="w-8 flex justify-center">
                           {getMedalIcon(idx + 3)}
                         </div>
-                        <Avatar className="h-10 w-10 border border-purple-500/50">
+                        <Avatar className="h-10 w-10 border border-primary/50">
                           {player.avatar_url && <AvatarImage src={player.avatar_url} />}
-                          <AvatarFallback className="bg-purple-600 text-white text-sm">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                             {(player.username?.[0] || 'A').toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <p className="font-semibold text-white">{player.username}</p>
+                          <p className="font-semibold text-foreground">{player.username}</p>
                           <p className="text-xs text-muted-foreground">{player.gamesPlayed} games played</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-mono text-lg text-purple-300">{player.totalScore.toLocaleString()}</p>
+                          <p className="font-mono text-lg text-secondary">{player.totalScore.toLocaleString()}</p>
                           {player.bestGame && (
                             <p className="text-xs text-muted-foreground">
                               Best: {getGameEmoji(player.bestGame.game_type)} {player.bestGame.score}

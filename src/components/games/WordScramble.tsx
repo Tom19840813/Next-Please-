@@ -269,51 +269,51 @@ const WordScramble: React.FC = () => {
 
       <div className="flex-grow flex flex-col max-w-md mx-auto w-full">
         <div className="flex justify-between mb-4">
-          <div className="px-4 py-1 bg-white rounded-full shadow flex items-center gap-1">
-            <Timer size={16} />
-            <span className="text-sm font-semibold">
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border flex items-center gap-1">
+            <Timer size={16} className="text-foreground" />
+            <span className="text-sm font-semibold text-foreground">
               {gameState.timeLeft}s
             </span>
           </div>
-          <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+            <span className="text-sm font-semibold text-foreground">
               Round: {round}
             </span>
           </div>
-          <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+            <span className="text-sm font-semibold text-foreground">
               Score: {gameState.score}
             </span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 shadow-md mb-4">
+        <div className="bg-card rounded-xl p-5 shadow-md mb-4 border border-border">
           <div className="flex justify-between items-center mb-2">
-            <p className="text-sm font-medium text-gray-500">Scrambled Word:</p>
+            <p className="text-sm font-medium text-muted-foreground">Scrambled Word:</p>
             <button
               onClick={useHint}
               disabled={gameState.hintsAvailable <= 0 || !gameState.gameActive}
               className={`text-xs px-3 py-1 rounded-full ${
                 gameState.hintsAvailable > 0 && gameState.gameActive
-                  ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  ? 'bg-primary/20 text-primary hover:bg-primary/30'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
             >
               Hint ({gameState.hintsAvailable})
             </button>
           </div>
           
-          <div className="text-2xl font-bold text-center mb-6 tracking-wider">
+          <div className="text-2xl font-bold text-center mb-6 tracking-wider text-foreground">
             {gameState.scrambledWord}
           </div>
           
           <div className="mb-4">
-            <p className="text-sm font-medium text-gray-500 mb-2">Your Answer:</p>
+            <p className="text-sm font-medium text-muted-foreground mb-2">Your Answer:</p>
             <div className="flex justify-center gap-2 min-h-[50px]">
               {inputLetters.map((letter, index) => (
                 <div 
                   key={index}
-                  className="w-8 h-10 border-2 border-purple-300 rounded flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-red-50"
+                  className="w-8 h-10 border-2 border-primary/50 rounded flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-destructive/10 text-foreground bg-card"
                   onClick={() => gameState.gameActive && deselectLetter(index)}
                 >
                   {letter}

@@ -215,25 +215,25 @@ const MathGame: React.FC = () => {
     <div className="game-card bg-gradient-to-br from-white to-blue-50 p-4">
       <div className="text-center mb-4">
         <h2 className="text-2xl font-bold text-game-blue">Math Challenge - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
-        <p className="text-sm text-gray-500">Solve math problems quickly!</p>
+        <p className="text-sm text-muted-foreground">Solve math problems quickly!</p>
       </div>
 
       <div className="max-w-md mx-auto">
         <div className="flex justify-between mb-4">
-          <div className="px-4 py-1 bg-white rounded-full shadow">
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
             <span className="text-sm font-semibold text-secondary">Level: {level}</span>
           </div>
-          <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">Score: {score}</span>
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+            <span className="text-sm font-semibold text-foreground">Score: {score}</span>
           </div>
-          <div className="px-4 py-1 bg-white rounded-full shadow">
-            <span className="text-sm font-semibold">Time: {timeLeft}s</span>
+          <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
+            <span className="text-sm font-semibold text-foreground">Time: {timeLeft}s</span>
           </div>
         </div>
 
         {problem && (
-          <div className={`bg-white rounded-xl p-6 shadow-md ${feedback === 'correct' ? 'bg-green-50' : feedback === 'wrong' ? 'bg-red-50' : ''} transition-colors duration-300`}>
-            <div className="text-4xl font-bold text-center mb-6">
+          <div className={`bg-card rounded-xl p-6 shadow-md border border-border ${feedback === 'correct' ? 'bg-secondary/10 border-secondary/30' : feedback === 'wrong' ? 'bg-destructive/10 border-destructive/30' : ''} transition-colors duration-300`}>
+            <div className="text-4xl font-bold text-center mb-6 text-foreground">
               {problem.num1} {problem.operation} {problem.num2} = ?
             </div>
             
@@ -244,10 +244,10 @@ const MathGame: React.FC = () => {
                   onClick={() => checkAnswer(option)}
                   className={`py-3 text-2xl font-bold rounded-lg ${
                     feedback === null
-                      ? 'bg-white hover:bg-blue-50 border border-blue-200'
+                      ? 'bg-card hover:bg-muted border border-border text-foreground'
                       : option === problem.answer
-                      ? 'bg-green-100 border border-green-300'
-                      : 'bg-white border border-gray-200'
+                      ? 'bg-secondary/20 border border-secondary/50 text-foreground'
+                      : 'bg-card border border-border text-foreground'
                   } transition-colors`}
                   disabled={feedback !== null}
                 >
