@@ -76,21 +76,21 @@ const GameDifficultyModal: React.FC<GameDifficultyModalProps> = ({
       
       {/* Modal Content */}
       <div className={`relative w-full max-w-2xl mx-4 mb-4 ${getGameSpecificAnimation()} ${getGameBackgroundPattern()}`}>
-        <Card className="bg-white/95 backdrop-blur-md border-0 shadow-2xl">
+        <Card className="bg-card/95 backdrop-blur-md border border-border shadow-2xl">
           <CardHeader className="text-center pb-4">
             <div className="flex items-center justify-between mb-2">
               <div></div>
-              <h2 className="text-2xl font-bold text-gray-800">{gameName}</h2>
+              <h2 className="text-2xl font-bold text-foreground">{gameName}</h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <p className="text-gray-600">Choose your difficulty level</p>
+            <p className="text-muted-foreground">Choose your difficulty level</p>
           </CardHeader>
           
           <CardContent className="px-6 pb-6">
@@ -101,36 +101,36 @@ const GameDifficultyModal: React.FC<GameDifficultyModalProps> = ({
                 return (
                   <Card 
                     key={difficulty}
-                    className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-2 hover:border-primary/50"
+                    className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-2 border-border hover:border-primary/50 bg-muted/50"
                     onClick={() => handleDifficultySelect(difficulty)}
                   >
                     <CardHeader className="pb-2">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-full text-white flex items-center justify-center`} style={{ backgroundColor: gameColor }}>
+                        <div className={`p-2 rounded-full text-primary-foreground flex items-center justify-center`} style={{ backgroundColor: gameColor }}>
                           {getDifficultyIcon(difficulty)}
                         </div>
                         <div>
-                          <CardTitle className="text-lg">{config.label}</CardTitle>
-                          <CardDescription className="text-sm">{config.description}</CardDescription>
+                          <CardTitle className="text-lg text-foreground">{config.label}</CardTitle>
+                          <CardDescription className="text-sm text-muted-foreground">{config.description}</CardDescription>
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Time:</span>
-                          <span className={config.timeMultiplier > 1 ? 'text-green-600' : config.timeMultiplier < 1 ? 'text-red-600' : 'text-yellow-600'}>
+                          <span className="text-muted-foreground">Time:</span>
+                          <span className={config.timeMultiplier > 1 ? 'text-green-400' : config.timeMultiplier < 1 ? 'text-red-400' : 'text-yellow-400'}>
                             {config.timeMultiplier > 1 ? '+' : ''}{Math.round((config.timeMultiplier - 1) * 100)}%
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Score Bonus:</span>
-                          <span className="text-blue-600">
+                          <span className="text-muted-foreground">Score Bonus:</span>
+                          <span className="text-secondary">
                             +{Math.round((config.scoreMultiplier - 1) * 100)}%
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-600">Complexity:</span>
+                          <span className="text-muted-foreground">Complexity:</span>
                           <div className="flex gap-1">
                             {Array.from({ length: 4 }, (_, i) => (
                               <div

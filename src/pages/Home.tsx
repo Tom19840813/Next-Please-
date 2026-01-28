@@ -7,6 +7,7 @@ import GameDifficultyModal from '@/components/GameDifficultyModal';
 import OnlineUsers from '@/components/OnlineUsers';
 import GameInvitations from '@/components/GameInvitations';
 import ProBadge from '@/components/ProBadge';
+import HallOfFamePreview from '@/components/HallOfFamePreview';
 import { useSubscription } from '@/hooks/useSubscription';
 import { 
   Gamepad2, 
@@ -19,10 +20,8 @@ import {
   Smile,
   Type,
   Circle,
-  Award,
   Crown,
-  Sparkles,
-  BarChart3
+  Sparkles
 } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -111,12 +110,6 @@ const Home: React.FC = () => {
                     <span className="hidden sm:inline">Leaderboard</span>
                   </Button>
                 </Link>
-                <Link to="/hall-of-fame">
-                  <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted">
-                    <Award className="h-4 w-4 mr-1" />
-                    <span className="hidden sm:inline">Hall of Fame</span>
-                  </Button>
-                </Link>
                 {!isPro && (
                   <Link to="/upgrade">
                     <Button size="sm" className="bg-gradient-to-r from-primary to-accent text-primary-foreground animate-shimmer">
@@ -183,6 +176,11 @@ const Home: React.FC = () => {
           })}
         </div>
 
+        {/* Hall of Fame Preview */}
+        <div className="mb-12 max-w-md mx-auto">
+          <HallOfFamePreview />
+        </div>
+
         {/* Call to Action */}
         <div className="text-center bg-card/80 backdrop-blur-sm rounded-2xl border border-border shadow-lg p-8">
           <h3 className="text-2xl font-bold text-foreground mb-3">Ready to Play?</h3>
@@ -230,18 +228,6 @@ const Home: React.FC = () => {
         </Button>
       )}
 
-      {/* Statistics Button */}
-      <Link to="/hall-of-fame" className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="bg-card/90 backdrop-blur-sm border-border hover:bg-muted text-muted-foreground text-xs px-3 py-1 h-8"
-        >
-          <BarChart3 className="h-3 w-3 mr-1" />
-          View Stats
-        </Button>
-      </Link>
-      
     </div>
   );
 };
