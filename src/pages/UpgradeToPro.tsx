@@ -103,7 +103,7 @@ const UpgradeToPro: React.FC = () => {
           </Card>
         </div>
 
-        <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-primary neon-border">
+        <Card className="bg-card border-2 border-primary">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl text-foreground">Contact Admin</CardTitle>
             <CardDescription className="text-lg">
@@ -122,7 +122,7 @@ const UpgradeToPro: React.FC = () => {
                   Back to Games
                 </Button>
               </Link>
-              <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Crown className="mr-2 h-4 w-4" />
                 Contact Admin
               </Button>

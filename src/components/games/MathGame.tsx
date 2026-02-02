@@ -200,7 +200,7 @@ const MathGame: React.FC = () => {
 
   if (showDifficultySelector) {
     return (
-      <div className="game-card bg-gradient-to-br from-white to-blue-50 p-4">
+      <div className="game-card bg-card p-4">
         <DifficultySelector
           currentDifficulty={difficulty}
           onDifficultyChange={setDifficulty}
@@ -212,16 +212,16 @@ const MathGame: React.FC = () => {
   }
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-blue-50 p-4">
+    <div className="game-card bg-card p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-blue">Math Challenge - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
+        <h2 className="text-2xl font-bold text-foreground">Math Challenge - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
         <p className="text-sm text-muted-foreground">Solve math problems quickly!</p>
       </div>
 
       <div className="max-w-md mx-auto">
         <div className="flex justify-between mb-4">
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
-            <span className="text-sm font-semibold text-secondary">Level: {level}</span>
+            <span className="text-sm font-semibold text-foreground">Level: {level}</span>
           </div>
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
             <span className="text-sm font-semibold text-foreground">Score: {score}</span>
@@ -258,7 +258,7 @@ const MathGame: React.FC = () => {
             
             {feedback && (
               <div className={`mt-4 p-3 rounded-lg text-center ${
-                feedback === 'correct' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                feedback === 'correct' ? 'bg-muted text-foreground' : 'bg-destructive/20 text-destructive'
               }`}>
                 <div className="flex items-center justify-center gap-2">
                   {feedback === 'correct' ? (
@@ -282,13 +282,13 @@ const MathGame: React.FC = () => {
           <div className="mt-4 text-center space-y-2">
             <button
               onClick={startGame}
-              className="bg-game-blue text-white px-6 py-2 rounded-full hover:bg-blue-600 mr-2"
+              className="bg-primary text-primary-foreground px-6 py-2 rounded-full hover:bg-primary/90 mr-2"
             >
               Play Again
             </button>
             <button
               onClick={() => setShowDifficultySelector(true)}
-              className="bg-gray-500 text-white px-6 py-2 rounded-full hover:bg-gray-600"
+              className="bg-muted text-foreground px-6 py-2 rounded-full hover:bg-accent border border-border"
             >
               Change Difficulty
             </button>

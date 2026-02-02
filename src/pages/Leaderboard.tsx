@@ -65,9 +65,9 @@ const Leaderboard: React.FC = () => {
 
   const getMedalEmoji = (index: number) => {
     switch (index) {
-      case 0: return <Medal className="h-5 w-5 text-yellow-500" />;
-      case 1: return <Medal className="h-5 w-5 text-gray-400" />;
-      case 2: return <Medal className="h-5 w-5 text-amber-700" />;
+      case 0: return <Medal className="h-5 w-5 text-foreground" />;
+      case 1: return <Medal className="h-5 w-5 text-muted-foreground" />;
+      case 2: return <Medal className="h-5 w-5 text-muted-foreground" />;
       default: return <span className="text-sm font-medium">{index + 1}</span>;
     }
   };
@@ -82,7 +82,7 @@ const Leaderboard: React.FC = () => {
       
       <main className="container mx-auto px-4 pt-20 pb-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-6 text-primary neon-text">Leaderboard</h1>
+          <h1 className="text-3xl font-bold text-center mb-6 text-foreground">Leaderboard</h1>
           
           <Tabs 
             defaultValue="all" 

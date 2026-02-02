@@ -126,10 +126,10 @@ const SudokuGame = () => {
   };
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-indigo-50 p-4">
+    <div className="game-card bg-card p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-purple">Sudoku</h2>
-        <p className="text-sm text-gray-500">Fill in the grid with numbers 1-9</p>
+        <h2 className="text-2xl font-bold text-foreground">Sudoku</h2>
+        <p className="text-sm text-muted-foreground">Fill in the grid with numbers 1-9</p>
       </div>
 
       <div className="max-w-md mx-auto">
@@ -166,10 +166,10 @@ const SudokuGame = () => {
         )}
 
         {isComplete && (
-          <div className="mt-4 p-4 bg-secondary/20 text-secondary rounded-lg text-center border border-secondary/30">
+          <div className="mt-4 p-4 bg-muted text-foreground rounded-lg text-center border border-border">
             <p className="font-bold">Great job! Sudoku complete!</p>
             <button 
-              className="mt-2 bg-game-purple text-white px-4 py-2 rounded hover:bg-game-darkpurple"
+              className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
               onClick={generateSudoku}
             >
               Play Again

@@ -188,12 +188,12 @@ const SpeedClick: React.FC = () => {
     const timePoints = Math.floor((3 - timeLeft) * 10);
     const points = Math.max(5, sizePoints + timePoints);
     
-    // Target colors by points value
+    // Target colors by points value (grayscale)
     let color;
-    if (points < 10) color = 'bg-blue-500';
-    else if (points < 15) color = 'bg-green-500';
-    else if (points < 20) color = 'bg-yellow-500';
-    else color = 'bg-red-500';
+    if (points < 10) color = 'bg-foreground/50';
+    else if (points < 15) color = 'bg-foreground/60';
+    else if (points < 20) color = 'bg-foreground/70';
+    else color = 'bg-foreground/80';
     
     // Padding to ensure target is fully visible
     const padding = size;
@@ -284,7 +284,7 @@ const SpeedClick: React.FC = () => {
   return (
     <div className="game-card bg-card flex flex-col h-full">
       <div className="text-center p-4">
-        <h2 className="text-2xl font-bold text-secondary">Speed Click</h2>
+        <h2 className="text-2xl font-bold text-foreground">Speed Click</h2>
         <p className="text-sm text-muted-foreground">Click targets as fast as you can!</p>
       </div>
       
@@ -321,7 +321,7 @@ const SpeedClick: React.FC = () => {
         <div className="flex-1 flex items-center justify-center">
           <button
             onClick={startGame}
-            className="bg-game-blue hover:bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-bold"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-lg text-lg font-bold"
           >
             Start Game
           </button>
@@ -331,7 +331,7 @@ const SpeedClick: React.FC = () => {
       {gameActive && (
         <div 
           ref={gameAreaRef} 
-          className="flex-1 relative bg-indigo-50 rounded-b-2xl overflow-hidden cursor-crosshair"
+          className="flex-1 relative bg-muted/30 rounded-b-2xl overflow-hidden cursor-crosshair border border-border"
         >
           {targets.map(target => (
             !target.clicked && target.timeLeft > 0 && (

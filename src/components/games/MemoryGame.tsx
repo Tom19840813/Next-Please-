@@ -131,7 +131,7 @@ const MemoryGame: React.FC = () => {
           <div
             key={card.id}
             className={`aspect-square flex items-center justify-center text-2xl rounded-lg cursor-pointer transition-transform ${
-              card.isFlipped || card.isMatched ? 'bg-white shadow-md' : 'bg-game-orange text-transparent'
+              card.isFlipped || card.isMatched ? 'bg-card shadow-md border border-border' : 'bg-muted text-transparent border border-border'
             } ${card.isFlipped && !card.isMatched ? 'animate-pulse-light' : ''}`}
             onClick={() => handleCardClick(card.id)}
           >
@@ -144,7 +144,7 @@ const MemoryGame: React.FC = () => {
 
   if (showDifficultySelector) {
     return (
-      <div className="game-card bg-gradient-to-br from-white to-orange-50 p-4">
+      <div className="game-card bg-card p-4">
         <DifficultySelector
           currentDifficulty={difficulty}
           onDifficultyChange={setDifficulty}
@@ -156,9 +156,9 @@ const MemoryGame: React.FC = () => {
   }
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-orange-50 p-4">
+    <div className="game-card bg-card p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-primary">Memory Match - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
+        <h2 className="text-2xl font-bold text-foreground">Memory Match - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
         <p className="text-sm text-muted-foreground">Find all the matching pairs</p>
       </div>
 
@@ -179,18 +179,18 @@ const MemoryGame: React.FC = () => {
         {renderCards()}
 
         {gameComplete && (
-          <div className="mt-4 p-4 bg-secondary/20 text-secondary rounded-lg text-center border border-secondary/30">
+          <div className="mt-4 p-4 bg-muted text-foreground rounded-lg text-center border border-border">
             <p className="font-bold">Congratulations!</p>
             <p>You've matched all pairs in {moves} moves.</p>
             <div className="mt-2 space-y-2">
               <button
-                className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/80 mr-2"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90 mr-2"
                 onClick={initializeGame}
               >
                 Play Again
               </button>
               <button
-                className="bg-muted text-muted-foreground px-4 py-2 rounded hover:bg-muted/80"
+                className="bg-muted text-foreground px-4 py-2 rounded hover:bg-accent border border-border"
                 onClick={() => setShowDifficultySelector(true)}
               >
                 Change Difficulty

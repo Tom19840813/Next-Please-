@@ -27,14 +27,14 @@ const BalloonPop: React.FC = () => {
   const frameRef = useRef<number>(0);
   const lastBalloonRef = useRef<number>(0);
   
-  // Colors based on the game's color palette
+  // Colors for grayscale theme
   const balloonColors = [
-    'bg-game-purple text-white',
-    'bg-game-blue text-white',
-    'bg-game-pink text-white',
-    'bg-game-orange text-white',
-    'bg-purple-500 text-white',
-    'bg-blue-500 text-white',
+    'bg-foreground/80 text-background',
+    'bg-foreground/60 text-background',
+    'bg-foreground/70 text-background',
+    'bg-muted-foreground text-background',
+    'bg-foreground/50 text-background',
+    'bg-foreground/90 text-background',
   ];
 
   // Start the game
@@ -188,7 +188,7 @@ const BalloonPop: React.FC = () => {
   return (
     <div className="game-card bg-card p-4 flex flex-col">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-primary">Balloon Pop</h2>
+        <h2 className="text-2xl font-bold text-foreground">Balloon Pop</h2>
         <p className="text-sm text-muted-foreground">Pop balloons to score points! Avoid the bombs.</p>
       </div>
 

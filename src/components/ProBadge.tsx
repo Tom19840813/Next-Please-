@@ -28,7 +28,7 @@ const ProBadge: React.FC<ProBadgeProps> = ({
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-1 bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold rounded-full shadow-lg animate-shimmer',
+        'inline-flex items-center gap-1 bg-foreground text-background font-bold rounded-full shadow-lg',
         sizeClasses[size],
         className
       )}

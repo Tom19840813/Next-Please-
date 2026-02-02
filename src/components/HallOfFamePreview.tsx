@@ -54,9 +54,9 @@ const HallOfFamePreview: React.FC = () => {
 
   const getMedalIcon = (index: number) => {
     switch (index) {
-      case 0: return <Crown className="h-5 w-5 text-warning" />;
+      case 0: return <Crown className="h-5 w-5 text-foreground" />;
       case 1: return <Medal className="h-4 w-4 text-muted-foreground" />;
-      case 2: return <Medal className="h-4 w-4 text-accent" />;
+      case 2: return <Medal className="h-4 w-4 text-muted-foreground" />;
       default: return null;
     }
   };

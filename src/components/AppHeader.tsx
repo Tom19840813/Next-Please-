@@ -17,7 +17,7 @@ const AppHeader: React.FC = () => {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 px-4 py-3 bg-card/95 backdrop-blur-sm border-b border-border flex items-center justify-between">
       <Link to="/">
-        <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted text-lg font-bold neon-text">
+        <Button variant="ghost" size="sm" className="text-foreground hover:bg-muted text-lg font-bold">
           <Home className="h-4 w-4 mr-2" />
           Next Please!
         </Button>

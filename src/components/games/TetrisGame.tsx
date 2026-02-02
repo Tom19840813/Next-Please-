@@ -8,13 +8,13 @@ const BOARD_HEIGHT = 15;
 const BLOCK_SIZE = 20;
 
 const TETROMINOS = {
-  I: { shape: [[1, 1, 1, 1]], color: '#0EA5E9' },
-  J: { shape: [[1, 0, 0], [1, 1, 1]], color: '#2563EB' },
-  L: { shape: [[0, 0, 1], [1, 1, 1]], color: '#F97316' },
-  O: { shape: [[1, 1], [1, 1]], color: '#FACC15' },
-  S: { shape: [[0, 1, 1], [1, 1, 0]], color: '#10B981' },
-  T: { shape: [[0, 1, 0], [1, 1, 1]], color: '#8B5CF6' },
-  Z: { shape: [[1, 1, 0], [0, 1, 1]], color: '#EF4444' }
+  I: { shape: [[1, 1, 1, 1]], color: 'hsl(0 0% 70%)' },
+  J: { shape: [[1, 0, 0], [1, 1, 1]], color: 'hsl(0 0% 60%)' },
+  L: { shape: [[0, 0, 1], [1, 1, 1]], color: 'hsl(0 0% 75%)' },
+  O: { shape: [[1, 1], [1, 1]], color: 'hsl(0 0% 80%)' },
+  S: { shape: [[0, 1, 1], [1, 1, 0]], color: 'hsl(0 0% 55%)' },
+  T: { shape: [[0, 1, 0], [1, 1, 1]], color: 'hsl(0 0% 65%)' },
+  Z: { shape: [[1, 1, 0], [0, 1, 1]], color: 'hsl(0 0% 50%)' }
 };
 
 const TetrisGame: React.FC = () => {
@@ -330,12 +330,12 @@ const TetrisGame: React.FC = () => {
   };
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-blue-50 p-4">
+    <div className="game-card bg-card p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-blue">Tetris</h2>
-        <p className="text-sm text-gray-500">Score: {score}</p>
+        <h2 className="text-2xl font-bold text-foreground">Tetris</h2>
+        <p className="text-sm text-muted-foreground">Score: {score}</p>
         {gameStarted && (
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Desktop: Arrow keys to move, Up/Space to rotate | Mobile: Swipe to control
           </p>
         )}
@@ -356,25 +356,25 @@ const TetrisGame: React.FC = () => {
               
               <div className="mt-4 grid grid-cols-3 gap-2 w-full">
                 <button 
-                  className="p-3 bg-gray-200 rounded-full flex justify-center items-center"
+                  className="p-3 bg-muted rounded-full flex justify-center items-center text-foreground border border-border hover:bg-accent"
                   onClick={moveLeft}
                 >
                   ←
                 </button>
                 <button 
-                  className="p-3 bg-gray-200 rounded-full flex justify-center items-center"
+                  className="p-3 bg-muted rounded-full flex justify-center items-center text-foreground border border-border hover:bg-accent"
                   onClick={moveDown}
                 >
                   ↓
                 </button>
                 <button 
-                  className="p-3 bg-gray-200 rounded-full flex justify-center items-center"
+                  className="p-3 bg-muted rounded-full flex justify-center items-center text-foreground border border-border hover:bg-accent"
                   onClick={moveRight}
                 >
                   →
                 </button>
                 <button 
-                  className="p-3 bg-gray-200 rounded-full flex justify-center items-center col-span-3"
+                  className="p-3 bg-muted rounded-full flex justify-center items-center col-span-3 text-foreground border border-border hover:bg-accent"
                   onClick={rotatePiece}
                 >
                   Rotate
@@ -383,12 +383,12 @@ const TetrisGame: React.FC = () => {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-64">
-              {gameOver && <p className="text-xl text-red-500 mb-4">Game Over!</p>}
-              <p className="mb-4 text-lg">
+              {gameOver && <p className="text-xl text-destructive mb-4">Game Over!</p>}
+              <p className="mb-4 text-lg text-foreground">
                 {!gameStarted ? "Stack blocks and clear rows" : `Final Score: ${score}`}
               </p>
               <button 
-                className="bg-game-blue text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+                className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90"
                 onClick={startGame}
               >
                 {!gameStarted ? "Start Game" : "Play Again"}

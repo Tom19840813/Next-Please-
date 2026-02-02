@@ -21,7 +21,6 @@ interface TopPlayer {
 // Random fallback players when no data exists
 const generateRandomPlayers = (): TopPlayer[] => {
   const randomNames = ['ArcadeKing', 'PixelQueen', 'RetroMaster', 'NeonNinja', 'GameWizard'];
-  const avatarColors = ['bg-purple-600', 'bg-pink-600', 'bg-cyan-600', 'bg-yellow-600', 'bg-green-600'];
   const games = ['sudoku', 'tetris', 'quiz', 'memory', 'math'];
   
   return randomNames.map((name, idx) => ({
@@ -72,9 +71,9 @@ const HallOfFame: React.FC = () => {
 
   const getMedalIcon = (index: number) => {
     switch (index) {
-      case 0: return <Crown className="h-6 w-6 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />;
-      case 1: return <Medal className="h-5 w-5 text-muted-foreground drop-shadow-[0_0_6px_hsl(var(--muted-foreground)/0.6)]" />;
-      case 2: return <Medal className="h-5 w-5 text-accent drop-shadow-[0_0_6px_hsl(var(--accent)/0.6)]" />;
+      case 0: return <Crown className="h-6 w-6 text-foreground" />;
+      case 1: return <Medal className="h-5 w-5 text-muted-foreground" />;
+      case 2: return <Medal className="h-5 w-5 text-muted-foreground" />;
       default: return <span className="text-sm font-bold text-muted-foreground">{index + 1}</span>;
     }
   };
@@ -96,11 +95,11 @@ const HallOfFame: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-2">
-              <Trophy className="h-10 w-10 text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.8)]" />
-              <h1 className="text-4xl font-bold text-foreground neon-text">
+              <Trophy className="h-10 w-10 text-foreground" />
+              <h1 className="text-4xl font-bold text-foreground">
                 Hall of Fame
               </h1>
-              <Trophy className="h-10 w-10 text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.8)]" />
+              <Trophy className="h-10 w-10 text-foreground" />
             </div>
             <p className="text-muted-foreground">
               {isDemo ? 'Demo leaderboard - Play to claim your spot!' : 'The legends who conquered the arcade'}
@@ -133,7 +132,7 @@ const HallOfFame: React.FC = () => {
             </div>
 
             <TabsContent value={timeFrame} className="mt-0">
-              <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-6 neon-border">
+              <div className="bg-card/90 backdrop-blur-sm rounded-xl border border-border p-6">
                 {loading ? (
                   <div className="flex flex-col items-center justify-center py-16">
                     <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
@@ -159,25 +158,25 @@ const HallOfFame: React.FC = () => {
                               key={player.userId}
                               className={`flex flex-col items-center p-4 rounded-xl ${
                                 isFirst 
-                                  ? 'bg-gradient-to-b from-primary/20 to-transparent border-2 border-primary/50 order-2 -mt-4' 
+                                  ? 'bg-muted/50 border-2 border-foreground order-2 -mt-4' 
                                   : idx === 1 
-                                    ? 'bg-gradient-to-b from-muted/40 to-transparent border border-muted order-1'
-                                    : 'bg-gradient-to-b from-accent/20 to-transparent border border-accent/30 order-3'
+                                    ? 'bg-muted/30 border border-border order-1'
+                                    : 'bg-muted/30 border border-border order-3'
                               }`}
                             >
                               <div className="mb-2">{getMedalIcon(idx)}</div>
                               <Avatar className={`${isFirst ? 'h-16 w-16' : 'h-12 w-12'} border-2 ${
-                                isFirst ? 'border-primary' : idx === 1 ? 'border-muted-foreground' : 'border-accent'
+                                isFirst ? 'border-foreground' : 'border-border'
                               }`}>
                                 {player.avatar_url && <AvatarImage src={player.avatar_url} />}
                                 <AvatarFallback className="bg-primary text-primary-foreground font-bold">
                                   {(player.username?.[0] || 'A').toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
-                              <p className={`font-bold mt-2 ${isFirst ? 'text-lg text-primary' : 'text-foreground'}`}>
+                              <p className={`font-bold mt-2 ${isFirst ? 'text-lg text-foreground' : 'text-foreground'}`}>
                                 {player.username}
                               </p>
-                              <p className={`font-mono ${isFirst ? 'text-2xl text-primary' : 'text-xl text-secondary'}`}>
+                              <p className={`font-mono ${isFirst ? 'text-2xl text-foreground' : 'text-xl text-foreground'}`}>
                                 {player.totalScore.toLocaleString()}
                               </p>
                               <p className="text-xs text-muted-foreground">{player.gamesPlayed} games</p>
@@ -207,7 +206,7 @@ const HallOfFame: React.FC = () => {
                           <p className="text-xs text-muted-foreground">{player.gamesPlayed} games played</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-mono text-lg text-secondary">{player.totalScore.toLocaleString()}</p>
+                          <p className="font-mono text-lg text-foreground">{player.totalScore.toLocaleString()}</p>
                           {player.bestGame && (
                             <p className="text-xs text-muted-foreground">
                               Best: {getGameEmoji(player.bestGame.game_type)} {player.bestGame.score}

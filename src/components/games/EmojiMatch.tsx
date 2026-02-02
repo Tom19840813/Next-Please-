@@ -145,9 +145,9 @@ const EmojiMatch: React.FC = () => {
   };
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-pink-50 p-4">
+    <div className="game-card bg-card p-4">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-accent">Emoji Match</h2>
+        <h2 className="text-2xl font-bold text-foreground">Emoji Match</h2>
         <p className="text-sm text-muted-foreground">Match all the emoji pairs before time runs out!</p>
       </div>
 
@@ -177,7 +177,7 @@ const EmojiMatch: React.FC = () => {
               className={`aspect-square flex items-center justify-center text-2xl rounded-lg cursor-pointer transition-transform duration-300 ${
                 card.isFlipped || card.isMatched 
                   ? 'bg-card shadow-md rotate-y-180 border border-border' 
-                  : 'bg-accent text-transparent rotate-y-0'
+                  : 'bg-muted text-transparent rotate-y-0 border border-border'
               } ${card.isFlipped && !card.isMatched ? 'animate-pulse-light' : ''}`}
               onClick={() => handleCardClick(card.id)}
               style={{ perspective: '1000px' }}
@@ -188,11 +188,11 @@ const EmojiMatch: React.FC = () => {
         </div>
 
         {gameComplete && (
-          <div className="mt-4 p-4 bg-secondary/20 text-secondary rounded-lg text-center border border-secondary/30">
+          <div className="mt-4 p-4 bg-muted text-foreground rounded-lg text-center border border-border">
             <p className="font-bold">Congratulations!</p>
             <p>You've matched all pairs in {moves} moves with {formatTime(timeLeft)} remaining.</p>
             <button
-              className="mt-2 bg-accent text-accent-foreground px-4 py-2 rounded-lg hover:bg-accent/80"
+              className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90"
               onClick={initializeGame}
             >
               Play Again
@@ -201,11 +201,11 @@ const EmojiMatch: React.FC = () => {
         )}
 
         {!gameActive && !gameComplete && (
-          <div className="mt-4 p-4 bg-red-100 text-red-800 rounded-lg text-center">
+          <div className="mt-4 p-4 bg-destructive/20 text-destructive rounded-lg text-center">
             <p className="font-bold">Time's Up!</p>
             <p>You matched {matchedPairs} out of {emojis.length} pairs.</p>
             <button
-              className="mt-2 bg-game-pink text-white px-4 py-2 rounded-lg hover:bg-pink-600"
+              className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90"
               onClick={initializeGame}
             >
               Try Again
