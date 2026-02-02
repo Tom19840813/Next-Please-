@@ -22,7 +22,7 @@ const Index: React.FC = () => {
         </div>
         
         <div className="absolute bottom-20 left-0 right-0 z-50 text-center text-xs">
-          <div className="inline-block bg-card/95 backdrop-blur-md px-4 py-1.5 rounded-full border border-border shadow-lg neon-border">
+          <div className="inline-block bg-card/95 backdrop-blur-md px-4 py-1.5 rounded-full border border-border shadow-lg">
             <span className="text-foreground font-medium">Swipe to switch games • New content every play</span>
           </div>
         </div>

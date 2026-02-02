@@ -36,56 +36,56 @@ const Home: React.FC = () => {
       title: 'Sudoku',
       description: 'Classic number puzzle game',
       icon: Grid3X3,
-      color: 'hsl(var(--primary))'
+      color: 'hsl(0 0% 25%)'
     },
     {
       id: 'tetris',
       title: 'Tetris',
       description: 'Stack falling blocks perfectly',
       icon: Gamepad2,
-      color: 'hsl(var(--neon-purple))'
+      color: 'hsl(0 0% 30%)'
     },
     {
       id: 'quiz',
       title: 'Quiz',
       description: 'Test your knowledge',
       icon: Brain,
-      color: 'hsl(var(--secondary))'
+      color: 'hsl(0 0% 35%)'
     },
     {
       id: 'memory',
       title: 'Memory',
       description: 'Match pairs of cards',
       icon: Users,
-      color: 'hsl(var(--accent))'
+      color: 'hsl(0 0% 40%)'
     },
     {
       id: 'math',
       title: 'Math Game',
       description: 'Quick arithmetic challenges',
       icon: Calculator,
-      color: 'hsl(var(--neon-yellow))'
+      color: 'hsl(0 0% 25%)'
     },
     {
       id: 'emoji',
       title: 'Emoji Match',
       description: 'Find matching emoji pairs',
       icon: Smile,
-      color: 'hsl(var(--neon-cyan))'
+      color: 'hsl(0 0% 30%)'
     },
     {
       id: 'wordscramble',
       title: 'Word Scramble',
       description: 'Unscramble the letters',
       icon: Type,
-      color: 'hsl(var(--neon-pink))'
+      color: 'hsl(0 0% 35%)'
     },
     {
       id: 'balloons',
       title: 'Balloon Pop',
       description: 'Pop balloons as fast as you can',
       icon: Circle,
-      color: 'hsl(var(--destructive))'
+      color: 'hsl(0 0% 40%)'
     }
   ];
 
@@ -112,7 +112,7 @@ const Home: React.FC = () => {
                 </Link>
                 {!isPro && (
                   <Link to="/upgrade">
-                    <Button size="sm" className="bg-gradient-to-r from-primary to-accent text-primary-foreground animate-shimmer">
+                    <Button size="sm" className="bg-primary text-primary-foreground">
                       <Crown className="h-4 w-4 mr-1" />
                       <span className="hidden sm:inline">Go Pro</span>
                     </Button>
@@ -188,7 +188,7 @@ const Home: React.FC = () => {
             Jump into any game and start having fun! {user ? 'Your scores will be saved automatically.' : 'Sign in to save your scores and compete on the leaderboard.'}
           </p>
           <Link to="/play">
-            <Button size="lg" className="bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground hover:opacity-90 shadow-lg shadow-primary/30">
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl">
               <Gamepad2 className="h-5 w-5 mr-2" />
               Start Playing
             </Button>

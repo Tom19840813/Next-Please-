@@ -243,27 +243,18 @@ const WordScramble: React.FC = () => {
 
   // Render the category badge
   const renderCategoryBadge = () => {
-    const categoryColors: {[key: string]: string} = {
-      animals: 'bg-green-100 text-green-800',
-      food: 'bg-orange-100 text-orange-800',
-      tech: 'bg-blue-100 text-blue-800',
-      countries: 'bg-purple-100 text-purple-800' // Added for new category
-    };
-    
-    const colorClass = categoryColors[gameState.category] || 'bg-gray-100 text-gray-800';
-    
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${colorClass}`}>
+      <span className={`px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground border border-border`}>
         {gameState.category.charAt(0).toUpperCase() + gameState.category.slice(1)}
       </span>
     );
   };
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-green-50 p-4 flex flex-col">
+    <div className="game-card bg-card p-4 flex flex-col">
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-game-darkpurple">Word Scramble</h2>
-        <p className="text-sm text-gray-500 mb-2">Unscramble the word to score points!</p>
+        <h2 className="text-2xl font-bold text-foreground">Word Scramble</h2>
+        <p className="text-sm text-muted-foreground mb-2">Unscramble the word to score points!</p>
         {renderCategoryBadge()}
       </div>
 
@@ -322,19 +313,19 @@ const WordScramble: React.FC = () => {
               {Array.from({ length: Math.max(0, gameState.originalWord.length - inputLetters.length) }).map((_, i) => (
                 <div 
                   key={`empty-${i}`}
-                  className="w-8 h-10 border-2 border-dashed border-gray-300 rounded"
+                  className="w-8 h-10 border-2 border-dashed border-border rounded"
                 ></div>
               ))}
             </div>
           </div>
           
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-2">Available Letters:</p>
+            <p className="text-sm font-medium text-muted-foreground mb-2">Available Letters:</p>
             <div className="flex flex-wrap justify-center gap-2">
               {letterPool.map((letter, index) => (
                 <div
                   key={index}
-                  className="w-8 h-10 border-2 border-game-darkpurple bg-purple-50 rounded flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-purple-100"
+                  className="w-8 h-10 border-2 border-foreground bg-muted rounded flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-accent text-foreground"
                   onClick={() => gameState.gameActive && selectLetter(letter, index)}
                 >
                   {letter}
@@ -348,10 +339,10 @@ const WordScramble: React.FC = () => {
           <button
             onClick={checkAnswer}
             disabled={userGuess.length !== gameState.originalWord.length}
-            className={`py-2 px-6 rounded-lg font-bold text-white ${
+            className={`py-2 px-6 rounded-lg font-bold ${
               userGuess.length === gameState.originalWord.length
-                ? 'bg-game-darkpurple hover:bg-purple-700'
-                : 'bg-gray-400 cursor-not-allowed'
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
             }`}
           >
             Check Answer
@@ -359,14 +350,14 @@ const WordScramble: React.FC = () => {
         )}
 
         {gameState.successMessage && (
-          <div className="bg-green-100 text-green-800 p-3 rounded-lg flex items-center gap-2 mt-4">
+          <div className="bg-muted text-foreground p-3 rounded-lg flex items-center gap-2 mt-4 border border-border">
             <CheckCircle size={20} />
             <p>{gameState.successMessage}</p>
           </div>
         )}
 
         {gameState.errorMessage && (
-          <div className="bg-red-100 text-red-800 p-3 rounded-lg flex items-center gap-2 mt-4">
+          <div className="bg-destructive/20 text-destructive p-3 rounded-lg flex items-center gap-2 mt-4">
             <X size={20} />
             <p>{gameState.errorMessage}</p>
           </div>
@@ -374,11 +365,11 @@ const WordScramble: React.FC = () => {
 
         {!gameState.gameActive && !gameState.successMessage && (
           <div className="mt-4 text-center">
-            <p className="text-lg font-semibold mb-2">Game Over!</p>
-            <p className="mb-3">The word was: <span className="font-bold">{gameState.originalWord}</span></p>
+            <p className="text-lg font-semibold mb-2 text-foreground">Game Over!</p>
+            <p className="mb-3 text-muted-foreground">The word was: <span className="font-bold text-foreground">{gameState.originalWord}</span></p>
             <button
               onClick={restartGame}
-              className="bg-game-darkpurple text-white px-6 py-2 rounded-lg hover:bg-purple-700"
+              className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90"
             >
               Play Again
             </button>

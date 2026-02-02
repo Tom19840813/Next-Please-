@@ -166,8 +166,8 @@ const QuizGame: React.FC = () => {
     if (loading) {
       return (
         <div className="flex flex-col items-center justify-center h-48">
-          <Loader2 className="animate-spin h-8 w-8 text-game-pink mb-2" />
-          <p>Loading questions...</p>
+          <Loader2 className="animate-spin h-8 w-8 text-foreground mb-2" />
+          <p className="text-foreground">Loading questions...</p>
         </div>
       );
     }
@@ -175,19 +175,19 @@ const QuizGame: React.FC = () => {
     if (quizComplete) {
       return (
         <div className="text-center">
-          <h3 className="text-xl font-bold mb-4">Quiz Complete!</h3>
-          <p className="text-lg mb-4">
+          <h3 className="text-xl font-bold mb-4 text-foreground">Quiz Complete!</h3>
+          <p className="text-lg mb-4 text-foreground">
             You got {correctAnswers} out of {availableQuestions.length} questions correct!
           </p>
           <div className="space-y-2">
             <button
-              className="bg-game-pink text-white px-6 py-2 rounded-lg hover:bg-pink-600 mr-2"
+              className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 mr-2"
               onClick={startQuiz}
             >
               Play Again
             </button>
             <button
-              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+              className="bg-muted text-foreground px-6 py-2 rounded-lg hover:bg-accent border border-border"
               onClick={() => setShowDifficultySelector(true)}
             >
               Change Difficulty
@@ -200,9 +200,9 @@ const QuizGame: React.FC = () => {
     if (availableQuestions.length === 0) {
       return (
         <div className="text-center">
-          <p className="text-red-500 mb-4">{error || "Failed to load questions."}</p>
+          <p className="text-destructive mb-4">{error || "Failed to load questions."}</p>
           <button
-            className="bg-game-pink text-white px-6 py-2 rounded-lg hover:bg-pink-600"
+            className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90"
             onClick={startQuiz}
           >
             Try Again
@@ -216,7 +216,7 @@ const QuizGame: React.FC = () => {
     return (
       <div>
         <div className="flex justify-between items-center mb-4">
-          <span className="text-sm">Question {currentQuestionIndex + 1}/{availableQuestions.length}</span>
+          <span className="text-sm text-foreground">Question {currentQuestionIndex + 1}/{availableQuestions.length}</span>
           <span className={`px-3 py-1 rounded-full font-bold ${timeLeft < 5 ? 'bg-destructive text-destructive-foreground animate-pulse' : 'bg-primary text-primary-foreground'}`}>
             {timeLeft}s
           </span>
@@ -247,7 +247,7 @@ const QuizGame: React.FC = () => {
         </div>
 
         {isAnswered && (
-          <div className={`p-3 rounded-lg text-center ${selectedAnswer === currentQuestion.correctAnswer ? 'bg-secondary/20 text-secondary' : 'bg-destructive/20 text-destructive'}`}>
+          <div className={`p-3 rounded-lg text-center ${selectedAnswer === currentQuestion.correctAnswer ? 'bg-muted text-foreground' : 'bg-destructive/20 text-destructive'}`}>
             {selectedAnswer === currentQuestion.correctAnswer 
               ? 'Correct! Well done!' 
               : `Wrong. The correct answer is: ${currentQuestion.options[currentQuestion.correctAnswer]}`}
@@ -259,7 +259,7 @@ const QuizGame: React.FC = () => {
 
   if (showDifficultySelector) {
     return (
-      <div className="game-card bg-gradient-to-br from-white to-pink-50 p-4">
+      <div className="game-card bg-card p-4">
         <DifficultySelector
           currentDifficulty={difficulty}
           onDifficultyChange={setDifficulty}
@@ -271,10 +271,10 @@ const QuizGame: React.FC = () => {
   }
 
   return (
-    <div className="game-card bg-gradient-to-br from-white to-pink-50 p-4">
+    <div className="game-card bg-card p-4">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-game-pink">Quick Quiz - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
-        <p className="text-sm text-gray-500">Test your knowledge!</p>
+        <h2 className="text-2xl font-bold text-foreground">Quick Quiz - {DIFFICULTY_CONFIGS[difficulty].label}</h2>
+        <p className="text-sm text-muted-foreground">Test your knowledge!</p>
       </div>
       
       <div className="max-w-md mx-auto">
