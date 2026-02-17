@@ -8,6 +8,7 @@ import OnlineUsers from '@/components/OnlineUsers';
 import GameInvitations from '@/components/GameInvitations';
 import ProBadge from '@/components/ProBadge';
 import HallOfFamePreview from '@/components/HallOfFamePreview';
+import InfiniteGameFeed from '@/components/InfiniteGameFeed';
 import { useSubscription } from '@/hooks/useSubscription';
 import { 
   Gamepad2, 
@@ -179,6 +180,11 @@ const Home: React.FC = () => {
         {/* Hall of Fame Preview */}
         <div className="mb-12 max-w-md mx-auto">
           <HallOfFamePreview />
+        </div>
+
+        {/* Infinite Random Challenges */}
+        <div className="mb-12">
+          <InfiniteGameFeed />
         </div>
 
         {/* Call to Action */}
