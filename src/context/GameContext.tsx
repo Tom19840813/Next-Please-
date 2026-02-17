@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { saveGameScore } from '../services/gameScores';
 import { DifficultyLevel } from '@/types/difficulty';
 
-export type GameType = 'sudoku' | 'tetris' | 'quiz' | 'memory' | 'math' | 'emoji' | 'wordscramble' | 'balloons';
+export type GameType = 'sudoku' | 'tetris' | 'quiz' | 'memory' | 'math' | 'emoji' | 'wordscramble' | 'balloons' | 'snake' | 'typing' | 'colormatch' | 'whackamole' | 'simon';
 
 interface GameContextType {
   currentGame: GameType;
