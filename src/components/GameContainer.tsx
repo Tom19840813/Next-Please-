@@ -7,10 +7,15 @@ import MathGame from './games/MathGame';
 import EmojiMatch from './games/EmojiMatch';
 import WordScramble from './games/WordScramble';
 import BalloonPop from './games/BalloonPop';
+import SnakeGame from './games/SnakeGame';
+import TypingGame from './games/TypingGame';
+import ColorMatch from './games/ColorMatch';
+import WhackAMole from './games/WhackAMole';
+import SimonSays from './games/SimonSays';
 import { GameType, useGameContext } from '../context/GameContext';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons'];
+const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons', 'snake', 'typing', 'colormatch', 'whackamole', 'simon'];
 
 const GameContainer: React.FC = () => {
   const {
@@ -80,6 +85,16 @@ const GameContainer: React.FC = () => {
         return <WordScramble />;
       case 'balloons':
         return <BalloonPop />;
+      case 'snake':
+        return <SnakeGame />;
+      case 'typing':
+        return <TypingGame />;
+      case 'colormatch':
+        return <ColorMatch />;
+      case 'whackamole':
+        return <WhackAMole />;
+      case 'simon':
+        return <SimonSays />;
       default:
         return <div>Game not found</div>;
     }

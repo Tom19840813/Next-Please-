@@ -4,10 +4,11 @@ import { GameType } from '@/context/GameContext';
 import { DifficultyLevel, DIFFICULTY_CONFIGS } from '@/types/difficulty';
 import { 
   Gamepad2, Brain, Calculator, Smile, Type, Circle, Grid3X3, Users,
-  Zap, Trophy, Clock, Flame, Shuffle, Target, Timer, Star, Sparkles
+  Zap, Trophy, Clock, Flame, Shuffle, Target, Timer, Star, Sparkles,
+  Keyboard, Palette, MousePointer, Repeat
 } from 'lucide-react';
 
-const GAME_TYPES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons'];
+const GAME_TYPES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons', 'snake', 'typing', 'colormatch', 'whackamole', 'simon'];
 const DIFFICULTIES: DifficultyLevel[] = ['easy', 'medium', 'hard', 'expert'];
 
 const CHALLENGE_MODIFIERS = [
@@ -30,6 +31,11 @@ const GAME_INFO: Record<GameType, { title: string; icon: React.ElementType }> = 
   emoji: { title: 'Emoji Match', icon: Smile },
   wordscramble: { title: 'Word Scramble', icon: Type },
   balloons: { title: 'Balloon Pop', icon: Circle },
+  snake: { title: 'Snake', icon: Zap },
+  typing: { title: 'Typing Speed', icon: Keyboard },
+  colormatch: { title: 'Color Match', icon: Palette },
+  whackamole: { title: 'Whack-a-Mole', icon: MousePointer },
+  simon: { title: 'Simon Says', icon: Repeat },
 };
 
 interface GeneratedChallenge {

@@ -25,7 +25,12 @@ const gameLabels: Record<GameType, string> = {
   math: 'Math',
   emoji: 'Emoji Match',
   wordscramble: 'Word Scramble',
-  balloons: 'Balloon Pop'
+  balloons: 'Balloon Pop',
+  snake: 'Snake',
+  typing: 'Typing Speed',
+  colormatch: 'Color Match',
+  whackamole: 'Whack-a-Mole',
+  simon: 'Simon Says'
 };
 
 const Leaderboard: React.FC = () => {

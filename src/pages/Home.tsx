@@ -24,7 +24,12 @@ import {
   Crown,
   Sparkles,
   ChevronDown,
-  Shuffle
+  Shuffle,
+  Keyboard,
+  Palette,
+  MousePointer,
+  Repeat,
+  // Snake doesn't have a perfect icon, we'll use a generic one
 } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -89,6 +94,41 @@ const Home: React.FC = () => {
       description: 'Pop balloons as fast as you can',
       icon: Circle,
       color: 'hsl(0 0% 40%)'
+    },
+    {
+      id: 'snake',
+      title: 'Snake',
+      description: 'Classic snake game',
+      icon: Zap,
+      color: 'hsl(0 0% 25%)'
+    },
+    {
+      id: 'typing',
+      title: 'Typing Speed',
+      description: 'Test your typing speed',
+      icon: Keyboard,
+      color: 'hsl(0 0% 30%)'
+    },
+    {
+      id: 'colormatch',
+      title: 'Color Match',
+      description: 'Match the word to its color',
+      icon: Palette,
+      color: 'hsl(0 0% 35%)'
+    },
+    {
+      id: 'whackamole',
+      title: 'Whack-a-Mole',
+      description: 'Whack moles before they hide',
+      icon: MousePointer,
+      color: 'hsl(0 0% 40%)'
+    },
+    {
+      id: 'simon',
+      title: 'Simon Says',
+      description: 'Remember the pattern',
+      icon: Repeat,
+      color: 'hsl(0 0% 25%)'
     }
   ];
 
