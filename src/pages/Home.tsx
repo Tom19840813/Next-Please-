@@ -22,7 +22,9 @@ import {
   Type,
   Circle,
   Crown,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  Shuffle
 } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -131,75 +133,98 @@ const Home: React.FC = () => {
         </div>
       </header>
 
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 text-center">
+        <h2 className="text-5xl sm:text-6xl font-black text-foreground tracking-tight mb-4">
+          Next Please!
+        </h2>
+        <p className="text-muted-foreground text-lg max-w-md mx-auto mb-10">
+          Endless games. Random challenges. Every round is different.
+        </p>
+
+        {/* Hero Navigation Menu */}
+        <nav className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
+          <a
+            href="#hall-of-fame"
+            className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card hover:bg-foreground hover:text-background transition-all text-sm font-medium text-foreground"
+          >
+            <Trophy className="h-4 w-4" />
+            Hall of Fame
+          </a>
+          <a
+            href="#original-games"
+            className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card hover:bg-foreground hover:text-background transition-all text-sm font-medium text-foreground"
+          >
+            <Gamepad2 className="h-4 w-4" />
+            Original Games
+          </a>
+          <a
+            href="#random-games"
+            className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card hover:bg-foreground hover:text-background transition-all text-sm font-medium text-foreground"
+          >
+            <Shuffle className="h-4 w-4" />
+            Random Games
+            <span className="text-[10px] bg-foreground text-background px-1.5 py-0.5 rounded-full font-bold leading-none">∞</span>
+          </a>
+        </nav>
+
+        {/* Scroll indicator */}
+        <a href="#hall-of-fame" className="inline-flex flex-col items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+          <span className="text-xs tracking-widest uppercase">Scroll down to explore</span>
+          <ChevronDown className="h-5 w-5 animate-bounce" />
+        </a>
+      </section>
+
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="h-6 w-6 text-primary animate-pulse" />
-            <h2 className="text-4xl font-bold text-foreground">Choose Your Game</h2>
-            <Sparkles className="h-6 w-6 text-secondary animate-pulse" />
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Select a game to start playing. All games feature random content each time!
-          </p>
-        </div>
-
-        {/* Games Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {games.map((game) => {
-            const IconComponent = game.icon;
-            return (
-              <Card 
-                key={game.id} 
-                className="group bg-card/80 backdrop-blur-sm border-border hover:border-primary transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1"
-              >
-                <CardHeader className="text-center">
-                  <div 
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110 neon-border"
-                    style={{ backgroundColor: game.color }}
-                  >
-                    <IconComponent className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <CardTitle className="text-lg text-foreground">{game.title}</CardTitle>
-                  <CardDescription className="text-muted-foreground">{game.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/30 transition-all"
-                    onClick={() => setSelectedGame({ id: game.id, title: game.title, color: game.color })}
-                  >
-                    <Zap className="h-4 w-4 mr-2" />
-                    Play Now
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
+      <main className="container mx-auto px-4 pb-8">
         {/* Hall of Fame Preview */}
-        <div className="mb-12 max-w-md mx-auto">
+        <section id="hall-of-fame" className="mb-16 max-w-md mx-auto scroll-mt-20">
           <HallOfFamePreview />
-        </div>
+        </section>
+
+        {/* Original Games Grid */}
+        <section id="original-games" className="mb-16 scroll-mt-20">
+          <div className="flex items-center gap-2 mb-6">
+            <Gamepad2 className="h-5 w-5 text-foreground" />
+            <h3 className="text-xl font-bold text-foreground">Original Games</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {games.map((game) => {
+              const IconComponent = game.icon;
+              return (
+                <Card 
+                  key={game.id} 
+                  className="group bg-card/80 backdrop-blur-sm border-border hover:border-foreground/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                >
+                  <CardHeader className="text-center">
+                    <div 
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110"
+                      style={{ backgroundColor: game.color }}
+                    >
+                      <IconComponent className="h-8 w-8 text-primary-foreground" />
+                    </div>
+                    <CardTitle className="text-lg text-foreground">{game.title}</CardTitle>
+                    <CardDescription className="text-muted-foreground">{game.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button 
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all"
+                      onClick={() => setSelectedGame({ id: game.id, title: game.title, color: game.color })}
+                    >
+                      <Zap className="h-4 w-4 mr-2" />
+                      Play Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Infinite Random Challenges */}
-        <div className="mb-12">
+        <section id="random-games" className="mb-12 scroll-mt-20">
           <InfiniteGameFeed />
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center bg-card/80 backdrop-blur-sm rounded-2xl border border-border shadow-lg p-8">
-          <h3 className="text-2xl font-bold text-foreground mb-3">Ready to Play?</h3>
-          <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-            Jump into any game and start having fun! {user ? 'Your scores will be saved automatically.' : 'Sign in to save your scores and compete on the leaderboard.'}
-          </p>
-          <Link to="/play">
-            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl">
-              <Gamepad2 className="h-5 w-5 mr-2" />
-              Start Playing
-            </Button>
-          </Link>
-        </div>
+        </section>
       </main>
 
       {/* Game Difficulty Modal */}
