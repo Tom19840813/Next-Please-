@@ -71,6 +71,7 @@ const InfiniteGameFeed: React.FC = () => {
   );
   const [counter, setCounter] = useState(BATCH_SIZE);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const loadMore = useCallback(() => {
     setChallenges(prev => {
@@ -89,7 +90,7 @@ const InfiniteGameFeed: React.FC = () => {
           loadMore();
         }
       },
-      { rootMargin: '200px' }
+      { root: scrollContainerRef.current, rootMargin: '200px' }
     );
 
     if (sentinelRef.current) {
@@ -120,72 +121,74 @@ const InfiniteGameFeed: React.FC = () => {
         <span className="text-xs text-muted-foreground ml-auto">∞ scroll for more</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {challenges.map((challenge) => {
-          const gameInfo = GAME_INFO[challenge.game];
-          const GameIcon = gameInfo.icon;
-          const ModifierIcon = challenge.modifier.icon;
-          const diffConfig = DIFFICULTY_CONFIGS[challenge.difficulty];
+      <div ref={scrollContainerRef} className="max-h-[70vh] overflow-y-auto rounded-xl border border-border p-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-3">
+          {challenges.map((challenge) => {
+            const gameInfo = GAME_INFO[challenge.game];
+            const GameIcon = gameInfo.icon;
+            const ModifierIcon = challenge.modifier.icon;
+            const diffConfig = DIFFICULTY_CONFIGS[challenge.difficulty];
 
-          return (
-            <button
-              key={challenge.id}
-              onClick={() => handlePlay(challenge)}
-              className="group text-left bg-card border border-border rounded-xl p-4 hover:border-foreground/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-foreground/20"
-            >
-              {/* Top row: game icon + name + difficulty badge */}
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center group-hover:bg-foreground/10 transition-colors">
-                    <GameIcon className="h-5 w-5 text-foreground" />
+            return (
+              <button
+                key={challenge.id}
+                onClick={() => handlePlay(challenge)}
+                className="group text-left bg-card border border-border rounded-xl p-4 hover:border-foreground/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-foreground/20"
+              >
+                {/* Top row: game icon + name + difficulty badge */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center group-hover:bg-foreground/10 transition-colors">
+                      <GameIcon className="h-5 w-5 text-foreground" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground text-sm leading-tight">{gameInfo.title}</p>
+                      <p className="text-xs text-muted-foreground">{diffConfig.label}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground text-sm leading-tight">{gameInfo.title}</p>
-                    <p className="text-xs text-muted-foreground">{diffConfig.label}</p>
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    {getDifficultyIcon(challenge.difficulty)}
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 4 }, (_, i) => (
+                        <div
+                          key={i}
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            i < diffConfig.complexity ? 'bg-foreground' : 'bg-muted'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  {getDifficultyIcon(challenge.difficulty)}
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: 4 }, (_, i) => (
-                      <div
-                        key={i}
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          i < diffConfig.complexity ? 'bg-foreground' : 'bg-muted'
-                        }`}
-                      />
-                    ))}
+
+                {/* Modifier / challenge type */}
+                <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
+                  <ModifierIcon className="h-4 w-4 text-foreground/70 shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium text-foreground truncate">{challenge.modifier.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{challenge.modifier.description}</p>
                   </div>
                 </div>
-              </div>
 
-              {/* Modifier / challenge type */}
-              <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
-                <ModifierIcon className="h-4 w-4 text-foreground/70 shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-foreground truncate">{challenge.modifier.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{challenge.modifier.description}</p>
+                {/* Score multiplier hint */}
+                <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Score ×{diffConfig.scoreMultiplier}</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-foreground font-medium">
+                    Play →
+                  </span>
                 </div>
-              </div>
+              </button>
+            );
+          })}
+        </div>
 
-              {/* Score multiplier hint */}
-              <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-                <span>Score ×{diffConfig.scoreMultiplier}</span>
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity text-foreground font-medium">
-                  Play →
-                </span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Sentinel for infinite scroll */}
-      <div ref={sentinelRef} className="h-8 flex items-center justify-center">
-        <div className="flex gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse" />
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:150ms]" />
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:300ms]" />
+        {/* Sentinel for infinite scroll */}
+        <div ref={sentinelRef} className="h-8 flex items-center justify-center">
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse" />
+            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:150ms]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:300ms]" />
+          </div>
         </div>
       </div>
     </div>
