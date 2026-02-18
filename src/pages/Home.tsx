@@ -9,6 +9,7 @@ import GameInvitations from '@/components/GameInvitations';
 import ProBadge from '@/components/ProBadge';
 import HallOfFamePreview from '@/components/HallOfFamePreview';
 import InfiniteGameFeed from '@/components/InfiniteGameFeed';
+import FeedbackSection from '@/components/FeedbackSection';
 import { useSubscription } from '@/hooks/useSubscription';
 import { 
   Gamepad2, 
@@ -29,7 +30,7 @@ import {
   Palette,
   MousePointer,
   Repeat,
-  // Snake doesn't have a perfect icon, we'll use a generic one
+  MessageCircle,
 } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -206,6 +207,13 @@ const Home: React.FC = () => {
             Random Games
             <span className="text-[10px] bg-foreground text-background px-1.5 py-0.5 rounded-full font-bold leading-none">∞</span>
           </a>
+          <a
+            href="#feedback"
+            className="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card hover:bg-foreground hover:text-background transition-all text-sm font-medium text-foreground"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Feedback
+          </a>
         </nav>
 
         {/* Scroll indicator */}
@@ -264,6 +272,11 @@ const Home: React.FC = () => {
         {/* Infinite Random Challenges */}
         <section id="random-games" className="mb-12 scroll-mt-20">
           <InfiniteGameFeed />
+        </section>
+
+        {/* Community Feedback */}
+        <section id="feedback" className="mb-12 scroll-mt-20 max-w-2xl mx-auto">
+          <FeedbackSection />
         </section>
       </main>
 
