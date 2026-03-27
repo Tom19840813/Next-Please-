@@ -5,83 +5,87 @@
 
 @layer base {
   :root {
-    --background: 0 0% 3%;
-    --foreground: 0 0% 98%;
+    --background: 240 10% 4%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 3%;
+    --primary: 185 100% 55%;
+    --primary-foreground: 240 10% 4%;
 
-    --secondary: 0 0% 85%;
-    --secondary-foreground: 0 0% 3%;
+    --secondary: 330 100% 55%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 0 0% 20%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 50 100% 55%;
+    --accent-foreground: 240 10% 4%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 0% 80%;
+    --border: 240 10% 18%;
+    --input: 240 10% 18%;
+    --ring: 185 100% 55%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 0 0% 3%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 0 0% 80%;
+    --neon-cyan: 185 100% 55%;
+    --neon-magenta: 330 100% 55%;
+    --neon-yellow: 50 100% 55%;
+
+    --sidebar-background: 240 10% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 185 100% 55%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 10% 18%;
+    --sidebar-ring: 185 100% 55%;
   }
 
   .dark {
-    --background: 0 0% 3%;
-    --foreground: 0 0% 98%;
+    --background: 240 10% 4%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 3%;
+    --primary: 185 100% 55%;
+    --primary-foreground: 240 10% 4%;
 
-    --secondary: 0 0% 85%;
-    --secondary-foreground: 0 0% 3%;
+    --secondary: 330 100% 55%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 0 0% 20%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 50 100% 55%;
+    --accent-foreground: 240 10% 4%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 0% 80%;
+    --border: 240 10% 18%;
+    --input: 240 10% 18%;
+    --ring: 185 100% 55%;
 
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 0 0% 3%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 0 0% 80%;
+    --sidebar-background: 240 10% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 185 100% 55%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 10% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 10% 18%;
+    --sidebar-ring: 185 100% 55%;
   }
 }
 
@@ -99,11 +103,11 @@
 
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-  /* Clean minimal grid */
+  /* Retro-futurist grid */
   .arcade-grid {
     background-image: 
-      linear-gradient(hsl(0 0% 20% / 0.3) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(0 0% 20% / 0.3) 1px, transparent 1px);
+      linear-gradient(hsl(var(--neon-cyan) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--neon-cyan) / 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -115,11 +119,72 @@
 
   /* Clean border effect */
   .neon-border {
-    border: 2px solid hsl(0 0% 30%);
+    border: 1px solid hsl(var(--neon-cyan) / 0.3);
+  }
+
+  /* Touch optimization */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active, a:active, [role="button"]:active {
+    transform: scale(0.97);
   }
 }
 
 @layer components {
+  /* Neon glow utilities */
+  .neon-glow-cyan {
+    box-shadow: 0 0 10px hsl(var(--neon-cyan) / 0.3), 0 0 30px hsl(var(--neon-cyan) / 0.1);
+  }
+
+  .neon-glow-magenta {
+    box-shadow: 0 0 10px hsl(var(--neon-magenta) / 0.3), 0 0 30px hsl(var(--neon-magenta) / 0.1);
+  }
+
+  .neon-glow-yellow {
+    box-shadow: 0 0 10px hsl(var(--neon-yellow) / 0.3), 0 0 30px hsl(var(--neon-yellow) / 0.1);
+  }
+
+  .neon-text-cyan {
+    text-shadow: 0 0 10px hsl(var(--neon-cyan) / 0.5), 0 0 30px hsl(var(--neon-cyan) / 0.2);
+  }
+
+  .neon-text-magenta {
+    text-shadow: 0 0 10px hsl(var(--neon-magenta) / 0.5), 0 0 30px hsl(var(--neon-magenta) / 0.2);
+  }
+
+  .neon-text-yellow {
+    text-shadow: 0 0 10px hsl(var(--neon-yellow) / 0.5), 0 0 30px hsl(var(--neon-yellow) / 0.2);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* CRT Scanline overlay */
+  .crt-scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsl(0 0% 0% / 0.03) 2px,
+      hsl(0 0% 0% / 0.03) 4px
+    );
+  }
+
   .game-card {
     @apply relative w-full h-full rounded-xl overflow-hidden shadow-2xl flex flex-col bg-card border border-border;
     transform: translateZ(0);
