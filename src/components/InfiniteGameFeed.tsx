@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameType } from '@/context/GameContext';
 import { DifficultyLevel, DIFFICULTY_CONFIGS } from '@/types/difficulty';
+import { lightTap } from '@/utils/haptics';
 import { 
   Gamepad2, Brain, Calculator, Smile, Type, Circle, Grid3X3, Users,
   Zap, Trophy, Clock, Flame, Shuffle, Target, Timer, Star, Sparkles,
@@ -38,6 +39,13 @@ const GAME_INFO: Record<GameType, { title: string; icon: React.ElementType }> = 
   simon: { title: 'Simon Says', icon: Repeat },
 };
 
+const DIFFICULTY_NEON: Record<DifficultyLevel, string> = {
+  easy: 'text-primary border-primary/30',
+  medium: 'text-accent border-accent/30',
+  hard: 'text-secondary border-secondary/30',
+  expert: 'text-destructive border-destructive/30',
+};
+
 interface GeneratedChallenge {
   id: string;
   game: GameType;
@@ -47,19 +55,12 @@ interface GeneratedChallenge {
 }
 
 const generateChallenge = (index: number): GeneratedChallenge => {
-  // Use index as part of seed for deterministic-ish but varied results
-  const seed = Date.now() + index * 7919; // prime number for spread
+  const seed = Date.now() + index * 7919;
   const game = GAME_TYPES[Math.floor((seed * 13) % GAME_TYPES.length)];
   const difficulty = DIFFICULTIES[Math.floor((seed * 17) % DIFFICULTIES.length)];
   const modifier = CHALLENGE_MODIFIERS[Math.floor((seed * 23) % CHALLENGE_MODIFIERS.length)];
   
-  return {
-    id: `challenge-${index}-${seed}`,
-    game,
-    difficulty,
-    modifier,
-    seed,
-  };
+  return { id: `challenge-${index}-${seed}`, game, difficulty, modifier, seed };
 };
 
 const BATCH_SIZE = 6;
@@ -85,22 +86,15 @@ const InfiniteGameFeed: React.FC = () => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMore();
-        }
-      },
+      (entries) => { if (entries[0].isIntersecting) loadMore(); },
       { root: scrollContainerRef.current, rootMargin: '200px' }
     );
-
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
-
+    if (sentinelRef.current) observer.observe(sentinelRef.current);
     return () => observer.disconnect();
   }, [loadMore]);
 
   const handlePlay = (challenge: GeneratedChallenge) => {
+    lightTap();
     navigate(`/play/${challenge.game}?difficulty=${challenge.difficulty}`);
   };
 
@@ -116,44 +110,44 @@ const InfiniteGameFeed: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-6">
-        <Shuffle className="h-5 w-5 text-foreground" />
+        <Shuffle className="h-5 w-5 text-secondary" />
         <h3 className="text-xl font-bold text-foreground">Random Challenges</h3>
         <span className="text-xs text-muted-foreground ml-auto">∞ scroll for more</span>
       </div>
 
-      <div ref={scrollContainerRef} className="max-h-[70vh] overflow-y-auto rounded-xl border border-border p-1">
+      <div ref={scrollContainerRef} className="max-h-[70vh] overflow-y-auto rounded-xl glass p-1">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-3">
           {challenges.map((challenge) => {
             const gameInfo = GAME_INFO[challenge.game];
             const GameIcon = gameInfo.icon;
             const ModifierIcon = challenge.modifier.icon;
             const diffConfig = DIFFICULTY_CONFIGS[challenge.difficulty];
+            const neonStyle = DIFFICULTY_NEON[challenge.difficulty];
 
             return (
               <button
                 key={challenge.id}
                 onClick={() => handlePlay(challenge)}
-                className="group text-left bg-card border border-border rounded-xl p-4 hover:border-foreground/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                className={`group text-left glass rounded-xl p-4 border ${neonStyle.split(' ')[1]} hover:neon-glow-cyan transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/30`}
               >
-                {/* Top row: game icon + name + difficulty badge */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center group-hover:bg-foreground/10 transition-colors">
-                      <GameIcon className="h-5 w-5 text-foreground" />
+                    <div className="w-9 h-9 rounded-lg bg-muted/50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                      <GameIcon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <p className="font-semibold text-foreground text-sm leading-tight">{gameInfo.title}</p>
-                      <p className="text-xs text-muted-foreground">{diffConfig.label}</p>
+                      <p className={`text-xs ${neonStyle.split(' ')[0]}`}>{diffConfig.label}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 text-muted-foreground">
+                  <div className={`flex items-center gap-1 ${neonStyle.split(' ')[0]}`}>
                     {getDifficultyIcon(challenge.difficulty)}
                     <div className="flex gap-0.5">
                       {Array.from({ length: 4 }, (_, i) => (
                         <div
                           key={i}
                           className={`w-1.5 h-1.5 rounded-full ${
-                            i < diffConfig.complexity ? 'bg-foreground' : 'bg-muted'
+                            i < diffConfig.complexity ? 'bg-primary' : 'bg-muted'
                           }`}
                         />
                       ))}
@@ -161,19 +155,17 @@ const InfiniteGameFeed: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Modifier / challenge type */}
-                <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2">
-                  <ModifierIcon className="h-4 w-4 text-foreground/70 shrink-0" />
+                <div className="flex items-center gap-2 bg-muted/30 rounded-lg px-3 py-2">
+                  <ModifierIcon className="h-4 w-4 text-accent shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs font-medium text-foreground truncate">{challenge.modifier.name}</p>
                     <p className="text-xs text-muted-foreground truncate">{challenge.modifier.description}</p>
                   </div>
                 </div>
 
-                {/* Score multiplier hint */}
                 <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
                   <span>Score ×{diffConfig.scoreMultiplier}</span>
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-foreground font-medium">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-primary font-medium">
                     Play →
                   </span>
                 </div>
@@ -182,12 +174,11 @@ const InfiniteGameFeed: React.FC = () => {
           })}
         </div>
 
-        {/* Sentinel for infinite scroll */}
         <div ref={sentinelRef} className="h-8 flex items-center justify-center">
           <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse" />
-            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:150ms]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 animate-pulse [animation-delay:300ms]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
+            <div className="w-1.5 h-1.5 rounded-full bg-secondary/40 animate-pulse [animation-delay:150ms]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-accent/40 animate-pulse [animation-delay:300ms]" />
           </div>
         </div>
       </div>

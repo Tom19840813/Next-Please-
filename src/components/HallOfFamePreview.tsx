@@ -25,6 +25,12 @@ const generateRandomPlayers = (): TopPlayer[] => {
   })).sort((a, b) => b.totalScore - a.totalScore);
 };
 
+const MEDAL_COLORS = [
+  'text-accent',           // gold - yellow neon
+  'text-muted-foreground', // silver
+  'text-secondary',        // bronze - magenta
+];
+
 const HallOfFamePreview: React.FC = () => {
   const [topPlayers, setTopPlayers] = useState<TopPlayer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,29 +59,30 @@ const HallOfFamePreview: React.FC = () => {
   }, []);
 
   const getMedalIcon = (index: number) => {
+    const color = MEDAL_COLORS[index] || 'text-muted-foreground';
     switch (index) {
-      case 0: return <Crown className="h-5 w-5 text-foreground" />;
-      case 1: return <Medal className="h-4 w-4 text-muted-foreground" />;
-      case 2: return <Medal className="h-4 w-4 text-muted-foreground" />;
+      case 0: return <Crown className={`h-5 w-5 ${color}`} />;
+      case 1: return <Medal className={`h-4 w-4 ${color}`} />;
+      case 2: return <Medal className={`h-4 w-4 ${color}`} />;
       default: return null;
     }
   };
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-border">
+    <Card className="glass border-border/50">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-primary" />
+            <Trophy className="h-5 w-5 text-accent neon-text-yellow" />
             <CardTitle className="text-lg text-foreground">Hall of Fame</CardTitle>
             {isDemo && (
-              <span className="text-[10px] px-2 py-0.5 bg-primary/20 border border-primary/30 rounded-full text-primary">
+              <span className="text-[10px] px-2 py-0.5 bg-primary/10 border border-primary/20 rounded-full text-primary">
                 Demo
               </span>
             )}
           </div>
           <Link to="/hall-of-fame">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
               View All <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </Link>
@@ -91,14 +98,14 @@ const HallOfFamePreview: React.FC = () => {
             {topPlayers.map((player, idx) => (
               <div 
                 key={player.userId}
-                className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                className={`flex items-center gap-3 p-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors ${idx === 0 ? 'animate-shimmer bg-[length:200%_100%] bg-gradient-to-r from-transparent via-primary/5 to-transparent' : ''}`}
               >
                 <div className="w-6 flex justify-center">
                   {getMedalIcon(idx)}
                 </div>
-                <Avatar className="h-8 w-8 border border-primary/30">
+                <Avatar className="h-8 w-8 border border-primary/20">
                   {player.avatar_url && <AvatarImage src={player.avatar_url} />}
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  <AvatarFallback className="bg-primary/20 text-primary text-xs">
                     {(player.username?.[0] || 'A').toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -107,7 +114,7 @@ const HallOfFamePreview: React.FC = () => {
                   <p className="text-xs text-muted-foreground">{player.gamesPlayed} games</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-sm text-secondary">{player.totalScore.toLocaleString()}</p>
+                  <p className="font-mono text-sm text-primary">{player.totalScore.toLocaleString()}</p>
                 </div>
               </div>
             ))}
