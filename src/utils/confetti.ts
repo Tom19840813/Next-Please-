@@ -1,5 +1,7 @@
 import confetti from 'canvas-confetti';
 
+const NEON_COLORS = ['#00e5ff', '#ff0080', '#ffea00', '#ffffff'];
+
 export const celebrateHighScore = () => {
   const duration = 3000;
   const animationEnd = Date.now() + duration;
@@ -22,13 +24,13 @@ export const celebrateHighScore = () => {
       ...defaults,
       particleCount,
       origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-      colors: ['#c77dff', '#00f5ff', '#ff006e', '#ffea00'],
+      colors: NEON_COLORS,
     });
     confetti({
       ...defaults,
       particleCount,
       origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-      colors: ['#c77dff', '#00f5ff', '#ff006e', '#ffea00'],
+      colors: NEON_COLORS,
     });
   }, 250);
 };
@@ -38,7 +40,7 @@ export const quickCelebration = () => {
     particleCount: 100,
     spread: 70,
     origin: { y: 0.6 },
-    colors: ['#c77dff', '#00f5ff', '#ff006e', '#ffea00'],
+    colors: NEON_COLORS,
     zIndex: 9999,
   });
 };
