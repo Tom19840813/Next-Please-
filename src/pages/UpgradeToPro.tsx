@@ -8,6 +8,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import ProBadge from '@/components/ProBadge';
 
 const UpgradeToPro: React.FC = () => {
+  useSEO({ title: 'Upgrade to Pro', description: 'Unlock ad-free gaming, exclusive games and premium features with Swipe & Play Arcade Pro.', canonical: '/upgrade' });
   const { isPro } = useSubscription();
 
   if (isPro) {

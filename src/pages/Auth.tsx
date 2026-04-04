@@ -30,6 +30,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 const Auth: React.FC = () => {
+  useSEO({ title: 'Sign In or Sign Up', description: 'Create an account or log in to track your scores, compete on leaderboards and unlock Pro features.', canonical: '/auth' });
   const { user, signIn, signUp, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
   

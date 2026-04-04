@@ -35,6 +35,7 @@ const gameLabels: Record<GameType, string> = {
 };
 
 const Leaderboard: React.FC = () => {
+  useSEO({ title: 'Leaderboard — Top Scores', description: 'See who tops the leaderboard across Sudoku, Tetris, Snake, Memory and more arcade games.', canonical: '/leaderboard' });
   const [activeTab, setActiveTab] = useState<GameType | 'all'>('all');
   const [leaderboard, setLeaderboard] = useState<GameScore[]>([]);
   const [userScores, setUserScores] = useState<GameScore[]>([]);
