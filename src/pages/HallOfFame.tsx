@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
+import { useSEO } from '@/hooks/useSEO';
 import { getHallOfFame } from '../services/gameScores';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

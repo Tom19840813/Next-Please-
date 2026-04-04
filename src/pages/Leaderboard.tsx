@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
+import { useSEO } from '@/hooks/useSEO';
 import { GameType } from '../context/GameContext';
 import { GameScore, getLeaderboard, getUserBestScores } from '../services/gameScores';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';

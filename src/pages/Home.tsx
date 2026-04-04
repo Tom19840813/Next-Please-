@@ -34,6 +34,11 @@ const TYPEWRITER_PHRASES = [
 ];
 
 const Home: React.FC = () => {
+  useSEO({
+    title: 'Free Retro Arcade Games Online',
+    description: 'Play free retro arcade games instantly — Sudoku, Tetris, Snake, Memory and more. Mobile-first, no downloads. Swipe to play!',
+    canonical: '/',
+  });
   const { user } = useAuth();
   const { isPro } = useSubscription();
   const [selectedGame, setSelectedGame] = useState<{id: string; title: string; color: string} | null>(null);
