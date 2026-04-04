@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useSEO } from '@/hooks/useSEO';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 const Auth: React.FC = () => {
+  useSEO({ title: 'Sign In or Sign Up', description: 'Create an account or log in to track your scores, compete on leaderboards and unlock Pro features.', canonical: '/auth' });
   const { user, signIn, signUp, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
   

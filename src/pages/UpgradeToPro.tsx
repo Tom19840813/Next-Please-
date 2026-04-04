@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '@/hooks/useSEO';
 import { Crown, Zap, Shield, Star, ArrowLeft, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import ProBadge from '@/components/ProBadge';
 
 const UpgradeToPro: React.FC = () => {
+  useSEO({ title: 'Upgrade to Pro', description: 'Unlock ad-free gaming, exclusive games and premium features with Swipe & Play Arcade Pro.', canonical: '/upgrade' });
   const { isPro } = useSubscription();
 
   if (isPro) {

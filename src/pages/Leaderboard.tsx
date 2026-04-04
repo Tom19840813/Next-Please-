@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
+import { useSEO } from '@/hooks/useSEO';
 import { GameType } from '../context/GameContext';
 import { GameScore, getLeaderboard, getUserBestScores } from '../services/gameScores';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -34,6 +35,7 @@ const gameLabels: Record<GameType, string> = {
 };
 
 const Leaderboard: React.FC = () => {
+  useSEO({ title: 'Leaderboard — Top Scores', description: 'See who tops the leaderboard across Sudoku, Tetris, Snake, Memory and more arcade games.', canonical: '/leaderboard' });
   const [activeTab, setActiveTab] = useState<GameType | 'all'>('all');
   const [leaderboard, setLeaderboard] = useState<GameScore[]>([]);
   const [userScores, setUserScores] = useState<GameScore[]>([]);

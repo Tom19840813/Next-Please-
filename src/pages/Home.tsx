@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '@/hooks/useSEO';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,11 @@ const TYPEWRITER_PHRASES = [
 ];
 
 const Home: React.FC = () => {
+  useSEO({
+    title: 'Free Retro Arcade Games Online',
+    description: 'Play free retro arcade games instantly — Sudoku, Tetris, Snake, Memory and more. Mobile-first, no downloads. Swipe to play!',
+    canonical: '/',
+  });
   const { user } = useAuth();
   const { isPro } = useSubscription();
   const [selectedGame, setSelectedGame] = useState<{id: string; title: string; color: string} | null>(null);
