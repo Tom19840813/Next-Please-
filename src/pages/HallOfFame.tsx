@@ -38,6 +38,7 @@ const generateRandomPlayers = (): TopPlayer[] => {
 };
 
 const HallOfFame: React.FC = () => {
+  useSEO({ title: 'Hall of Fame — All-Time Legends', description: 'Meet the all-time top players in Swipe & Play Arcade. Compete for a spot among the legends.', canonical: '/hall-of-fame' });
   const [topPlayers, setTopPlayers] = useState<TopPlayer[]>([]);
   const [timeFrame, setTimeFrame] = useState<'allTime' | 'monthly' | 'weekly'>('allTime');
   const [loading, setLoading] = useState(true);
