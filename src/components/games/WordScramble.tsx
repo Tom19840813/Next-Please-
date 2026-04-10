@@ -21,6 +21,7 @@ interface GameState {
 
 const WordScramble: React.FC = () => {
   const { incrementScore } = useGameContext();
+  const [gameStarted, setGameStarted] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
     scrambledWord: '',
     originalWord: '',
@@ -30,18 +31,13 @@ const WordScramble: React.FC = () => {
     hintsUsed: 0,
     successMessage: null,
     errorMessage: null,
-    gameActive: true,
+    gameActive: false,
     hintsAvailable: 3
   });
   const [userGuess, setUserGuess] = useState<string>('');
   const [inputLetters, setInputLetters] = useState<string[]>([]);
   const [letterPool, setLetterPool] = useState<string[]>([]);
   const [round, setRound] = useState<number>(1);
-
-  // Initialize game on mount
-  useEffect(() => {
-    startNewRound();
-  }, []);
 
   // Timer effect
   useEffect(() => {
@@ -65,53 +61,39 @@ const WordScramble: React.FC = () => {
     return () => clearInterval(timer);
   }, [gameState.gameActive]);
 
-  // Scramble a word
   const scrambleWord = (word: string): string => {
-    // Convert to array and shuffle
     const array = word.split('');
     let m = array.length;
-    
-    // Fisher-Yates shuffle
     while (m) {
       const i = Math.floor(Math.random() * m--);
       [array[m], array[i]] = [array[i], array[m]];
     }
-    
     const scrambled = array.join('');
-    
-    // If by chance we get the same word, scramble again
     return scrambled === word ? scrambleWord(word) : scrambled;
   };
 
-  // Start a new round with a new word
   const startNewRound = () => {
-    // Get a random word and its category
     const { word, category } = generateRandomWord();
     const scrambled = scrambleWord(word);
     
-    // Update game state
     setGameState(prev => ({
       ...prev,
       scrambledWord: scrambled,
       originalWord: word,
       category,
-      timeLeft: Math.max(60 - (round - 1) * 5, 30), // Reduce time as rounds progress
+      timeLeft: Math.max(60 - (round - 1) * 5, 30),
       successMessage: null,
       errorMessage: null,
       gameActive: true,
       hintsAvailable: 3 - prev.hintsUsed
     }));
     
-    // Reset user input
     setUserGuess('');
-    
-    // Create letter pool from scrambled word
     setLetterPool(scrambled.split(''));
     setInputLetters([]);
   };
 
-  // Restart the game
-  const restartGame = () => {
+  const startGame = () => {
     setRound(1);
     setGameState({
       scrambledWord: '',
@@ -126,13 +108,30 @@ const WordScramble: React.FC = () => {
       hintsAvailable: 3
     });
     setUserGuess('');
-    startNewRound();
+    setGameStarted(true);
+    // Need to call startNewRound after state is set
+    setTimeout(() => {
+      const { word, category } = generateRandomWord();
+      const scrambled = scrambleWord(word);
+      setGameState(prev => ({
+        ...prev,
+        scrambledWord: scrambled,
+        originalWord: word,
+        category,
+        timeLeft: 60,
+        gameActive: true,
+      }));
+      setLetterPool(scrambled.split(''));
+      setInputLetters([]);
+    }, 0);
   };
 
-  // Check user's guess
+  const restartGame = () => {
+    startGame();
+  };
+
   const checkAnswer = () => {
     if (userGuess.toLowerCase() === gameState.originalWord.toLowerCase()) {
-      // Calculate points: base + time bonus + round bonus
       const basePoints = 50;
       const timeBonus = Math.floor(gameState.timeLeft / 3);
       const roundBonus = round * 10;
@@ -147,7 +146,6 @@ const WordScramble: React.FC = () => {
       
       incrementScore(totalPoints);
       
-      // Move to next round after delay
       setTimeout(() => {
         setRound(prev => prev + 1);
         startNewRound();
@@ -157,15 +155,12 @@ const WordScramble: React.FC = () => {
         ...prev,
         errorMessage: "That's not correct. Try again!"
       }));
-      
-      // Clear error after a brief delay
       setTimeout(() => {
         setGameState(prev => ({ ...prev, errorMessage: null }));
       }, 2000);
     }
   };
 
-  // Use a hint
   const useHint = () => {
     if (gameState.hintsUsed >= 3) return;
     
@@ -176,16 +171,13 @@ const WordScramble: React.FC = () => {
       }
     }
     
-    if (!unrevealedPositions.length) return; // Nothing to reveal
+    if (!unrevealedPositions.length) return;
     
-    // Choose a random position to reveal
     const revealPos = unrevealedPositions[Math.floor(Math.random() * unrevealedPositions.length)];
     const correctLetter = gameState.originalWord[revealPos];
     
-    // Add the letter to the user's input
     let newInputLetters = [...inputLetters];
     if (revealPos >= inputLetters.length) {
-      // Fill in any gaps
       while (newInputLetters.length < revealPos) {
         newInputLetters.push('');
       }
@@ -194,7 +186,6 @@ const WordScramble: React.FC = () => {
       newInputLetters[revealPos] = correctLetter;
     }
     
-    // Remove the letter from the pool if it's there
     const letterIndex = letterPool.indexOf(correctLetter);
     if (letterIndex !== -1) {
       const newPool = [...letterPool];
@@ -209,39 +200,28 @@ const WordScramble: React.FC = () => {
       ...prev,
       hintsUsed: prev.hintsUsed + 1,
       hintsAvailable: prev.hintsAvailable - 1,
-      score: Math.max(prev.score - 10, 0) // Penalty for using hint
+      score: Math.max(prev.score - 10, 0)
     }));
   };
 
-  // Handle letter selection from pool
   const selectLetter = (letter: string, index: number) => {
-    // Add letter to input
     const newInputLetters = [...inputLetters, letter];
     setInputLetters(newInputLetters);
     setUserGuess(newInputLetters.join(''));
-    
-    // Remove letter from pool
     const newPool = [...letterPool];
     newPool.splice(index, 1);
     setLetterPool(newPool);
   };
 
-  // Handle letter deselection (return to pool)
   const deselectLetter = (index: number) => {
-    // Get the letter being removed
     const letter = inputLetters[index];
-    
-    // Remove from input
     const newInputLetters = [...inputLetters];
     newInputLetters.splice(index, 1);
     setInputLetters(newInputLetters);
-    setUserGuess(newInputLetters.join(''));  // Fixed: Added closing quote and parenthesis
-    
-    // Add back to letter pool
+    setUserGuess(newInputLetters.join(''));
     setLetterPool([...letterPool, letter]);
   };
 
-  // Render the category badge
   const renderCategoryBadge = () => {
     return (
       <span className={`px-3 py-1 rounded-full text-xs font-medium bg-muted text-foreground border border-border`}>
@@ -249,6 +229,20 @@ const WordScramble: React.FC = () => {
       </span>
     );
   };
+
+  if (!gameStarted) {
+    return (
+      <div className="game-card bg-card p-4 flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-foreground mb-1">Word Scramble</h2>
+        <p className="text-sm text-muted-foreground mb-4">Unscramble the word to score points!</p>
+        <div className="flex-1 flex items-center justify-center">
+          <button onClick={startGame} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold hover:bg-primary/80">
+            Start Game
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="game-card bg-card p-4 flex flex-col">
@@ -262,19 +256,13 @@ const WordScramble: React.FC = () => {
         <div className="flex justify-between mb-4">
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border flex items-center gap-1">
             <Timer size={16} className="text-foreground" />
-            <span className="text-sm font-semibold text-foreground">
-              {gameState.timeLeft}s
-            </span>
+            <span className="text-sm font-semibold text-foreground">{gameState.timeLeft}s</span>
           </div>
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
-            <span className="text-sm font-semibold text-foreground">
-              Round: {round}
-            </span>
+            <span className="text-sm font-semibold text-foreground">Round: {round}</span>
           </div>
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
-            <span className="text-sm font-semibold text-foreground">
-              Score: {gameState.score}
-            </span>
+            <span className="text-sm font-semibold text-foreground">Score: {gameState.score}</span>
           </div>
         </div>
 
@@ -363,7 +351,7 @@ const WordScramble: React.FC = () => {
           </div>
         )}
 
-        {!gameState.gameActive && !gameState.successMessage && (
+        {!gameState.gameActive && !gameState.successMessage && gameStarted && (
           <div className="mt-4 text-center">
             <p className="text-lg font-semibold mb-2 text-foreground">Game Over!</p>
             <p className="mb-3 text-muted-foreground">The word was: <span className="font-bold text-foreground">{gameState.originalWord}</span></p>

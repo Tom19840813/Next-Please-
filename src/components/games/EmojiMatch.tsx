@@ -8,7 +8,6 @@ interface Card {
   isMatched: boolean;
 }
 
-// Different emoji set from the memory game
 const emojis = ['😀', '🤣', '😍', '😎', '🤔', '😴', '🥳', '😱', '🤯', '🥺'];
 
 const EmojiMatch: React.FC = () => {
@@ -18,18 +17,12 @@ const EmojiMatch: React.FC = () => {
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
   const [moves, setMoves] = useState<number>(0);
   const [gameComplete, setGameComplete] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState<number>(60); // 60 second time limit
-  const [gameActive, setGameActive] = useState<boolean>(true);
+  const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [gameActive, setGameActive] = useState<boolean>(false);
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
 
-  // Initialize game on first render
-  useEffect(() => {
-    initializeGame();
-  }, []);
-
-  // Timer
   useEffect(() => {
     if (!gameActive) return;
-    
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -40,11 +33,9 @@ const EmojiMatch: React.FC = () => {
         return prev - 1;
       });
     }, 1000);
-    
     return () => clearInterval(timer);
   }, [gameActive]);
 
-  // Check for matches when two cards are flipped
   useEffect(() => {
     if (flippedCards.length === 2) {
       const [firstId, secondId] = flippedCards;
@@ -52,64 +43,52 @@ const EmojiMatch: React.FC = () => {
       const secondCard = cards.find(card => card.id === secondId);
 
       if (firstCard?.emoji === secondCard?.emoji) {
-        // Match found
-        setCards(currentCards => 
-          currentCards.map(card => 
-            card.id === firstId || card.id === secondId 
-              ? { ...card, isMatched: true } 
+        setCards(currentCards =>
+          currentCards.map(card =>
+            card.id === firstId || card.id === secondId
+              ? { ...card, isMatched: true }
               : card
           )
         );
         setMatchedPairs(prev => prev + 1);
-        
-        // More points for faster matches
         const timeBonus = Math.floor(timeLeft / 10) + 1;
-        incrementScore(25 * timeBonus); 
+        incrementScore(25 * timeBonus);
         setFlippedCards([]);
       } else {
-        // No match, flip the cards back after a delay
         setTimeout(() => {
-          setCards(currentCards => 
-            currentCards.map(card => 
-              card.id === firstId || card.id === secondId 
-                ? { ...card, isFlipped: false } 
+          setCards(currentCards =>
+            currentCards.map(card =>
+              card.id === firstId || card.id === secondId
+                ? { ...card, isFlipped: false }
                 : card
             )
           );
           setFlippedCards([]);
         }, 800);
       }
-
       setMoves(prev => prev + 1);
     }
   }, [flippedCards]);
 
-  // Check if game is complete
   useEffect(() => {
-    if (matchedPairs === emojis.length) {
+    if (matchedPairs === emojis.length && gameStarted) {
       setGameComplete(true);
       setGameActive(false);
-      
-      // Bonus points based on remaining time and efficiency
       const timeBonus = timeLeft * 5;
       const efficiencyBonus = Math.max(200 - (moves - emojis.length) * 10, 0);
       incrementScore(timeBonus + efficiencyBonus);
-      saveScore(); // Save the score to the database when game is completed
+      saveScore();
     }
   }, [matchedPairs]);
 
   const initializeGame = () => {
-    // Create pairs of cards with emojis
     const cardPairs = [...emojis, ...emojis].map((emoji, index) => ({
       id: index,
       emoji,
       isFlipped: false,
       isMatched: false
     }));
-    
-    // Shuffle the cards
     const shuffledCards = cardPairs.sort(() => Math.random() - 0.5);
-    
     setCards(shuffledCards);
     setFlippedCards([]);
     setMatchedPairs(0);
@@ -117,24 +96,18 @@ const EmojiMatch: React.FC = () => {
     setGameComplete(false);
     setTimeLeft(60);
     setGameActive(true);
+    setGameStarted(true);
   };
 
   const handleCardClick = (id: number) => {
-    // Ignore clicks if game is over or already two cards flipped
     if (!gameActive || flippedCards.length === 2) return;
-    
-    // If the card is already matched or flipped, ignore click
     const clickedCard = cards.find(card => card.id === id);
     if (clickedCard?.isMatched || clickedCard?.isFlipped) return;
-    
-    // Flip the card
-    setCards(currentCards => 
-      currentCards.map(card => 
+    setCards(currentCards =>
+      currentCards.map(card =>
         card.id === id ? { ...card, isFlipped: true } : card
       )
     );
-    
-    // Add the card to flippedCards
     setFlippedCards(prev => [...prev, id]);
   };
 
@@ -143,6 +116,20 @@ const EmojiMatch: React.FC = () => {
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
+
+  if (!gameStarted) {
+    return (
+      <div className="game-card bg-card p-4 flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-foreground mb-1">Emoji Match</h2>
+        <p className="text-sm text-muted-foreground mb-4">Match all the emoji pairs before time runs out!</p>
+        <div className="flex-1 flex items-center justify-center">
+          <button onClick={initializeGame} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold hover:bg-primary/80">
+            Start Game
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="game-card bg-card p-4">
@@ -154,19 +141,13 @@ const EmojiMatch: React.FC = () => {
       <div className="max-w-md mx-auto">
         <div className="flex justify-between mb-4">
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
-            <span className="text-sm font-semibold text-foreground">
-              Pairs: {matchedPairs}/{emojis.length}
-            </span>
+            <span className="text-sm font-semibold text-foreground">Pairs: {matchedPairs}/{emojis.length}</span>
           </div>
           <div className="px-4 py-1 bg-card rounded-full shadow border border-border">
-            <span className="text-sm font-semibold text-foreground">
-              Moves: {moves}
-            </span>
+            <span className="text-sm font-semibold text-foreground">Moves: {moves}</span>
           </div>
           <div className={`px-4 py-1 rounded-full shadow border ${timeLeft < 10 && gameActive ? 'bg-destructive/20 text-destructive border-destructive/30 animate-pulse' : 'bg-card border-border text-foreground'}`}>
-            <span className="text-sm font-semibold">
-              Time: {formatTime(timeLeft)}
-            </span>
+            <span className="text-sm font-semibold">Time: {formatTime(timeLeft)}</span>
           </div>
         </div>
 
@@ -175,8 +156,8 @@ const EmojiMatch: React.FC = () => {
             <div
               key={card.id}
               className={`aspect-square flex items-center justify-center text-2xl rounded-lg cursor-pointer transition-transform duration-300 ${
-                card.isFlipped || card.isMatched 
-                  ? 'bg-card shadow-md rotate-y-180 border border-border' 
+                card.isFlipped || card.isMatched
+                  ? 'bg-card shadow-md rotate-y-180 border border-border'
                   : 'bg-muted text-transparent rotate-y-0 border border-border'
               } ${card.isFlipped && !card.isMatched ? 'animate-pulse-light' : ''}`}
               onClick={() => handleCardClick(card.id)}
@@ -191,23 +172,17 @@ const EmojiMatch: React.FC = () => {
           <div className="mt-4 p-4 bg-muted text-foreground rounded-lg text-center border border-border">
             <p className="font-bold">Congratulations!</p>
             <p>You've matched all pairs in {moves} moves with {formatTime(timeLeft)} remaining.</p>
-            <button
-              className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90"
-              onClick={initializeGame}
-            >
+            <button className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90" onClick={initializeGame}>
               Play Again
             </button>
           </div>
         )}
 
-        {!gameActive && !gameComplete && (
+        {!gameActive && !gameComplete && gameStarted && (
           <div className="mt-4 p-4 bg-destructive/20 text-destructive rounded-lg text-center">
             <p className="font-bold">Time's Up!</p>
             <p>You matched {matchedPairs} out of {emojis.length} pairs.</p>
-            <button
-              className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90"
-              onClick={initializeGame}
-            >
+            <button className="mt-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90" onClick={initializeGame}>
               Try Again
             </button>
           </div>
