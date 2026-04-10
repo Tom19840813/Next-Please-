@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGameContext } from '../../context/GameContext';
 
 const DIFFICULTY = {
-  EASY: {
-    emptyCells: 30,
-    points: 100
-  },
-  MEDIUM: {
-    emptyCells: 40,
-    points: 200
-  },
-  HARD: {
-    emptyCells: 50,
-    points: 300
-  }
+  EASY: { emptyCells: 30, points: 100 },
+  MEDIUM: { emptyCells: 40, points: 200 },
+  HARD: { emptyCells: 50, points: 300 }
 };
 
 const SudokuGame = () => {
@@ -24,25 +15,12 @@ const SudokuGame = () => {
   const [initialBoard, setInitialBoard] = useState<boolean[][]>(Array(9).fill(false).map(() => Array(9).fill(false)));
   const [difficulty] = useState<keyof typeof DIFFICULTY>('EASY');
   const [isComplete, setIsComplete] = useState(false);
-
-  // Initialize the board on first render
-  useEffect(() => {
-    generateSudoku();
-  }, []);
-
-  // Check if the board is complete after each move
-  useEffect(() => {
-    if (isBoardComplete() && !isComplete) {
-      handleGameComplete();
-    }
-  }, [board]);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const generateSudoku = () => {
-    // This is a simplified version - a real Sudoku would have a more complex generation algorithm
     const newSolution = createSolvedBoard();
     setSolution(newSolution);
     
-    // Create a board with some cells removed based on difficulty
     const newBoard = JSON.parse(JSON.stringify(newSolution));
     const newInitialBoard = Array(9).fill(false).map(() => Array(9).fill(false));
     
@@ -50,7 +28,6 @@ const SudokuGame = () => {
     while (cellsToRemove > 0) {
       const row = Math.floor(Math.random() * 9);
       const col = Math.floor(Math.random() * 9);
-      
       if (newBoard[row][col] !== 0) {
         newBoard[row][col] = 0;
         newInitialBoard[row][col] = true;
@@ -61,69 +38,69 @@ const SudokuGame = () => {
     setBoard(newBoard);
     setInitialBoard(newInitialBoard);
     setIsComplete(false);
+    setGameStarted(true);
   };
 
-  // This is a simplified approach to create a valid Sudoku board
   const createSolvedBoard = () => {
     const newBoard = Array(9).fill(0).map(() => Array(9).fill(0));
-    
-    // A very simplified algorithm to fill the board
-    // In a real app, you would want a more sophisticated algorithm
     for (let row = 0; row < 9; row++) {
       for (let col = 0; col < 9; col++) {
         newBoard[row][col] = ((row * 3 + Math.floor(row / 3) + col) % 9) + 1;
       }
     }
-    
-    // Shuffle the board a bit to make it less predictable
     for (let i = 0; i < 20; i++) {
       const row1 = Math.floor(Math.random() * 9);
       const row2 = Math.floor(Math.random() * 9);
-      
       if (Math.floor(row1 / 3) === Math.floor(row2 / 3)) {
-        // Swap rows within the same block
         [newBoard[row1], newBoard[row2]] = [newBoard[row2], newBoard[row1]];
       }
     }
-    
     return newBoard;
   };
 
   const handleCellClick = (row: number, col: number) => {
-    // Can't modify initial cells
-    if (!initialBoard[row][col]) {
-      return;
-    }
-    
+    if (!initialBoard[row][col]) return;
     setSelectedCell([row, col]);
   };
 
   const handleNumberInput = (num: number) => {
     if (!selectedCell) return;
-    
     const [row, col] = selectedCell;
     const newBoard = [...board];
     newBoard[row][col] = num;
     setBoard(newBoard);
-  };
 
-  const isBoardComplete = () => {
-    // Check if the board is complete and correct
-    for (let row = 0; row < 9; row++) {
-      for (let col = 0; col < 9; col++) {
-        if (board[row][col] !== solution[row][col]) {
-          return false;
+    // Check completion
+    let complete = true;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        if (newBoard[r][c] !== solution[r][c]) {
+          complete = false;
+          break;
         }
       }
+      if (!complete) break;
     }
-    return true;
+    if (complete) {
+      setIsComplete(true);
+      incrementScore(DIFFICULTY[difficulty].points);
+      saveScore();
+    }
   };
 
-  const handleGameComplete = () => {
-    setIsComplete(true);
-    incrementScore(DIFFICULTY[difficulty].points);
-    saveScore(); // Save the score to the database when game is completed
-  };
+  if (!gameStarted) {
+    return (
+      <div className="game-card bg-card p-4 flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-foreground mb-1">Sudoku</h2>
+        <p className="text-sm text-muted-foreground mb-4">Fill in the grid with numbers 1-9</p>
+        <div className="flex-1 flex items-center justify-center">
+          <button onClick={generateSudoku} className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold hover:bg-primary/80">
+            Start Game
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="game-card bg-card p-4">
