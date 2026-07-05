@@ -75,7 +75,9 @@ const GameContainer: React.FC = () => {
       </div>
 
       <div className={`w-full h-full ${transitioning ? 'animate-slide-out-left' : 'animate-fade-in'}`}>
-        {renderCurrentGame()}
+        <Suspense fallback={<div className="w-full h-full flex items-center justify-center"><Loader2 className="h-8 w-8 text-primary animate-spin" /></div>}>
+          {renderCurrentGame()}
+        </Suspense>
       </div>
       
       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-50">
