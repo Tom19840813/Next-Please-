@@ -10,6 +10,11 @@ export default {
 		"./src/**/*.{ts,tsx}",
 	],
 	prefix: "",
+	safelist: [
+		'text-neon-cyan', 'text-neon-magenta', 'text-neon-yellow',
+		'neon-glow-cyan', 'neon-glow-magenta', 'neon-glow-yellow',
+		'group-hover:neon-glow-cyan', 'group-hover:neon-glow-magenta', 'group-hover:neon-glow-yellow',
+	],
 	theme: {
 		container: {
 			center: true,
