@@ -25,7 +25,7 @@ const AppHeader: React.FC = () => {
       
       <div className="flex gap-2 items-center">
         <span className="text-foreground text-sm bg-muted px-3 py-1 rounded-full border border-border">
-          8 Games
+          13 Games
         </span>
         <span className="hidden sm:block text-muted-foreground text-xs bg-muted px-2 py-1 rounded-full border border-border">
           Swipe to change games
