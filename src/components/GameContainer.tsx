@@ -70,9 +70,7 @@ const GameContainer: React.FC = () => {
 
   return (
     <div className="relative w-full h-full overflow-hidden" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-      <div className="absolute top-4 left-4 z-50 glass px-3 rounded-full text-primary font-bold py-1 text-sm">
-        Score: {score}
-      </div>
+
 
       <div className={`w-full h-full ${transitioning ? 'animate-slide-out-left' : 'animate-fade-in'}`}>
         <Suspense fallback={<div className="w-full h-full flex items-center justify-center"><Loader2 className="h-8 w-8 text-primary animate-spin" /></div>}>
