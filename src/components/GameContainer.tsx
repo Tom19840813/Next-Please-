@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import SudokuGame from './games/SudokuGame';
-import TetrisGame from './games/TetrisGame';
-import QuizGame from './games/QuizGame';
-import MemoryGame from './games/MemoryGame';
-import MathGame from './games/MathGame';
-import EmojiMatch from './games/EmojiMatch';
-import WordScramble from './games/WordScramble';
-import BalloonPop from './games/BalloonPop';
-import SnakeGame from './games/SnakeGame';
-import TypingGame from './games/TypingGame';
-import ColorMatch from './games/ColorMatch';
-import WhackAMole from './games/WhackAMole';
-import SimonSays from './games/SimonSays';
+import React, { useState, lazy, Suspense } from 'react';
 import { GameType, useGameContext } from '../context/GameContext';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+
+const SudokuGame = lazy(() => import('./games/SudokuGame'));
+const TetrisGame = lazy(() => import('./games/TetrisGame'));
+const QuizGame = lazy(() => import('./games/QuizGame'));
+const MemoryGame = lazy(() => import('./games/MemoryGame'));
+const MathGame = lazy(() => import('./games/MathGame'));
+const EmojiMatch = lazy(() => import('./games/EmojiMatch'));
+const WordScramble = lazy(() => import('./games/WordScramble'));
+const BalloonPop = lazy(() => import('./games/BalloonPop'));
+const SnakeGame = lazy(() => import('./games/SnakeGame'));
+const TypingGame = lazy(() => import('./games/TypingGame'));
+const ColorMatch = lazy(() => import('./games/ColorMatch'));
+const WhackAMole = lazy(() => import('./games/WhackAMole'));
+const SimonSays = lazy(() => import('./games/SimonSays'));
+
 
 const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons', 'snake', 'typing', 'colormatch', 'whackamole', 'simon'];
 
