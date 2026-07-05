@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "swipe-and-play-arcade-mcp",
+      "version": "0.1.0",
+      "title": "Swipe & Play Arcade MCP"
+    },
+    "tools": [
+      {
+        "name": "list_games",
+        "title": "List games",
+        "description": "List all games available in the Swipe & Play Arcade with their ids and display names.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_leaderboard",
+        "title": "Get leaderboard",
+        "description": "Get the top scores from the arcade. Optionally filter by a specific game id (e.g. 'snake', 'tetris').",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "gameType": {
+              "type": "string",
+              "description": "Optional game id to filter scores, e.g. 'snake'."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "How many top scores to return (default 10, max 50)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
