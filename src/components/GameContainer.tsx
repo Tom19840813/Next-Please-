@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import SudokuGame from './games/SudokuGame';
-import TetrisGame from './games/TetrisGame';
-import QuizGame from './games/QuizGame';
-import MemoryGame from './games/MemoryGame';
-import MathGame from './games/MathGame';
-import EmojiMatch from './games/EmojiMatch';
-import WordScramble from './games/WordScramble';
-import BalloonPop from './games/BalloonPop';
-import SnakeGame from './games/SnakeGame';
-import TypingGame from './games/TypingGame';
-import ColorMatch from './games/ColorMatch';
-import WhackAMole from './games/WhackAMole';
-import SimonSays from './games/SimonSays';
+import React, { useState, lazy, Suspense } from 'react';
 import { GameType, useGameContext } from '../context/GameContext';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+
+const SudokuGame = lazy(() => import('./games/SudokuGame'));
+const TetrisGame = lazy(() => import('./games/TetrisGame'));
+const QuizGame = lazy(() => import('./games/QuizGame'));
+const MemoryGame = lazy(() => import('./games/MemoryGame'));
+const MathGame = lazy(() => import('./games/MathGame'));
+const EmojiMatch = lazy(() => import('./games/EmojiMatch'));
+const WordScramble = lazy(() => import('./games/WordScramble'));
+const BalloonPop = lazy(() => import('./games/BalloonPop'));
+const SnakeGame = lazy(() => import('./games/SnakeGame'));
+const TypingGame = lazy(() => import('./games/TypingGame'));
+const ColorMatch = lazy(() => import('./games/ColorMatch'));
+const WhackAMole = lazy(() => import('./games/WhackAMole'));
+const SimonSays = lazy(() => import('./games/SimonSays'));
+
 
 const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons', 'snake', 'typing', 'colormatch', 'whackamole', 'simon'];
 
 const GameContainer: React.FC = () => {
-  const { currentGame, setCurrentGame, score } = useGameContext();
+  const { currentGame, setCurrentGame } = useGameContext();
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [transitioning, setTransitioning] = useState(false);
@@ -68,12 +70,12 @@ const GameContainer: React.FC = () => {
 
   return (
     <div className="relative w-full h-full overflow-hidden" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-      <div className="absolute top-4 left-4 z-50 glass px-3 rounded-full text-primary font-bold py-1 text-sm">
-        Score: {score}
-      </div>
+
 
       <div className={`w-full h-full ${transitioning ? 'animate-slide-out-left' : 'animate-fade-in'}`}>
-        {renderCurrentGame()}
+        <Suspense fallback={<div className="w-full h-full flex items-center justify-center"><Loader2 className="h-8 w-8 text-primary animate-spin" /></div>}>
+          {renderCurrentGame()}
+        </Suspense>
       </div>
       
       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-50">
