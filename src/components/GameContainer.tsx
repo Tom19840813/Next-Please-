@@ -20,7 +20,7 @@ const SimonSays = lazy(() => import('./games/SimonSays'));
 const GAMES: GameType[] = ['sudoku', 'tetris', 'quiz', 'memory', 'math', 'emoji', 'wordscramble', 'balloons', 'snake', 'typing', 'colormatch', 'whackamole', 'simon'];
 
 const GameContainer: React.FC = () => {
-  const { currentGame, setCurrentGame, score } = useGameContext();
+  const { currentGame, setCurrentGame } = useGameContext();
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [transitioning, setTransitioning] = useState(false);
