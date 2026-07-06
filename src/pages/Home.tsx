@@ -111,7 +111,7 @@ const Home: React.FC = () => {
             <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center neon-glow-cyan">
               <Gamepad2 className="h-6 w-6 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground neon-text">Next Please!</h1>
+            <h1 className="text-2xl font-bold text-foreground neon-text">Next Please! — Free Retro Arcade Games Online</h1>
           </div>
           <div className="flex items-center gap-4">
             {user ? (
@@ -292,6 +292,7 @@ const Home: React.FC = () => {
       {user && (
         <Button
           onClick={() => { lightTap(); setShowOnlineUsers(!showOnlineUsers); }}
+          aria-label="Show online users"
           className="fixed bottom-16 right-4 z-40 rounded-full w-12 h-12 shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground neon-glow-cyan"
           size="icon"
         >

@@ -4,6 +4,7 @@ import GameContainer from '../components/GameContainer';
 import AppHeader from '../components/AppHeader';
 import VisitorCounter from '../components/VisitorCounter';
 import GameInvitations from '../components/GameInvitations';
+import { useSEO } from '@/hooks/useSEO';
 import { GameProvider } from '../context/GameContext';
 import { GameType } from '../context/GameContext';
 import { DifficultyLevel } from '@/types/difficulty';
@@ -12,11 +13,23 @@ const Index: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialGame = (gameId as GameType) || 'sudoku';
   const initialDifficulty = (searchParams.get('difficulty') as DifficultyLevel) || 'medium';
-  
+
+  const gameLabel = gameId
+    ? gameId.charAt(0).toUpperCase() + gameId.slice(1).replace(/-/g, ' ')
+    : null;
+  useSEO({
+    title: gameLabel ? `Play ${gameLabel} Online Free` : 'Play Retro Arcade Games',
+    description: gameLabel
+      ? `Play ${gameLabel} free online — no downloads, mobile-first. Swipe to switch games and beat your high score on Swipe & Play Arcade.`
+      : 'Play free retro arcade games instantly — Sudoku, Tetris, Snake, Memory and 10+ more. Mobile-first, no downloads. Swipe to play!',
+    canonical: gameId ? `/play/${gameId}` : '/play',
+  });
+
   return <GameProvider initialGame={initialGame} initialDifficulty={initialDifficulty}>
       <div className="min-h-screen bg-background arcade-grid">
         <AppHeader />
-        
+        <h1 className="sr-only">{gameLabel ? `Play ${gameLabel} Online Free` : 'Play Retro Arcade Games Online'}</h1>
+
         <div className="pt-14 h-screen">
           <GameContainer />
         </div>

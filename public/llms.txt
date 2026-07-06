@@ -1,0 +1,33 @@
+# Swipe & Play Arcade
+
+> Play free retro arcade games instantly — Sudoku, Tetris, Snake, Memory and 10+ more. Mobile-first, no downloads, swipe to play.
+
+Swipe & Play Arcade is a free, browser-based retro arcade with 13 games. No account is required to play; signing in unlocks leaderboards, the Hall of Fame, and Pro features. Every game has a manual start screen and supports both touch-swipe and keyboard controls.
+
+## Pages
+
+- [Home](/): Overview of all games, Hall of Fame preview, and community feedback.
+- [Play](/play): The main gaming interface — swipe to switch between all 13 games.
+- [Leaderboard](/leaderboard): Top scores across all games (requires sign in).
+- [Hall of Fame](/hall-of-fame): All-time top players and rankings (requires sign in).
+- [Upgrade to Pro](/upgrade): Ad-free gaming and premium features.
+
+## Games
+
+- [Sudoku](/play/sudoku): Classic number placement puzzle.
+- [Tetris](/play/tetris): Stack falling blocks to clear lines.
+- [Snake](/play/snake): Eat and grow without hitting the walls.
+- [Memory](/play/memory): Match pairs of cards.
+- [Quiz](/play/quiz): Answer trivia questions against the clock.
+- [Math Game](/play/math): Solve quick arithmetic challenges.
+- [Emoji Match](/play/emoji): Find matching emoji pairs.
+- [Word Scramble](/play/wordscramble): Unscramble the hidden word.
+- [Balloon Pop](/play/balloons): Pop balloons for points.
+- [Typing Game](/play/typing): Test your typing speed and accuracy.
+- [Color Match](/play/colormatch): Match colors under time pressure.
+- [Whack-a-Mole](/play/whackamole): Tap the moles as they appear.
+- [Simon Says](/play/simon): Repeat the growing color sequence.
+
+## Optional
+
+- [Sign In](/auth): Create an account to track scores and compete.

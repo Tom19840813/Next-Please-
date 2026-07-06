@@ -70,7 +70,7 @@ const Auth: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-background arcade-grid px-4">
       <Card className="w-full max-w-md bg-card/90 backdrop-blur-sm border-border">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Welcome</CardTitle>
+          <h1 className="text-2xl font-bold text-center">Sign In or Create Account</h1>
           <CardDescription className="text-center">
             Sign in or create an account to continue
           </CardDescription>
