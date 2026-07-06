@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useSEO } from '@/hooks/useSEO';
 
 const NotFound = () => {
-  useSEO({ title: 'Page Not Found', description: 'The page you are looking for does not exist.' });
+  useSEO({ title: 'Page Not Found', description: "The page you're looking for doesn't exist or has moved. Head back to Swipe & Play Arcade to keep playing free retro arcade games online." });
   const location = useLocation();
 
   useEffect(() => {
