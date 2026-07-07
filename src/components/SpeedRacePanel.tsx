@@ -47,7 +47,7 @@ const SpeedRacePanel: React.FC = () => {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-20 right-4 z-40 glass neon-glow-magenta flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-foreground"
+          className="fixed top-16 right-4 z-40 glass neon-glow-magenta flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-foreground"
           aria-label="Open speed race"
         >
           <Zap size={16} className="text-primary" />
