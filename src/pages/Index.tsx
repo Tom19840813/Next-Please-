@@ -4,6 +4,8 @@ import GameContainer from '../components/GameContainer';
 import AppHeader from '../components/AppHeader';
 import VisitorCounter from '../components/VisitorCounter';
 import GameInvitations from '../components/GameInvitations';
+import SpeedRacePanel from '../components/SpeedRacePanel';
+import { RaceProvider } from '../context/RaceContext';
 import { useSEO } from '@/hooks/useSEO';
 import { GameProvider } from '../context/GameContext';
 import { GameType } from '../context/GameContext';
