@@ -4,6 +4,8 @@ import GameContainer from '../components/GameContainer';
 import AppHeader from '../components/AppHeader';
 import VisitorCounter from '../components/VisitorCounter';
 import GameInvitations from '../components/GameInvitations';
+import SpeedRacePanel from '../components/SpeedRacePanel';
+import { RaceProvider } from '../context/RaceContext';
 import { useSEO } from '@/hooks/useSEO';
 import { GameProvider } from '../context/GameContext';
 import { GameType } from '../context/GameContext';
@@ -26,6 +28,7 @@ const Index: React.FC = () => {
   });
 
   return <GameProvider initialGame={initialGame} initialDifficulty={initialDifficulty}>
+      <RaceProvider>
       <div className="min-h-screen bg-background arcade-grid">
         <AppHeader />
         <h1 className="sr-only">{gameLabel ? `Play ${gameLabel} Online Free` : 'Play Retro Arcade Games Online'}</h1>
@@ -43,9 +46,13 @@ const Index: React.FC = () => {
         {/* Game Invitations */}
         <GameInvitations />
 
+        {/* Live Speed Race */}
+        <SpeedRacePanel />
+
         {/* Visitor Counter */}
         <VisitorCounter />
       </div>
+      </RaceProvider>
     </GameProvider>;
 };
 export default Index;
