@@ -12,6 +12,7 @@ import HallOfFamePreview from '@/components/HallOfFamePreview';
 import InfiniteGameFeed from '@/components/InfiniteGameFeed';
 import FeedbackSection from '@/components/FeedbackSection';
 import HeroMiniGame from '@/components/HeroMiniGame';
+import HeroNav3D from '@/components/HeroNav3D';
 import { useSubscription } from '@/hooks/useSubscription';
 import { lightTap } from '@/utils/haptics';
 import { 
@@ -159,42 +160,8 @@ const Home: React.FC = () => {
             <span className="animate-typewriter-blink ml-0.5 text-primary">|</span>
           </p>
 
-          {/* Hero Navigation Menu */}
-          <nav className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 mb-12">
-            <a
-              href="#hall-of-fame"
-              onClick={lightTap}
-              className="group flex items-center gap-2 px-5 py-2.5 rounded-full glass hover:neon-glow-yellow transition-all text-sm font-medium text-foreground hover:text-accent"
-            >
-              <Trophy className="h-4 w-4" />
-              Hall of Fame
-            </a>
-            <a
-              href="#original-games"
-              onClick={lightTap}
-              className="group flex items-center gap-2 px-5 py-2.5 rounded-full glass hover:neon-glow-cyan transition-all text-sm font-medium text-foreground hover:text-primary"
-            >
-              <Gamepad2 className="h-4 w-4" />
-              Original Games
-            </a>
-            <a
-              href="#random-games"
-              onClick={lightTap}
-              className="group flex items-center gap-2 px-5 py-2.5 rounded-full glass hover:neon-glow-magenta transition-all text-sm font-medium text-foreground hover:text-secondary"
-            >
-              <Shuffle className="h-4 w-4" />
-              Random Games
-              <span className="text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-full font-bold leading-none">∞</span>
-            </a>
-            <a
-              href="#feedback"
-              onClick={lightTap}
-              className="group flex items-center gap-2 px-5 py-2.5 rounded-full glass hover:neon-glow-cyan transition-all text-sm font-medium text-foreground hover:text-primary"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Feedback
-            </a>
-          </nav>
+          {/* Hero Navigation Menu (3D perspective-tilt on scroll) */}
+          <HeroNav3D />
 
           {/* Scroll indicator */}
           <a href="#hall-of-fame" className="inline-flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
