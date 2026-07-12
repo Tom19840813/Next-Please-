@@ -12,6 +12,7 @@ import HallOfFamePreview from '@/components/HallOfFamePreview';
 import InfiniteGameFeed from '@/components/InfiniteGameFeed';
 import FeedbackSection from '@/components/FeedbackSection';
 import HeroMiniGame from '@/components/HeroMiniGame';
+import HeroNav3D from '@/components/HeroNav3D';
 import { useSubscription } from '@/hooks/useSubscription';
 import { lightTap } from '@/utils/haptics';
 import { 
