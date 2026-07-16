@@ -5,7 +5,6 @@ import { getHallOfFame } from '../services/gameScores';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Medal, Trophy, Flame, Star, Crown } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
 
 interface TopPlayer {
   userId: string;
@@ -43,8 +42,6 @@ const HallOfFame: React.FC = () => {
   const [timeFrame, setTimeFrame] = useState<'allTime' | 'monthly' | 'weekly'>('allTime');
   const [loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
-  const { toast } = useToast();
-
   useEffect(() => {
     const fetchTopPlayers = async () => {
       setLoading(true);
@@ -59,7 +56,6 @@ const HallOfFame: React.FC = () => {
           setIsDemo(false);
         }
       } catch (error) {
-        console.error('Error fetching hall of fame data:', error);
         // On error, show demo players
         setTopPlayers(generateRandomPlayers());
         setIsDemo(true);

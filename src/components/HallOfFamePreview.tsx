@@ -48,7 +48,6 @@ const HallOfFamePreview: React.FC = () => {
           setIsDemo(false);
         }
       } catch (error) {
-        console.error('Error fetching hall of fame:', error);
         setTopPlayers(generateRandomPlayers());
         setIsDemo(true);
       } finally {

@@ -24,11 +24,6 @@ const QuizGame: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showDifficultySelector, setShowDifficultySelector] = useState(true);
 
-  // Initialize quiz with fresh random questions
-  useEffect(() => {
-    startQuiz();
-  }, []);
-
   // Timer for each question
   useEffect(() => {
     if (isAnswered || quizComplete || loading) return;

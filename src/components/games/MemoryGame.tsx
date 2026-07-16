@@ -22,11 +22,6 @@ const MemoryGame: React.FC = () => {
   const [currentEmojiSet, setCurrentEmojiSet] = useState<string[]>([]);
   const [showDifficultySelector, setShowDifficultySelector] = useState(true);
 
-  // Initialize game on first render
-  useEffect(() => {
-    initializeGame();
-  }, []);
-
   // Check for matches when two cards are flipped
   useEffect(() => {
     if (flippedCards.length === 2) {
@@ -68,7 +63,7 @@ const MemoryGame: React.FC = () => {
 
   // Check if game is complete
   useEffect(() => {
-    if (matchedPairs === currentEmojiSet.length) {
+    if (currentEmojiSet.length > 0 && matchedPairs === currentEmojiSet.length) {
       setGameComplete(true);
       // Bonus points based on efficiency (fewer moves = more points)
       const efficiency = Math.max(100 - (moves - currentEmojiSet.length) * 5, 10);
