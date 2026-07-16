@@ -145,13 +145,16 @@ const Home: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative container mx-auto px-4 py-20 text-center overflow-hidden">
-        {/* Canvas Background */}
-        <div className="absolute inset-0 flex items-center justify-center">
+      <section ref={heroRef} className="relative container mx-auto px-4 py-20 text-center">
+        {/* Canvas Background — parallax applied here so it doesn't flatten 3D descendants */}
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{ transform: `translate3d(0, ${heroOffset}px, 0)`, willChange: 'transform' }}
+        >
           <HeroMiniGame />
         </div>
 
-        <div style={{ transform: `translateY(${heroOffset}px)` }} className="relative z-10">
+        <div className="relative z-10" style={{ transformStyle: 'preserve-3d' }}>
           <h2 className="text-5xl sm:text-7xl font-black text-primary tracking-tight mb-4 neon-text-cyan">
             Next Please!
           </h2>
