@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
 import { Trophy, Gamepad2, Shuffle, MessageCircle } from 'lucide-react';
 import { lightTap } from '@/utils/haptics';
@@ -39,27 +39,23 @@ const NAV_ITEMS = [
 ];
 
 const HeroNav3D: React.FC = () => {
-  const containerRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
 
-  // Track scroll progress of the nav leaving the top of the viewport.
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start 0.15', 'end start'],
-  });
+  // Drive tilt off window scroll so the effect spans a meaningful distance
+  // (the nav itself is only ~50px tall, which made the previous target-based
+  // useScroll compress the range to nothing).
+  const { scrollY } = useScroll();
 
-  // As the user scrolls, the whole menu tilts back and recedes in 3D.
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 55]);
-  const translateZ = useTransform(scrollYProgress, [0, 1], [0, -220]);
-  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  const translateY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  // Idle: slight tilt so 3D is visible at rest. Scrolling deepens the tilt,
+  // recedes the menu in Z, lifts it, and fades it out.
+  const rotateX = useTransform(scrollY, [0, 600], [8, 60]);
+  const translateZ = useTransform(scrollY, [0, 600], [0, -260]);
+  const translateY = useTransform(scrollY, [0, 600], [0, -40]);
+  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   if (reduceMotion) {
     return (
-      <nav
-        ref={containerRef}
-        className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 mb-12"
-      >
+      <nav className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 mb-12">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
@@ -85,18 +81,22 @@ const HeroNav3D: React.FC = () => {
 
   return (
     <nav
-      ref={containerRef}
       className="mt-10 mb-12"
-      style={{ perspective: '1000px' }}
+      style={{
+        perspective: '1000px',
+        perspectiveOrigin: '50% 120%',
+        transformStyle: 'preserve-3d',
+      }}
     >
       <motion.div
         className="flex flex-col sm:flex-row items-center justify-center gap-3"
         style={{
           rotateX,
-          translateY,
-          translateZ,
+          y: translateY,
+          z: translateZ,
           opacity,
           transformStyle: 'preserve-3d',
+          willChange: 'transform',
         }}
       >
         {NAV_ITEMS.map((item, idx) => {
