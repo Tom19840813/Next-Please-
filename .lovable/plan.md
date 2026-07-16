@@ -1,34 +1,60 @@
-## Problem
-The 3D perspective-tilt hero nav isn't visible as 3D. In the screenshot the pills render flat and never tilt on scroll.
+# Full Debug and Fix Plan
 
-Root causes in the current setup:
-1. **Parent transform kills perspective.** The hero content wrapper in `Home.tsx` uses `style={{ transform: translateY(${heroOffset}px) }}` for parallax. `HeroNav3D` sits inside it and sets its own `perspective: 1000px` — but a transformed ancestor flattens child 3D transforms unless it also declares `transform-style: preserve-3d`. Result: `rotateX` / `translateZ` collapse to 2D.
-2. **`overflow-hidden` on the hero `<section>`** clips any depth/tilt that extends outside the box.
-3. **Scroll range never fires meaningfully.** `useScroll` targets the `<nav>` itself with `offset: ['start 0.15','end start']`. The nav is only ~50px tall, so it exits the viewport almost immediately and the animated range is compressed to a few pixels of scroll — you barely see any tilt before it's gone.
-4. **No idle tilt.** Even at rest the menu is perfectly flat, so users who don't scroll (or scroll past fast) see nothing 3D at all.
+## Goal
+Run a broad health pass across the app, then fix the concrete issues that affect loading, console cleanliness, mobile/game behavior, SEO-critical rendering, and the recently added 3D hero menu.
 
-## Fix
+## What I found so far
+- The live console is noisy with `Failed to fetch` from ad settings and Hall of Fame requests.
+- Those paths already have fallbacks, but they still log scary errors and can wait on failed network calls.
+- The `/hall-of-fame` route is currently behind auth even though the homepage links to it as public social proof.
+- The 3D hero nav exists, but it may not read as a “3D scrolling UI” enough at the current desktop viewport.
+- Dev server is running cleanly aside from a Browserslist warning.
 
-### 1. `src/pages/Home.tsx`
-- Remove `overflow-hidden` from the hero `<section>` (keep the `HeroMiniGame` canvas contained another way if needed — it's `absolute inset-0` so it's fine).
-- Replace the parallax `transform: translateY(...)` on the inner wrapper with `willChange: 'transform'` + a `translate3d` and add `transformStyle: 'preserve-3d'` so descendant 3D isn't flattened. Simpler alternative: move parallax off this wrapper and apply it directly to the `HeroMiniGame` background layer (which is what "parallax on the hero" was for anyway), leaving the content wrapper transform-free.
+## Implementation steps
+1. **Runtime error cleanup**
+   - Harden Supabase read helpers so transient fetch failures fall back silently where demo data/default settings are expected.
+   - Keep real developer diagnostics available without spamming user-facing preview console for known offline/preview fetch failures.
 
-### 2. `src/components/HeroNav3D.tsx`
-- Track scroll against the **window / hero section**, not the tiny nav element, so the tilt animates over a meaningful scroll distance:
-  - Accept an optional `targetRef` prop (the hero section) OR use `useScroll()` with no target and drive off `window.scrollY` in the 0–600px range via `useTransform`.
-- Give the menu a **subtle resting tilt** (`rotateX: 8deg`) so the 3D is visible before any scroll, then animate to `rotateX: 55deg` + recede as the user scrolls.
-- Add `perspective-origin: 50% 120%` for a nicer vanishing point.
-- Add `will-change: transform` on the animated wrapper.
-- Keep `transformStyle: 'preserve-3d'` on both the perspective container and the motion wrapper (already set).
-- Keep the reduced-motion fallback.
+2. **Ad settings resilience**
+   - Refactor `useAdSettings` to avoid repeated failing requests and realtime subscriptions when the backend is unreachable.
+   - Preserve default ad settings so ads and layout do not break.
 
-### 3. Verify
-- Playwright at 1280×1800 and 392×800: screenshot at scrollY=0 (should show a slight tilt), scrollY=200, scrollY=500 (pills clearly tilted back and receded). Confirm anchor jumps still work.
+3. **Hall of Fame resilience**
+   - Refactor leaderboard/Hall of Fame fetching to safely return demo/fallback data when remote reads fail.
+   - Ensure profile lookups do not fail the whole ranking render.
 
-## Files
-| File | Change |
-|------|--------|
-| `src/pages/Home.tsx` | Remove `overflow-hidden`; move parallax off the content wrapper so it no longer flattens 3D descendants |
-| `src/components/HeroNav3D.tsx` | Drive tilt off window scroll (not the nav element); add resting tilt + perspective-origin; ensure preserve-3d chain |
+4. **Route/access fix**
+   - Make `/hall-of-fame` accessible without login, matching the public homepage link and optional-login project rule.
+   - Keep genuinely admin/private routes protected.
 
-No backend, routing, or game logic touched.
+5. **3D hero menu visibility pass**
+   - Make the hero navigation’s 3D scroll effect more obvious at rest and during scroll.
+   - Verify desktop and mobile screenshots show depth clearly, not just subtle tilt.
+
+6. **Game/start-state audit**
+   - Search the game components for auto-start or completed-state-on-load patterns.
+   - Fix any remaining games that can show a done/restart state before a manual start.
+
+7. **Mobile/layout smoke test**
+   - Use Playwright on the current preview to inspect home, play route, a game route, Hall of Fame, and the 3D menu at desktop and mobile widths.
+   - Check for console errors, blank screens, broken navigation, obvious overlap, and touch/keyboard control regressions.
+
+8. **Validation**
+   - Run the relevant automated checks available in the project.
+   - Use browser verification for the highest-risk flows before reporting completion.
+
+## Files likely to change
+- `src/hooks/useAdSettings.ts`
+- `src/services/gameScores.ts`
+- `src/components/HallOfFamePreview.tsx`
+- `src/components/HeroNav3D.tsx`
+- `src/App.tsx`
+- Any game component still missing a clean manual start state, if found during the audit
+
+## Expected outcome
+- Cleaner preview console.
+- More reliable homepage rendering when backend/network calls fail.
+- Public Hall of Fame page works from the homepage.
+- 3D hero menu is visibly 3D across desktop/mobile.
+- Games consistently start from a plain manual start state.
+- Verified with browser smoke testing before completion.
