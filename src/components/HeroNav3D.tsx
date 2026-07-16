@@ -46,12 +46,13 @@ const HeroNav3D: React.FC = () => {
   // useScroll compress the range to nothing).
   const { scrollY } = useScroll();
 
-  // Idle: slight tilt so 3D is visible at rest. Scrolling deepens the tilt,
-  // recedes the menu in Z, lifts it, and fades it out.
-  const rotateX = useTransform(scrollY, [0, 600], [8, 60]);
-  const translateZ = useTransform(scrollY, [0, 600], [0, -260]);
-  const translateY = useTransform(scrollY, [0, 600], [0, -40]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
+  // Idle: clear 3D tilt so the menu reads as a tilted arcade carousel before scroll.
+  // Scrolling turns it into a receding perspective rail.
+  const rotateX = useTransform(scrollY, [0, 650], [18, 66]);
+  const rotateY = useTransform(scrollY, [0, 650], [-8, 10]);
+  const translateZ = useTransform(scrollY, [0, 650], [60, -320]);
+  const translateY = useTransform(scrollY, [0, 650], [0, -52]);
+  const opacity = useTransform(scrollY, [0, 560], [1, 0]);
 
   if (reduceMotion) {
     return (
@@ -80,18 +81,24 @@ const HeroNav3D: React.FC = () => {
   }
 
   return (
-    <nav
-      className="mt-10 mb-12"
+      <nav
+        aria-label="Hero sections"
+        className="relative mt-10 mb-12 mx-auto max-w-4xl"
       style={{
-        perspective: '1000px',
-        perspectiveOrigin: '50% 120%',
+        perspective: '1200px',
+        perspectiveOrigin: '50% 140%',
         transformStyle: 'preserve-3d',
       }}
     >
+      <div
+        className="pointer-events-none absolute inset-x-4 top-1/2 h-10 -translate-y-1/2 rounded-full border border-primary/15 bg-primary/5 blur-sm"
+        style={{ transform: 'translateZ(-80px) rotateX(68deg)', transformStyle: 'preserve-3d' }}
+      />
       <motion.div
-        className="flex flex-col sm:flex-row items-center justify-center gap-3"
+        className="relative flex flex-col sm:flex-row items-center justify-center gap-3"
         style={{
           rotateX,
+          rotateY,
           y: translateY,
           z: translateZ,
           opacity,
@@ -121,8 +128,11 @@ const HeroNav3D: React.FC = () => {
                 transition: { type: 'spring', stiffness: 300, damping: 15 },
               }}
               whileTap={{ scale: 0.95 }}
-              className={`group flex items-center gap-2 px-5 py-2.5 rounded-full glass transition-colors text-sm font-medium text-foreground ${item.glow} ${item.text}`}
-              style={{ transformStyle: 'preserve-3d' }}
+              className={`group flex items-center gap-2 px-5 py-2.5 rounded-full glass transition-colors text-sm font-medium text-foreground shadow-lg shadow-primary/10 ${item.glow} ${item.text}`}
+              style={{
+                transformStyle: 'preserve-3d',
+                transform: `translateZ(${idx % 2 === 0 ? 54 : 22}px) rotateY(${(idx - 1.5) * 6}deg)`,
+              }}
             >
               <Icon className="h-4 w-4" />
               {item.label}

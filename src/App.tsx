@@ -45,7 +45,7 @@ const App = () => (
                   <Route path="/play/:gameId" element={<Index />} />
                   <Route path="/upgrade" element={<UpgradeToPro />} />
                   <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-                  <Route path="/hall-of-fame" element={<ProtectedRoute><HallOfFame /></ProtectedRoute>} />
+                  <Route path="/hall-of-fame" element={<HallOfFame />} />
                   <Route path="/admin/ad-settings" element={<ProtectedRoute><AdSettings /></ProtectedRoute>} />
                   <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />

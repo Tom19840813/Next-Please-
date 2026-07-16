@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { AdSettings } from '@/types/ads';
 
@@ -15,9 +15,17 @@ const DEFAULT_AD_SETTINGS: AdSettings = {
 
 export const useAdSettings = () => {
   const [adSettings, setAdSettings] = useState<AdSettings | null>(DEFAULT_AD_SETTINGS);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const backendAvailableRef = useRef(true);
 
-  const fetchAdSettings = async () => {
+  const fetchAdSettings = useCallback(async () => {
+    if (!backendAvailableRef.current) {
+      setAdSettings(DEFAULT_AD_SETTINGS);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
     try {
       // Use any to bypass TypeScript checking for tables not in generated types
       const { data, error } = await supabase
@@ -27,18 +35,17 @@ export const useAdSettings = () => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error fetching ad settings:', error);
         setAdSettings(DEFAULT_AD_SETTINGS);
       } else {
         setAdSettings((data as unknown as AdSettings) || DEFAULT_AD_SETTINGS);
       }
     } catch (error) {
-      console.error('Error fetching ad settings:', error);
+      backendAvailableRef.current = false;
       setAdSettings(DEFAULT_AD_SETTINGS);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAdSettings();
@@ -54,6 +61,7 @@ export const useAdSettings = () => {
           table: 'ad_settings'
         },
         () => {
+          backendAvailableRef.current = true;
           fetchAdSettings();
         }
       )

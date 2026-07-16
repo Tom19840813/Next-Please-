@@ -2,6 +2,15 @@
 import { supabase } from "@/integrations/supabase/client";
 import { GameType } from "@/context/GameContext";
 
+const isOfflineFetchError = (error: unknown) =>
+  error instanceof TypeError && error.message.toLowerCase().includes('failed to fetch');
+
+const logDataError = (message: string, error: unknown) => {
+  if (!isOfflineFetchError(error)) {
+    console.error(message, error);
+  }
+};
+
 export interface GameScore {
   id: string;
   user_id: string;
@@ -30,7 +39,7 @@ export const saveGameScore = async (gameType: GameType, score: number) => {
     .select();
 
   if (error) {
-    console.error("Error saving score:", error);
+    logDataError("Error saving score:", error);
     return null;
   }
 
@@ -38,43 +47,54 @@ export const saveGameScore = async (gameType: GameType, score: number) => {
 };
 
 export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
-  let query = supabase
-    .from("game_scores")
-    .select(`
-      id,
-      user_id,
-      game_type,
-      score,
-      created_at
-    `)
-    .order('score', { ascending: false })
-    .limit(limit);
+  try {
+    let query = supabase
+      .from("game_scores")
+      .select(`
+        id,
+        user_id,
+        game_type,
+        score,
+        created_at
+      `)
+      .order('score', { ascending: false })
+      .limit(limit);
 
-  if (gameType) {
-    query = query.eq('game_type', gameType);
-  }
+    if (gameType) {
+      query = query.eq('game_type', gameType);
+    }
 
-  const { data, error } = await query;
+    const { data, error } = await query;
 
-  if (error) {
-    console.error('Error fetching leaderboard:', error);
+    if (error || !data) {
+      logDataError('Error fetching leaderboard:', error);
+      return [];
+    }
+
+    // Fetch profiles for all unique user_ids
+    const userIds = [...new Set(data.map(item => item.user_id))];
+    const { data: profiles, error: profilesError } = userIds.length
+      ? await supabase
+          .from("profiles")
+          .select("id, username, avatar_url")
+          .in("id", userIds)
+      : { data: [], error: null };
+
+    if (profilesError) {
+      logDataError('Error fetching leaderboard profiles:', profilesError);
+    }
+
+    const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+    return data.map(item => ({
+      ...item,
+      username: profileMap.get(item.user_id)?.username || 'Anonymous',
+      avatar_url: profileMap.get(item.user_id)?.avatar_url || null
+    }));
+  } catch (error) {
+    logDataError('Error fetching leaderboard:', error);
     return [];
   }
-
-  // Fetch profiles for all unique user_ids
-  const userIds = [...new Set(data.map(item => item.user_id))];
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, username, avatar_url")
-    .in("id", userIds);
-
-  const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
-
-  return data.map(item => ({
-    ...item,
-    username: profileMap.get(item.user_id)?.username || 'Anonymous',
-    avatar_url: profileMap.get(item.user_id)?.avatar_url || null
-  }));
 };
 
 export const getHallOfFame = async (timeFrame: 'allTime' | 'monthly' | 'weekly' = 'allTime', limit = 20) => {
@@ -90,67 +110,78 @@ export const getHallOfFame = async (timeFrame: 'allTime' | 'monthly' | 'weekly' 
     dateFilter = monthAgo.toISOString();
   }
 
-  let query = supabase
-    .from("game_scores")
-    .select("user_id, game_type, score, created_at")
-    .order('score', { ascending: false });
+  try {
+    let query = supabase
+      .from("game_scores")
+      .select("user_id, game_type, score, created_at")
+      .order('score', { ascending: false });
 
-  if (dateFilter) {
-    query = query.gte('created_at', dateFilter);
-  }
+    if (dateFilter) {
+      query = query.gte('created_at', dateFilter);
+    }
 
-  const { data, error } = await query;
+    const { data, error } = await query;
 
-  if (error) {
-    console.error('Error fetching hall of fame:', error);
+    if (error || !data) {
+      logDataError('Error fetching hall of fame:', error);
+      return [];
+    }
+
+    // Aggregate scores by user
+    const playerMap = new Map<string, {
+      userId: string;
+      totalScore: number;
+      gamesPlayed: number;
+      bestGame?: { game_type: string; score: number };
+    }>();
+
+    data.forEach(score => {
+      if (!playerMap.has(score.user_id)) {
+        playerMap.set(score.user_id, {
+          userId: score.user_id,
+          totalScore: 0,
+          gamesPlayed: 0,
+          bestGame: undefined
+        });
+      }
+
+      const player = playerMap.get(score.user_id)!;
+      player.totalScore += score.score;
+      player.gamesPlayed += 1;
+
+      if (!player.bestGame || score.score > player.bestGame.score) {
+        player.bestGame = { game_type: score.game_type, score: score.score };
+      }
+    });
+
+    // Fetch profiles
+    const userIds = [...playerMap.keys()];
+    const { data: profiles, error: profilesError } = userIds.length
+      ? await supabase
+          .from("profiles")
+          .select("id, username, avatar_url")
+          .in("id", userIds)
+      : { data: [], error: null };
+
+    if (profilesError) {
+      logDataError('Error fetching hall of fame profiles:', profilesError);
+    }
+
+    const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+    // Convert to array, add profile data, and sort
+    return Array.from(playerMap.values())
+      .map(player => ({
+        ...player,
+        username: profileMap.get(player.userId)?.username || 'Anonymous',
+        avatar_url: profileMap.get(player.userId)?.avatar_url || null
+      }))
+      .sort((a, b) => b.totalScore - a.totalScore)
+      .slice(0, limit);
+  } catch (error) {
+    logDataError('Error fetching hall of fame:', error);
     return [];
   }
-
-  // Aggregate scores by user
-  const playerMap = new Map<string, {
-    userId: string;
-    totalScore: number;
-    gamesPlayed: number;
-    bestGame?: { game_type: string; score: number };
-  }>();
-
-  data.forEach(score => {
-    if (!playerMap.has(score.user_id)) {
-      playerMap.set(score.user_id, {
-        userId: score.user_id,
-        totalScore: 0,
-        gamesPlayed: 0,
-        bestGame: undefined
-      });
-    }
-
-    const player = playerMap.get(score.user_id)!;
-    player.totalScore += score.score;
-    player.gamesPlayed += 1;
-
-    if (!player.bestGame || score.score > player.bestGame.score) {
-      player.bestGame = { game_type: score.game_type, score: score.score };
-    }
-  });
-
-  // Fetch profiles
-  const userIds = [...playerMap.keys()];
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, username, avatar_url")
-    .in("id", userIds);
-
-  const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
-
-  // Convert to array, add profile data, and sort
-  return Array.from(playerMap.values())
-    .map(player => ({
-      ...player,
-      username: profileMap.get(player.userId)?.username || 'Anonymous',
-      avatar_url: profileMap.get(player.userId)?.avatar_url || null
-    }))
-    .sort((a, b) => b.totalScore - a.totalScore)
-    .slice(0, limit);
 };
 
 export const getUserBestScores = async (gameType?: GameType) => {
