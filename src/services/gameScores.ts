@@ -21,6 +21,12 @@ export interface GameScore {
   avatar_url?: string | null;
 }
 
+type PlayerProfile = {
+  id: string;
+  username?: string | null;
+  avatar_url?: string | null;
+};
+
 export const saveGameScore = async (gameType: GameType, score: number) => {
   const { data: user } = await supabase.auth.getUser();
   
@@ -84,7 +90,9 @@ export const getLeaderboard = async (gameType?: GameType, limit = 10) => {
       logDataError('Error fetching leaderboard profiles:', profilesError);
     }
 
-    const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+    const profileMap = new Map<string, PlayerProfile>(
+      ((profiles ?? []) as PlayerProfile[]).map((profile): [string, PlayerProfile] => [profile.id, profile])
+    );
 
     return data.map(item => ({
       ...item,
@@ -167,7 +175,9 @@ export const getHallOfFame = async (timeFrame: 'allTime' | 'monthly' | 'weekly' 
       logDataError('Error fetching hall of fame profiles:', profilesError);
     }
 
-    const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+    const profileMap = new Map<string, PlayerProfile>(
+      ((profiles ?? []) as PlayerProfile[]).map((profile): [string, PlayerProfile] => [profile.id, profile])
+    );
 
     // Convert to array, add profile data, and sort
     return Array.from(playerMap.values())
